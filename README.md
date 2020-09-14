@@ -1,2 +1,2 @@
-# ameritrader
-R package for interacting with the TD Ameritrade API. The author of this package is not in anyway associated with TD Ameritrade.
+# rameritrade
+R package for interacting with the TD Ameritrade API. The author of this package is not in anyway associated with TD Ameritrade. The functions within this package have been tested under basic scenarios. There may be bugs or issues that could prevent you from executing trades or creates an execution that the user did not intend. The user will use this package at their own risk and not hold the author liable for any potential errors or issues encountered. 
