@@ -20,12 +20,12 @@
 #' \dontrun{
 #' 
 #' ### A valid refresh token can be fed into the function below for a new refresh token
-#' refToken = td_auth_getrefresh('CurrentRefreshToken','CONSUMERKEY')
-#' 
-#' saveRDS(refToken,'/secure/location/')
+#' curRefToken = readRDS('/secure/location/')
+#' newRefToken = td_auth_getrefresh(curRefToken,'APPCONSUMERKEY')
+#' saveRDS(newRefToken,'/secure/location/')
 #' 
 #' }
-td_auth_getrefresh = function(refreshToken,consumerKey,verbose_output = FALSE){
+td_auth_getrefresh = function(refreshToken,consumerKey){
   
   
   ### Get a New Refresh Token using existing refresh token before 90 day expiration
@@ -35,16 +35,23 @@ td_auth_getrefresh = function(refreshToken,consumerKey,verbose_output = FALSE){
                     client_id=consumerKey)
   
   ### Post authorization request
-  newrefresh = if(verbose_output){
-    httr::POST('https://api.tdameritrade.com/v1/oauth2/token', 
-               httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),
-               body=refreshreq,encode='form',httr::verbose()) } else {
-    httr::POST('https://api.tdameritrade.com/v1/oauth2/token', 
-               httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),
-               body=refreshreq,encode='form')         
-               }
+  newrefresh = httr::POST('https://api.tdameritrade.com/v1/oauth2/token', 
+                          httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),
+                                            body=refreshreq,encode='form') 
+  
+  if(newrefresh$status_code==200){
+    print('Successful Refresh Token Generated')
+    Result = httr::content(newrefresh)$refresh_token
+  }else{
+    warning(paste0('Token Generation failed. Check the following reasons:\n',
+                   'Confirm the Refresh Token being used is still valid and did not expire after 90 days\n',
+                   'Confirm the proper Consumer Key is being used, not the callback URL\n',
+                   'If this warning persists, use td_auth_initurl and td_auth_initrefresh to generate a new initial Refresh Token\n',
+                   'View this functions output and the TD Auth FAQ for more details.'))
+    Result = newrefresh
+  }
   
   ### Return only the refresh token even though an access token is also provided
-  return(httr::content(newrefresh)$refresh_token)
+  return(Result)
   
 }

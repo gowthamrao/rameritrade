@@ -39,7 +39,7 @@
 #' saveRDS(refToken,'/secure/location/')
 #' 
 #' }
-td_auth_initrefresh = function(authcode_url,callbackURL,consumerKey,verbose_output = FALSE){
+td_auth_initrefresh = function(authcode_url,callbackURL,consumerKey){
   
   ### Parse Access Token from URL and Decode the token
   decodedtoken = urltools::url_decode(gsub('.*code=','',authcode_url))
@@ -54,16 +54,23 @@ td_auth_initrefresh = function(authcode_url,callbackURL,consumerKey,verbose_outp
                  redirect_uri=callbackURL)
   
   ### Post authorization request either using a verbose request or non-verbose
-  authresponse = if(verbose_output){
-     httr::POST('https://api.tdameritrade.com/v1/oauth2/token', 
-                httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),
-                body=authreq,encode='form',httr::verbose()) } else {
-     httr::POST('https://api.tdameritrade.com/v1/oauth2/token', 
-                httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),
-                body=authreq,encode='form')              
-                            }
+  authresponse = httr::POST('https://api.tdameritrade.com/v1/oauth2/token', 
+                            httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),
+                                              body=authreq,encode='form')
   
-  ### Return only the refresh token even though an access token is also provided
-  return(httr::content(authresponse)$refresh_token)
+  if(authresponse$status_code==200){
+      print('Successful Refresh Token Generated')
+      Result = httr::content(authresponse)$refresh_token
+  }else{
+      warning(paste0('Token Generation failed. Check the following reasons:\n',
+                     'Confirm the authorization code follows a format of callbackURL?code=AUTHCODE\n',
+                     'The authorization code can only be used once\n',
+                     'The Callback URL and Consumer Key are correct\n',
+                     'View this functions output and the TD Auth FAQ for more details.'))
+      Result = authresponse
+    }
+  
+  ### Return only the refresh token if successful, otherwise return full output
+  return(Result)
   
 }

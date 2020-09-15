@@ -21,7 +21,8 @@
 #' \dontrun{
 #' 
 #' ### A valid refresh token can be fed into the function below for a new Access Token
-#' accessToken = td_auth_getaccess('CurrentRefreshToken','CONSUMERKEY')
+#' curRefToken = readRDS('/secure/location/')
+#' accessToken = td_auth_getaccess(curRefToken,'APPCONSUMERKEY')
 #' 
 #' }
 td_auth_getaccess = function(refreshToken,consumerKey){
@@ -34,9 +35,16 @@ td_auth_getaccess = function(refreshToken,consumerKey){
   ### Post refresh token and retrieve access token
   getaccess = httr::POST('https://api.tdameritrade.com/v1/oauth2/token', 
                          httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),body=accessreq,encode='form')
-  ### Print Message
-  if(getaccess$status_code==200){print('Successful Login')}else{print('Login Failed. Confirm Refresh Token is valid.')}
+  
+  ### Print Message and send result as either a successful token or the POST
+  if(getaccess$status_code==200){
+    print('Successful Login. Token will expire in 30 minutes')
+    Result = httr::content(getaccess)$access_token
+  }else{
+    warning('Login Failed. Confirm Refresh Token and Consumer Key are valid.')
+    Result = getaccess
+    }
   
   ### Return Access Token
-  return(httr::content(getaccess)$access_token)
+  return(Result)
 }
