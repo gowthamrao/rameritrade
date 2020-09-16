@@ -1,23 +1,26 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # rameritrade
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
-R package for interacting with the TD Ameritrade API. A TD Ameritrade
-brokerage account and a TD Ameritrade Developer app are required. See
-Authentication for more details.
+R package for interacting with the TD Ameritrade API. A TD Ameritrade brokerage account and a TD Ameritrade Developer app are required. See Authentication for more details. 
 
-The author of this package is not in anyway associated with TD
-Ameritrade. The functions within this package have been tested under
-basic scenarios. There may be bugs or issues that could prevent a user
-from executing trades or canceling trades. It is also possible trades
-could be submitted in error. The user will use this package at their own
-risk and not hold the author liable for any potential errors or issues
-encountered.
+The author of this package is not in anyway associated with TD Ameritrade. The functions within this package have been tested under basic scenarios. There may be bugs or issues that could prevent a user from executing trades or canceling trades. It is also possible trades could be submitted in error. The user will use this package at their own risk and not hold the author liable for any potential errors or issues encountered. 
 
 ## Installation
 
@@ -32,34 +35,21 @@ devtools::install_github("ttrevisan18/rameritrade")
 
 ## Authentication
 
-Authorization to a TD Brokerage account requires a multi-step
-authentication process. Once initial authorization is achieved, tokens
-can be used to maintain access. Below is a a summary of the steps
-required. More can be found at the TD authentication
-[FAQ](https://developer.tdameritrade.com/content/authentication-faq).
-Details are also provided within the functions. 1. Register an account
-with TD Ameritrade \[developer\]<https://developer.tdameritrade.com/> 2.
-Create an app under My Apps and enter a Callback URL (for example:
-<https://YourAppName>) 3. Use the function auth\_init\_url to generate a
-URL specific to the app for user log in 4. Log in to a TD Brokerage
-account to grant the app access to the user account 5. “Allow” the app
-access which will generate an authorization code 6. Feed the
-authorization code into auth\_init\_refresh to get a refresh token 7.
-The refresh token is valid for 90 days and can be used to generate an
-access token using auth\_get\_access 8. The access token will be used in
-all the other functions 9. To reset the refresh token as it approaches
-expiration, you can follow steps 1-6 or use auth\_get\_refresh
-
+Authorization to a TD Brokerage account requires a multi-step authentication process. Once initial authorization is achieved, tokens can be used to maintain access. Below is a a summary of the steps required. More can be found at the TD authentication [FAQ ](https://developer.tdameritrade.com/content/authentication-faq). Details are also provided within the functions.
+ 1. Register an account with TD Ameritrade [developer]https://developer.tdameritrade.com/
+ 2. Create an app under My Apps and enter a Callback URL (for example: https://YourAppName)
+ 3. Use the function auth_init_url to generate a URL specific to the app for user log in
+ 4. Log in to a TD Brokerage account to grant the app access to the user account
+ 5. "Allow" the app access which will generate an authorization code
+ 6. Feed the authorization code into auth_init_refresh to get a refresh token
+ 7. The refresh token is valid for 90 days and can be used to generate an access token using auth_get_access
+ 8. The access token will be used in all the other functions
+ 9. To reset the refresh token as it approaches expiration, you can follow steps 1-6 or use auth_get_refresh
+ 
 #### Terminology
-
-  - Authorization Code: generated from the app specific URL when a TD
-    Brokerage account logs in
-  - Refresh Token: generated using the Authorization Code and is used to
-    create access tokens. Refresh token is valid for 90 days
-  - Access Token: generated using the Refresh Token and creates the
-    connection to the API. Valid for 30 minutes.
-
-<!-- end list -->
+ - Authorization Code: generated from the app specific URL when a TD Brokerage account logs in
+ - Refresh Token: generated using the Authorization Code and is used to create access tokens. Refresh token is valid for 90 days
+ - Access Token: generated using the Refresh Token and creates the connection to the API. Valid for 30 minutes.
 
 ``` r
 
@@ -90,8 +80,8 @@ refreshToken = readRDS('/secure/location/')
 refreshToken = auth_new_refreshToken(refreshToken,consumerKey)
 # "Successful Refresh Token Generated"
 saveRDS(refreshToken,'/secure/location/')
-```
 
+```
 ## Get Position Data
 
 ``` r
@@ -110,4 +100,6 @@ str(posList)
 <!--   ..$ positions              :List of 2 -->
 <!--   .. ..$ :List of 10 -->
 <!--   .. .. ..$ shortQuantity                 : num 0 -->
+
 ```
+

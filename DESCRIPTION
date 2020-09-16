@@ -13,11 +13,15 @@ Description: R package to interface with the TD Ameritrade API that can be
     account information etc. In order to use this package you will need to
     register a TD Ameritrade app following the link above. You will also need
     a TD Ameritrade brokerage account to link to your app. See the README for 
-    more details.
-License: MIT + file LICENSE
+    more details. PLease note, the fate of the TD Ameritrade API is in question
+    after the Schwab acquisition. Hopefully the API stays in tact and this 
+    package will be updated if needed.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports: 
     httr,
-    urltools
+    urltools,
+    lubridate,
+    dplyr
 RoxygenNote: 7.1.1
