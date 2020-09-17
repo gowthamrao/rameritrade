@@ -100,8 +100,8 @@ price_quote_df = function(tickers = c('AAPL','MSFT'),accessToken=NULL) {
 #' 
 #' }
 price_history_single = function(ticker='AAPL',startDate=Sys.Date()-months(1),endDate=Sys.Date(),
-                              freq=c('daily','1min','5min','10min','15min','30min'),
-                              accessToken=NULL){
+                                freq=c('daily','1min','5min','10min','15min','30min'),
+                                accessToken=NULL){
   
   ### Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)

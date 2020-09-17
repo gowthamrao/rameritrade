@@ -1,5 +1,18 @@
 
 
+#' Title
+#'
+#' @param ticker 
+#' @param strikes 
+#' @param inclQuote 
+#' @param startDate 
+#' @param endDate 
+#' @param accessToken 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 option_chain = function(ticker = 'SPY',strikes=10,inclQuote=TRUE,
                         startDate = Sys.Date(),endDate = Sys.Date() + months(12),accessToken=NULL) {
   
@@ -35,6 +48,18 @@ option_chain = function(ticker = 'SPY',strikes=10,inclQuote=TRUE,
 
 
 
+#' Title
+#'
+#' @param accountNumber 
+#' @param startDate 
+#' @param endDate 
+#' @param transType 
+#' @param accessToken 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 transact_search = function(accountNumber,startDate=Sys.Date()-months(1),endDate=Sys.Date(),
                            transType='All',accessToken=NULL){
   
@@ -57,7 +82,16 @@ transact_search = function(accountNumber,startDate=Sys.Date()-months(1),endDate=
 
 
 
-market_hours = function(marketDate = Sys.Date(),marketType = c('EQUITY','OPTION','BOND','FUTURE','FOREX')){
+#' Title
+#'
+#' @param marketDate 
+#' @param marketType 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+market_hours = function(marketDate = Sys.Date(),marketType = c('EQUITY','OPTION','BOND','FUTURE','FOREX'),accessToken=NULL){
   
   ### Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
@@ -76,7 +110,16 @@ market_hours = function(marketDate = Sys.Date(),marketType = c('EQUITY','OPTION'
 }
 
 
-symbol_detail = function(ticker='AAPL',accessToken) {
+#' Title
+#'
+#' @param ticker 
+#' @param accessToken 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+symbol_detail = function(ticker='AAPL',accessToken=NULL) {
   
   ### Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
@@ -89,8 +132,12 @@ symbol_detail = function(ticker='AAPL',accessToken) {
   ### Confirm status code of 200
   ram_status(tickerDet)
   
-  Fund = data.frame(httr::content(tickerDet)[[1]]$fundamental)
-  Tick = content(tickerDet)[[1]]
+  ### Get Content
+  tickCont = httr::content(tickerDet)
+  if(length(tickCont)==0){stop('Ticker not valid')}
+  
+  Fund = data.frame(tickCont[[1]]$fundamental)
+  Tick = tickCont[[1]]
   Tick$fundamental=NULL
   TickOut = merge(data.frame(Tick),Fund)
   

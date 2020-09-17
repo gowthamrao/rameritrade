@@ -104,11 +104,10 @@ act_data_df = function(dataType=c('balances','positions','orders'),accessToken=N
         
         ### Get execution details when available
         OrdrExec = UnqOrdrs[[ords]]
-        OrdrExecDet = data.frame(OrdrExec$orderActivityCollection[[1]][1:4])
-        OrdrExec = dplyr::bind_rows(lapply(OrdrExec$orderActivityCollection[[1]]$executionLegs,data.frame))
+        OrdrExec = dplyr::bind_rows(lapply(OrdrExec$orderActivityCollection,data.frame))
         OrdrEntDet = dplyr::select(OrdrEnter,accountId,orderId,instrument.symbol,instruction,total_qty,duration,orderType,instrument.cusip,
                                    enteredTime)
-        OrdrExecAll = merge(OrdrEntDet,merge(OrdrExecDet,OrdrExec))
+        OrdrExecAll = merge(OrdrEntDet,OrdrExec)
         OrdrExecFinal = dplyr::bind_rows(OrdrExecFinal,OrdrExecAll)
       }
     }
