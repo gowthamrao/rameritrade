@@ -23,5 +23,7 @@ Imports:
     httr,
     urltools,
     lubridate,
-    dplyr
+    dplyr,
+    jsonlite,
+    magrittr
 RoxygenNote: 7.1.1

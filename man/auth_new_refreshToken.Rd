@@ -24,7 +24,9 @@ using a URL specific to a registered app. Use auth_init_loginURL to generate
 an app specific URL and then use auth_init_refreshToken to process the 
 authorization code and generate the initial refresh token. The refresh token
 will expire every 90 days. This function uses the current refresh token to 
-generate a new refresh token, avoiding the manual process above.
+generate a new refresh token, avoiding the manual process above. 
+TD indicates they do look for frequent Refresh Token generation. 
+This function should be used conservatively and as close to every 90 days as possible.
 }
 \examples{
 \dontrun{

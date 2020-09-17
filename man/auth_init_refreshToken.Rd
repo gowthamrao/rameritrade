@@ -4,14 +4,14 @@
 \alias{auth_init_refreshToken}
 \title{Auth Step 2: Obtain Initial Refresh Token}
 \usage{
-auth_init_refreshToken(authcode_url, callbackURL, consumerKey)
+auth_init_refreshToken(callbackURL, consumerKey, authcode_url)
 }
 \arguments{
-\item{authcode_url}{Authorization URL Code generated from a successful login to the auth_init_loginURL}
-
 \item{callbackURL}{User generated Callback URL associated with registered TD app}
 
 \item{consumerKey}{TD generated Consumer key associated with registered TD app}
+
+\item{authcode_url}{Authorization URL Code generated from a successful login to the auth_init_loginURL}
 }
 \value{
 refresh token that is valid for 90 days
@@ -44,7 +44,8 @@ this package.
 \dontrun{
 
 ### The URL after a successful login can be fed into the function below
-refreshToken = auth_init_loginURL('https://YourAppName/?code=Auhtorizationcode','https://YourAppName','CONSUMERKEY')
+refreshToken = auth_init_refreshToken(https://myTDapp','consumerKey',
+                                      https://myTDapp/?code=Auhtorizationcode')
 
 saveRDS(refreshToken,'/secure/location/')
 

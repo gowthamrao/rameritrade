@@ -28,7 +28,7 @@
 #' \dontrun{
 #' 
 #' ### Visit the URL below to log in
-#' loginURL = auth_init_loginURL('https://AppURL',
+#' loginURL = auth_init_loginURL('https://myTDapp',
 #'                               'consumerKey')
 #' 
 #' }
@@ -68,24 +68,24 @@ auth_init_loginURL = function(callbackURL,consumerKey){
 #' this package.
 #' 
 #'
-#' @param authcode_url Authorization URL Code generated from a successful login to the auth_init_loginURL
 #' @param callbackURL User generated Callback URL associated with registered TD app 
 #' @param consumerKey TD generated Consumer key associated with registered TD app
+#' @param authcode_url Authorization URL Code generated from a successful login to the auth_init_loginURL
 #'
 #' @return refresh token that is valid for 90 days
-#' @import httr urltools
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' 
 #' ### The URL after a successful login can be fed into the function below
-#' refreshToken = auth_init_loginURL('https://YourAppName/?code=Auhtorizationcode','https://YourAppName','CONSUMERKEY')
+#' refreshToken = auth_init_refreshToken(https://myTDapp','consumerKey',
+#'                                       https://myTDapp/?code=Auhtorizationcode')
 #' 
 #' saveRDS(refreshToken,'/secure/location/')
 #' 
 #' }
-auth_init_refreshToken = function(authcode_url,callbackURL,consumerKey){
+auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url){
   
   ### Parse Access Token from URL and Decode the token
   decodedtoken = urltools::url_decode(gsub('.*code=','',authcode_url))
@@ -104,20 +104,12 @@ auth_init_refreshToken = function(authcode_url,callbackURL,consumerKey){
                             httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),
                             body=authreq,encode='form')
   
-  if(authresponse$status_code==200){
-    print('Successful Refresh Token Generated')
-    Result = httr::content(authresponse)$refresh_token
-  }else{
-    warning(paste0('Token Generation failed. Check the following reasons:\n',
-                   'Confirm the authorization code follows a format of callbackURL?code=AUTHCODE\n',
-                   'The authorization code can only be used once\n',
-                   'The Callback URL and Consumer Key are correct\n',
-                   'View this functions output and the TD Auth FAQ for more details.'))
-    Result = authresponse
-  }
+  ### Confirm status code of 200
+  ram_status(authresponse,'. Review the TD Auth FAQ or the Auth Guide at https://developer.tdameritrade.com/ for more details')
+
   
   ### Return only the refresh token if successful, otherwise return full output
-  return(Result)
+  return(httr::content(authresponse)$refresh_token)
   
 }
 
@@ -146,7 +138,6 @@ auth_init_refreshToken = function(authcode_url,callbackURL,consumerKey){
 #' @param consumerKey TD generated Consumer key associated with registered TD app
 #'
 #' @return Access Token that is valid for 30 minutes. By default it is stored in options.
-#' @import httr
 #' @export
 #'
 #' @examples
@@ -168,18 +159,13 @@ auth_new_accessToken = function(refreshToken,consumerKey){
   getaccess = httr::POST('https://api.tdameritrade.com/v1/oauth2/token', 
                          httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),body=accessreq,encode='form')
   
-  ### Print Message and send result as either a successful token or the POST
-  if(getaccess$status_code==200){
-    print('Successful Login. Token has been stored and will be valid for 30 minutes')
-    Result = httr::content(getaccess)$access_token
-    options(td_access_token = Result)
-  }else{
-    warning('Login Failed. Confirm Refresh Token and Consumer Key are valid.')
-    Result = getaccess
-  }
+  ### Confirm status code of 200
+  ram_status(getaccess)
   
   ### Return Access Token
-  return(Result)
+  accessToken = httr::content(getaccess)$access_token
+  options(td_access_token = accessToken)
+  return(accessToken)
 }
 
 
@@ -196,13 +182,14 @@ auth_new_accessToken = function(refreshToken,consumerKey){
 #' authorization code and generate the initial refresh token. The refresh token
 #' will expire every 90 days. This function uses the current refresh token to 
 #' generate a new refresh token, avoiding the manual process above. 
+#' TD indicates they do look for frequent Refresh Token generation. 
+#' This function should be used conservatively and as close to every 90 days as possible.
 #' 
 #'
 #' @param refreshToken An existing refresh token generated using auth_init_refreshToken or auth_new_refreshToken
 #' @param consumerKey TD generated Consumer key associated with registered TD app
 #'
 #' @return refresh token that is valid for 90 days
-#' @import httr
 #' @export
 #'
 #' @examples
@@ -228,37 +215,14 @@ auth_new_refreshToken = function(refreshToken,consumerKey){
                           httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),
                           body=refreshreq,encode='form') 
   
-  if(newrefresh$status_code==200){
-    print('Successful Refresh Token Generated')
-    Result = httr::content(newrefresh)$refresh_token
-  }else{
-    warning(paste0('Token Generation failed. Check the following reasons:\n',
-                   'Confirm the Refresh Token being used is still valid and did not expire after 90 days\n',
-                   'Confirm the proper Consumer Key is being used, not the callback URL\n',
-                   'If this warning persists, use auth_init_loginURL and auth_init_refreshToken to generate a new initial Refresh Token\n',
-                   'View this functions output and the TD Auth FAQ for more details.'))
-    Result = newrefresh
-  }
+  ### Confirm status code of 200
+  ram_status(newrefresh,'. If the current Refresh Token has expired. Re-authenticate using the auth_init functions.')
   
   ### Return only the refresh token even though an access token is also provided
-  return(Result)
+  return(httr::content(newrefresh)$refresh_token)
   
 }
 
 
-### Get Access Token from Options
-auth_get_accessToken <- function() {
-   accessToken <- getOption("td_access_token")
-  
-  if (!is.null(accessToken)) {
-    return(accessToken)
-  }
-  
-  msg <- paste0(
-    "An Access Token has not yet been set. Please use the auth_new_accessToken",
-    "function, with a valid Refresh Token to create an Access Token."
-  )
-  warning(msg)
-  
-}
+
 

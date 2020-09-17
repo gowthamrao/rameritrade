@@ -38,7 +38,7 @@ https://developer.tdameritrade.com/content/authentication-faq
 \dontrun{
 
 ### Visit the URL below to log in
-loginURL = auth_init_loginURL('https://AppURL',
+loginURL = auth_init_loginURL('https://myTDapp',
                               'consumerKey')
 
 }
