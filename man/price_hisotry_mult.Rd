@@ -13,6 +13,8 @@ price_hisotry_mult(
 )
 }
 \arguments{
+\item{tickers}{a vector of tickers}
+
 \item{startDate}{the Starting point of the data}
 
 \item{endDate}{the Ending point of the data}
@@ -23,8 +25,6 @@ price_hisotry_mult(
 \item{accessToken}{A valid Access Token must be set using auth_new_accessToken. 
 The most recent access token will be used by default unless one is manually
 passed into the function}
-
-\item{ticker}{a single ticker}
 }
 \value{
 a tibble of price data
@@ -37,7 +37,6 @@ date. For example, at a one minute interval, data can only be pulled
 for 30-35 days
 }
 \examples{
-
 \dontrun{
 
 ### Use a valid access token and a vector of one or more tickers

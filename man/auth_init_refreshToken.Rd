@@ -44,8 +44,8 @@ this package.
 \dontrun{
 
 ### The URL after a successful login can be fed into the function below
-refreshToken = auth_init_refreshToken(https://myTDapp','consumerKey',
-                                      https://myTDapp/?code=Auhtorizationcode')
+refreshToken = auth_init_refreshToken('https://myTDapp','consumerKey',
+                                      'https://myTDapp/?code=Auhtorizationcode')
 
 saveRDS(refreshToken,'/secure/location/')
 
