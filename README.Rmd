@@ -20,7 +20,9 @@ knitr::opts_chunk$set(
 
 R package for interacting with the TD Ameritrade API. A TD Ameritrade brokerage account and a TD Ameritrade Developer app are required. See Authentication for more details. Due to the Charles Schwab acquisition of TD Ameritrade, the fate of this API is unknown. This package could stop working at any point if the acquisition results in the termination of the API. 
 
-The author of this package is not in anyway associated with TD Ameritrade. The functions within this package have been tested under basic scenarios. There may be bugs or issues that could prevent a user from executing trades or canceling trades. It is also possible trades could be submitted in error. The user will use this package at their own risk and not hold the author liable for any potential errors or issues encountered. 
+The author of this package is not in anyway associated with TD Ameritrade. The functions within this package have been tested under basic scenarios. There may be bugs or issues that could prevent a user from executing trades or canceling trades. It is also possible trades could be submitted in error. The user will use this package at their own risk and not hold the author liable for any potential errors or issues encountered. Specific to the order_place function, please heed the following warning:
+WARNING: TRADES THAT ARE SUCCESSFULLY ENTERED WILL BE SUBMITTED IMMEDIATELY THERE IS NO REVIEW PROCESS. THIS FUNCTION HAS 100S OF POTENTIAL COMBINATIONS AND ONLY A HANDFUL HAVE BEEN TESTED. IT IS STRONGLY RECOMMENDED TO TEST THE DESIRED ORDER ON A VERY SMALL QUANTITY WITH LITTLE MONEY AT STAKE. ANOTHER OPTION IS TO USE LIMIT ORDERS FAR FROM THE CURRENT PRICE. TD AMERITRADE HAS THEIR OWN ERROR HANDLING BUT IF A SUCCESSFUL COMBINATION IS ENTERED
+IT COULD BE EXECUTED IMMEDIATELY. DOUBLE CHECK ALL ENTRIES BEFORE SUBMITTING.
 
 ## Installation
 
@@ -114,3 +116,7 @@ str(posList)
 
 ```
 
+
+Show order examples
+
+show example of using two access tokens

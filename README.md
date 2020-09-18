@@ -20,7 +20,15 @@ basic scenarios. There may be bugs or issues that could prevent a user
 from executing trades or canceling trades. It is also possible trades
 could be submitted in error. The user will use this package at their own
 risk and not hold the author liable for any potential errors or issues
-encountered.
+encountered. Specific to the order\_place function, please heed the
+following warning: WARNING: TRADES THAT ARE SUCCESSFULLY ENTERED WILL BE
+SUBMITTED IMMEDIATELY THERE IS NO REVIEW PROCESS. THIS FUNCTION HAS 100S
+OF POTENTIAL COMBINATIONS AND ONLY A HANDFUL HAVE BEEN TESTED. IT IS
+STRONGLY RECOMMENDED TO TEST THE DESIRED ORDER ON A VERY SMALL QUANTITY
+WITH LITTLE MONEY AT STAKE. ANOTHER OPTION IS TO USE LIMIT ORDERS FAR
+FROM THE CURRENT PRICE. TD AMERITRADE HAS THEIR OWN ERROR HANDLING BUT
+IF A SUCCESSFUL COMBINATION IS ENTERED IT COULD BE EXECUTED IMMEDIATELY.
+DOUBLE CHECK ALL ENTRIES BEFORE SUBMITTING.
 
 ## Installation
 
@@ -134,3 +142,7 @@ str(posList)
 # .. ..$ :List of 10
 # .. .. ..$ shortQuantity                 : num 0
 ```
+
+Show order examples
+
+show example of using two access tokens
