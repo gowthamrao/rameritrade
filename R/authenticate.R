@@ -79,13 +79,19 @@ auth_init_loginURL = function(callbackURL,consumerKey){
 #' \dontrun{
 #' 
 #' ### The URL after a successful login can be fed into the function below
-#' refreshToken = auth_init_refreshToken(https://myTDapp','consumerKey',
-#'                                       https://myTDapp/?code=Auhtorizationcode')
+#' refreshToken = auth_init_refreshToken('https://myTDapp','consumerKey',
+#'                                       'https://myTDapp/?code=Auhtorizationcode')
 #' 
 #' saveRDS(refreshToken,'/secure/location/')
 #' 
 #' }
 auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url){
+  
+  if(nchar(authcode_url)<500 | 
+     !grepl('code=',authcode_url) | 
+     substr(authcode_url,1,5) != 'https') stop(paste0('The auth code provided does not appear to be a valid auth code. ',
+                                                      'Please confirm the URL link from a successful login was passed.'),
+                                               call. = FALSE)
   
   ### Parse Access Token from URL and Decode the token
   decodedtoken = urltools::url_decode(gsub('.*code=','',authcode_url))
@@ -107,9 +113,14 @@ auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url){
   ### Confirm status code of 200
   ram_status(authresponse,'. Review the TD Auth FAQ or the Auth Guide at https://developer.tdameritrade.com/ for more details')
 
+  ### Modify Refresh token with expire times
+  refreshToken = httr::content(authresponse)
+  refreshToken$accessExpire = Sys.time() + refreshToken$expires_in
+  refreshToken$refreshExpire = Sys.time() + refreshToken$refresh_token_expires_in
+  refreshToken$createTime = Sys.time()
   
-  ### Return only the refresh token if successful, otherwise return full output
-  return(httr::content(authresponse)$refresh_token)
+  ### Return full token sequence
+  return(refreshToken)
   
 }
 
@@ -150,9 +161,29 @@ auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url){
 #' }
 auth_new_accessToken = function(refreshToken,consumerKey){
   
-  ### Get a new access token using an existing refresh token
+  ### Get default access token in environment if available
+  accessToken <- getOption("td_access_token")
+  
+  ### If access token is not null and environment is interactive, check for expiration
+  if(!is.null(accessToken) & interactive()){
+    
+    ### If access token has not expired, ask if new access token should be generated
+    if(accessToken$expireTime>Sys.time()){
+      ChkRef = utils::menu(c('Yes','No'),
+                           title = paste0('Your default access token is still active, ',
+                                          'are you sure you want a new Access Token?'))
+      
+      ### If user selects No, return default accessToken otherwise get new token
+      if(ChkRef==2) return(accessToken)
+    }
+  }
+  
+  ### Validate Refresh Token
+  ram_checkRefresh(refreshToken)
+  
+  ### Get a new access token using a refresh token
   accessreq = list(grant_type='refresh_token',
-                   refresh_token=refreshToken,
+                   refresh_token=refreshToken$refresh_token,
                    client_id=consumerKey)
   
   ### Post refresh token and retrieve access token
@@ -162,9 +193,15 @@ auth_new_accessToken = function(refreshToken,consumerKey){
   ### Confirm status code of 200
   ram_status(getaccess)
   
-  ### Return Access Token
-  accessToken = httr::content(getaccess)$access_token
+  ### Extract content and add expriation time to access token 
+  accessToken = httr::content(getaccess)
+  accessToken$expireTime = Sys.time() + lubridate::seconds(accessToken$expires_in) - lubridate::seconds(5)
+  accessToken$createTime = Sys.time()
+  
+  ### Set Access Token to a default option
   options(td_access_token = accessToken)
+  
+  ### Return Access Token
   return(accessToken)
 }
 
@@ -203,10 +240,30 @@ auth_new_accessToken = function(refreshToken,consumerKey){
 #' }
 auth_new_refreshToken = function(refreshToken,consumerKey){
   
+  ### Validate Refresh Token
+  ram_checkRefresh(refreshToken)
+  
+  ### Check age of refresh token
+  daysUntilExp = as.numeric(as.Date(refreshToken$refreshExpire)-Sys.Date())
+  
+  ### If refresh token has more than 15 days check if refresh required
+  if(daysUntilExp>15){
+    
+    ### If non-interactive and refresh token has more than 15 days, do not refresh
+    if(interactive()==FALSE) return(refreshToken)
+    
+    ### If interactive, ask user if refresh is still needed
+    ChkRef = utils::menu(c('Yes','No'),title = paste0('Your token still has ',daysUntilExp,' days until expiration.\n',
+                                                      'Are you sure you want to reset your Refresh Token?'))
+    
+    ### If user selects no, return current refresh token
+    if(ChkRef==2) return(refreshToken)
+    }
+  
   
   ### Get a New Refresh Token using existing refresh token before 90 day expiration
   refreshreq = list(grant_type='refresh_token',
-                    refresh_token=refreshToken,
+                    refresh_token=refreshToken$refresh_token,
                     access_type='offline',
                     client_id=consumerKey)
   
@@ -218,8 +275,15 @@ auth_new_refreshToken = function(refreshToken,consumerKey){
   ### Confirm status code of 200
   ram_status(newrefresh,'. If the current Refresh Token has expired. Re-authenticate using the auth_init functions.')
   
+  ### Modify Refresh token with expire times
+  new_refreshToken = httr::content(newrefresh)
+  new_refreshToken$accessExpire = Sys.time() + new_refreshToken$expires_in
+  new_refreshToken$refreshExpire = Sys.time() + new_refreshToken$refresh_token_expires_in
+  new_refreshToken$createTime = Sys.time()
+  
+  
   ### Return only the refresh token even though an access token is also provided
-  return(httr::content(newrefresh)$refresh_token)
+  return(new_refreshToken)
   
 }
 
