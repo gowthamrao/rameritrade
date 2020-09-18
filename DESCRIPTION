@@ -16,7 +16,7 @@ Description: R package to interface with the TD Ameritrade API that can be
     more details. PLease note, the fate of the TD Ameritrade API is in question
     after the Schwab acquisition. Hopefully the API stays in tact and this 
     package will be updated if needed.
-License: GPL-3
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
