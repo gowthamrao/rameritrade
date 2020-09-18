@@ -50,7 +50,7 @@ act_data_list = function(dataType=c('balances','positions','orders'),accessToken
 #' Request can be for current positions, current balances, or current day orders.
 #'
 #' @param dataType 'balances' for current cash balances, 'positions' for
-#' current account positions, 'orders' for orders entered on the current day
+#' current account positions, 'orders' for orders entered on the current day. Default is to 'balances'
 #' @param accessToken A valid Access Token must be set using auth_new_accessToken. 
 #' The most recent access token will be used by default unless one is manually
 #' passed into the function
@@ -62,13 +62,17 @@ act_data_list = function(dataType=c('balances','positions','orders'),accessToken
 #' \dontrun{
 #' 
 #' ### A valid refresh token can be fed into the function below for a new Access Token
-#' positions = act_data_df('positions',accessToken)
+#' positions = act_data_df('positions')
 #' 
 #' }
 act_data_df = function(dataType=c('balances','positions','orders'),accessToken=NULL){
   
   ### Get access token from options if one is not passed
-  accessToken = ram_accessToken(accessToken)
+  # accessToken = ram_accessToken(accessToken) # This gets run below
+  
+  ### Set values to Null to pass check()
+  quantity <- accountId <- orderId <- instrument.symbol <- instruction <- NULL
+  total_qty <- duration <- orderType <- instrument.cusip <- enteredTime <- NULL
   
   ### Check Data Type
   if(missing(dataType)){dataType='balances'}

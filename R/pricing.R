@@ -58,7 +58,7 @@ price_quote_list = function(tickers = c('AAPL','MSFT'),accessToken=NULL) {
 price_quote_df = function(tickers = c('AAPL','MSFT'),accessToken=NULL) {
   
   ### Get access token from options if one is not passed
-  accessToken = ram_accessToken(accessToken)
+  # accessToken = ram_accessToken(accessToken)
   
   ### Get list of quotes
   quoteList = price_quote_list(tickers,accessToken)
@@ -105,6 +105,9 @@ price_history_single = function(ticker='AAPL',startDate=Sys.Date()-months(1),end
   
   ### Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
+  
+  ### Set Variable to NULL to pass check()
+  date_time <- volume <- NULL
   
   ### Adjust dates to support conversion to numeric time
   startDate=as.Date(startDate)+lubridate::days(1)
@@ -153,9 +156,13 @@ price_history_single = function(ticker='AAPL',startDate=Sys.Date()-months(1),end
 #' that include a date range and frequency of the interval. Depending on
 #' the frequency interval, data can only be pulled back to a certain
 #' date. For example, at a one minute interval, data can only be pulled
-#' for 30-35 days
+#' for 30-35 days. PLEASE NOTE: Large data requests will take time to pull
+#' back because of the looping nature. TD Does not allow bulk ticker 
+#' request, so this is simply running each ticker individually. For faster and
+#' better historical data pulls, try Tiingo or FMP Cloud
 #'
-#' @param ticker a single ticker
+#' @param tickers a vector of tickers - no more than 15 will be puled. for bigger requests, 
+#' split up the request or use Tiingo, FMP Cloud, or other free data providers
 #' @param startDate the Starting point of the data 
 #' @param endDate the Ending point of the data
 #' @param freq the frequency of the interval. Can be daily, 1min,
@@ -168,7 +175,6 @@ price_history_single = function(ticker='AAPL',startDate=Sys.Date()-months(1),end
 #' @export
 #'
 #' @examples
-#' 
 #' \dontrun{
 #' 
 #' ### Use a valid access token and a vector of one or more tickers
@@ -180,7 +186,11 @@ price_hisotry_mult = function(tickers=c('AAPL','MSFT'),startDate=Sys.Date()-mont
                               accessToken=NULL){
   
   ### Get access token from options if one is not passed
-  accessToken = ram_accessToken(accessToken)
+  # accessToken = ram_accessToken(accessToken)
+  if(length(tickers)>15) {
+    tickers = tickers[1:15]
+    warning('More than 15 tickers submitted. Only the first 15 tickers were pulled from the list of tickers.')
+  }
   
   if(missing(freq)){freq='daily'}
   
