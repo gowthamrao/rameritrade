@@ -19,14 +19,14 @@ Create URL for initial login to grant registered app permission to TD brokerage 
 }
 \details{
 To generate the initial authorization and access the TD Ameritrade API an application 
-needs to be registered at https://developer.tdameritrade.com/. Once an account
+needs to be registered at https://developer.tdameritrade.com/. Once a log in
 has been created, use My Apps to register an application. The two inputs needed are 
 from the application, a Consumer Key provided by TD Ameritrade and a Callback URL 
-which the user creates. The URL output should result in a landingpage to log into a 
+which the user creates. The URL output should result in a landing page to log into a 
 TD Ameritrade Brokerage account.
 
 The call back URL can be anything. The example below assumes the Callback URL is 
-https://YourAppName. The Consumer Key is auto generated and can be found under 
+https://myTDapp. The Consumer Key is auto generated and can be found under 
 My Apps > Keys. This function will use these two inputs to generate a URL where
 the user can log in to their standard TD Ameritrade Brokerage Account and grant the
 application access to the brokerage account, enabling the API. The Authorization 
@@ -37,7 +37,10 @@ https://developer.tdameritrade.com/content/authentication-faq
 \examples{
 \dontrun{
 
-### Visit the URL below to log in
+### Visit the URL below to log in to a TD Brokerage account
+### Once a successful log in is completed the landing page will be a blank page
+### The full URL of the landing page is the authorization code for auth_init_refreshToken
+
 loginURL = auth_init_loginURL('https://myTDapp',
                               'consumerKey')
 

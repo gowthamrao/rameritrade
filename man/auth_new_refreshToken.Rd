@@ -18,7 +18,7 @@ refresh token that is valid for 90 days
 Get a new Refresh Token using an existing Refresh Token
 }
 \details{
-A Refresh Token is used to generate an Access Token through the function
+A Refresh Token is used to generate Access Tokens through the function
 auth_new_accessToken. The initial Refresh Token must be generated manually 
 using a URL specific to a registered app. Use auth_init_loginURL to generate
 an app specific URL and then use auth_init_refreshToken to process the 
@@ -27,6 +27,16 @@ will expire every 90 days. This function uses the current refresh token to
 generate a new refresh token, avoiding the manual process above. 
 TD indicates they do look for frequent Refresh Token generation. 
 This function should be used conservatively and as close to every 90 days as possible.
+
+When running this function manually (i.e. through RStudio), the function will
+check the days left until expiration for the Refresh Token being passed. If the 
+remaining time is greater than 15 days, the user will be prompted to verify 
+that a new refresh token should be created. The user can select to request a new token,
+but there is no net benefit in doing so and TD encourages limiting new token generation.
+When running this function in a non-interactive environment (i.e. CRON Job), 
+if the remaining time until expiration is greater than 15 days,
+the default behavior will be to NOT reset the Refresh Token because the new token
+will have the same access and capabilities as the existing token.
 }
 \examples{
 \dontrun{

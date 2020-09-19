@@ -11,7 +11,7 @@ act_data_df(
 }
 \arguments{
 \item{dataType}{'balances' for current cash balances, 'positions' for
-current account positions, 'orders' for orders entered on the current day}
+current account positions, 'orders' for orders entered on the current day. Default is to 'balances'}
 
 \item{accessToken}{A valid Access Token must be set using auth_new_accessToken. 
 The most recent access token will be used by default unless one is manually
@@ -29,7 +29,7 @@ Request can be for current positions, current balances, or current day orders.
 \dontrun{
 
 ### A valid refresh token can be fed into the function below for a new Access Token
-positions = act_data_df('positions',accessToken)
+positions = act_data_df('positions')
 
 }
 }

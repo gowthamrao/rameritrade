@@ -29,10 +29,12 @@ The most recent access token will be used by default unless one is manually
 passed into the function}
 }
 \value{
-Data frame of a tickers options chain
+a list of 2 data frames - underlying and options chain
 }
 \description{
-Return a Data Frame containing the options chain for the specified ticker
+Return a list containing two data frames. The first is the underlying 
+data for the symbol. The second item in the list is a data from that
+contains the options chain for the specified ticker
 }
 \examples{
 \dontrun{

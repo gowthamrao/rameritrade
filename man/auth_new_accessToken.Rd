@@ -21,7 +21,7 @@ Get a new Access Token using a valid Refresh Token
 An Access Token is required for most functions within rameritrade. 
 It serves as a user log in for a TD Brokerage account. The token is valid for 
 30 minutes and allows the user to place trades, get account information,
-get orider history, pull historical stock prices, etc. A Refresh Token is 
+get order history, pull historical stock prices, etc. A Refresh Token is 
 required to generate an Access Token. Functions auth_init_refreshToken or 
 auth_new_refreshToken can be used to generate Refresh Tokens which stay valid
 for 90 days. The Consumer Key is generated automatically when an App is 
@@ -30,13 +30,20 @@ By default, the Access Token is stored and will automatically be passed to
 downstream function. However, the user can also submit an access token 
 manually if multiple tokens are in use (for example: when managing more than
 one log in.)
+
+When running this function manually (i.e. through RStudio), the function will
+check for a default Access Token. If the default Access Token has not expired,
+the user will be prompted to verify a new access token is desired. This may be the case
+if more than one TD log in is being used.
+When running this function in a non-interactive environment (i.e. CRON Job), 
+the default behavior will be to refresh the Access Token.
 }
 \examples{
 \dontrun{
 
 ### A valid refresh token can be fed into the function below for a new Access Token
-currefreshToken = readRDS('/secure/location/')
-accessToken = auth_new_accessToken(currefreshToken,'APPCONSUMERKEY')
+refreshToken = readRDS('/secure/location/')
+accessToken = auth_new_accessToken(refreshToken,'APPCONSUMERKEY')
 
 }
 }
