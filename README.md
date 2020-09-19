@@ -26,7 +26,7 @@ active which can make it hard to build automated trading strategies
 using CRON jobs on a linux server (e.g. AWS). Using the TD API you can
 fully automate trade execution across multiple accounts and multiple log
 ins, assuming you have access and permission to do so. This can be a
-great way to dollar cost average into the market\!
+great way to dollar cost average into the market for an IRA\!
 
 The authentication process takes a few steps and requires a manual log
 in (see process description below), but once initial authentication is
