@@ -1,7 +1,7 @@
 #' Get Details for a Single Order
 #'
 #' Pass an order ID and Account number to get details such as status, quantity,
-#' ticker, executions (if applicable), etc.
+#' ticker, executions (if applicable), account, etc.
 #'
 #' @param orderId A valid TD Ameritrade Order ID
 #' @param accountNumber The TD brokerage account number associated with the
