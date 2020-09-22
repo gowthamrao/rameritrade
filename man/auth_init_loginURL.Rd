@@ -36,7 +36,7 @@ My Apps > Keys. This function will use these two inputs to generate a URL
 where the user can log in to their standard TD Ameritrade Brokerage Account
 and grant the application access to the brokerage account, enabling the API.
 The Authorization Code generated at the end of the log in process will feed
-into \code{\link{auth_init_refreshToken.}} For questions, please reference
+into \code{\link{auth_init_refreshToken}} For questions, please reference
 the \href{https://developer.tdameritrade.com/content/authentication-faq}{TD
 Ameritrade Authentication FAQ}
 }
