@@ -7,43 +7,60 @@
 auth_new_accessToken(refreshToken, consumerKey)
 }
 \arguments{
-\item{refreshToken}{An existing refresh token generated using auth_init_refreshToken or auth_new_refreshToken}
+\item{refreshToken}{An existing Refresh Token generated using
+\code{\link{auth_init_refreshToken}} or \code{\link{auth_new_refreshToken}}}
 
-\item{consumerKey}{TD generated Consumer key associated with registered TD app}
+\item{consumerKey}{TD generated Consumer key associated with registered TD
+app. Essentially an API key.}
 }
 \value{
-Access Token that is valid for 30 minutes. By default it is stored in options.
+Access Token that is valid for 30 minutes. By default it is stored in
+  options.
 }
 \description{
 Get a new Access Token using a valid Refresh Token
 }
 \details{
-An Access Token is required for most functions within rameritrade. 
-It serves as a user log in for a TD Brokerage account. The token is valid for 
-30 minutes and allows the user to place trades, get account information,
-get order history, pull historical stock prices, etc. A Refresh Token is 
-required to generate an Access Token. Functions auth_init_refreshToken or 
-auth_new_refreshToken can be used to generate Refresh Tokens which stay valid
-for 90 days. The Consumer Key is generated automatically when an App is 
-registered on https://developer.tdameritrade.com/.  
-By default, the Access Token is stored and will automatically be passed to
-downstream function. However, the user can also submit an access token 
-manually if multiple tokens are in use (for example: when managing more than
-one log in.)
+An Access Token is required for most functions within rameritrade. It serves
+as a user log in to a TD Brokerage account. The token is valid for 30 minutes
+and allows the user to place trades, get account information, get order
+history, pull historical stock prices, etc. A Refresh Token is required to
+generate an Access Token. Functions \code{\link{auth_init_refreshToken}} or
+\code{\link{auth_new_refreshToken}} can be used to generate Refresh Tokens
+which stay valid for 90 days. The Consumer Key is generated automatically
+when an App is registered on the
+\href{https://developer.tdameritrade.com/}{TD Ameritrade Developer} site. By
+default, the Access Token is stored into options and will automatically be
+passed to downstream function. However, the user can also submit an Access
+Token manually if multiple tokens are in use (for example: when managing more
+than one log in.)
 
 When running this function manually (i.e. through RStudio), the function will
-check for a default Access Token. If the default Access Token has not expired,
-the user will be prompted to verify a new access token is desired. This may be the case
-if more than one TD log in is being used.
-When running this function in a non-interactive environment (i.e. CRON Job), 
-the default behavior will be to refresh the Access Token.
+check for a default Access Token. If the default Access Token has not
+expired, the user will be prompted to verify a new Access Token is desired.
+This may be the case if more than one TD log in is being used. When running
+this function in a non-interactive environment (i.e. CRON Job), the default
+behavior will be to refresh the Access Token.
 }
 \examples{
 \dontrun{
 
-### A valid refresh token can be fed into the function below for a new Access Token
+### A valid Refresh Token can be fed into the function below for a new Access Token
 refreshToken = readRDS('/secure/location/')
 accessToken = auth_new_accessToken(refreshToken,'APPCONSUMERKEY')
 
 }
 }
+\seealso{
+\code{\link{auth_init_loginURL}} for login url,
+  \code{\link{auth_init_refreshToken}} for initial Refresh Token,
+  \code{\link{auth_new_accessToken}} for a new Access Token,
+  \code{\link{auth_new_refreshToken}} to reset an existing Refresh Token
+  before expiration
+
+Other authentication functions: 
+\code{\link{auth_init_loginURL}()},
+\code{\link{auth_init_refreshToken}()},
+\code{\link{auth_new_refreshToken}()}
+}
+\concept{authentication functions}

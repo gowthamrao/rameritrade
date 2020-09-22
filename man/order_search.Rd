@@ -14,28 +14,36 @@ order_search(
 )
 }
 \arguments{
-\item{accountNumber}{The account number associated with the Access Token}
+\item{accountNumber}{The TD brokerage account number associated with the
+Access Token}
 
-\item{startDate}{Orders from a certain date. Will not pull back orders older than 60 days. format yyyy-mm-dd}
+\item{startDate}{Orders from a certain date. Will not pull back orders older
+than 60 days. format yyyy-mm-dd}
 
-\item{endDate}{Filter orders that occurred before a certain date. format yyyy-mm-dd}
+\item{endDate}{Filter orders that occurred before a certain date. format
+yyyy-mm-dd}
 
 \item{maxResults}{the max results to return in the query}
 
-\item{orderStatus}{search by order status (ACCEPTED, FILLED, EXPIRED, CANCELED, REJECTED, etc)}
+\item{orderStatus}{search by order status (ACCEPTED, FILLED, EXPIRED,
+CANCELED, REJECTED, etc)}
 
-\item{accessToken}{A valid Access Token must be set using auth_new_accessToken.
-The most recent access token will be used by default unless one is manually
-passed into the function}
+\item{accessToken}{A valid Access Token must be set using
+\code{\link{auth_new_accessToken}}. The most recent access token will be
+used by default unless one is manually passed into the function}
 }
 \value{
-a list of three objects: a jsonlite formatted extract of all orders, 
-all entered orders with details, a data frame of all executed orders with the executions
+a list of three objects: a jsonlite formatted extract of all orders,
+  all entered orders with details, a data frame of all executed orders with
+  the executions
 }
 \description{
-Search for orders associated with a TD account over the previous 60 days. The result
-is a list of three objects: a jsonlite formatted extract of all orders, 
-all entered orders with details, a data frame of all executed orders with the executions
+Search for orders associated with a TD account over the previous 60 days. The
+result is a list of three objects: 
+\enumerate{ 
+\item jsonlite formatted extract of all orders 
+\item all entered orders with details 
+\item a data frame of all executed orders with the executions }
 }
 \examples{
 \dontrun{

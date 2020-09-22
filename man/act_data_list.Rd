@@ -2,7 +2,7 @@
 % Please edit documentation in R/account.R
 \name{act_data_list}
 \alias{act_data_list}
-\title{Get a list of data associated with TD Brokerage Accounts linked to the Access Token}
+\title{Get a list of data for the Access Token TD Brokerage Accounts}
 \usage{
 act_data_list(
   dataType = c("balances", "positions", "orders"),
@@ -10,20 +10,21 @@ act_data_list(
 )
 }
 \arguments{
-\item{dataType}{'balances' for current cash balances, 'positions' for
-current account positions, 'orders' for orders entered on the current day}
+\item{dataType}{'balances' for current cash balances, 'positions' for current
+account positions, 'orders' for orders entered on the current day}
 
-\item{accessToken}{A valid Access Token must be set using auth_new_accessToken. 
-The most recent access token will be used by default unless one is manually
-passed into the function}
+\item{accessToken}{A valid Access Token must be set using
+\code{\link{auth_new_accessToken}}. The most recent access token will be
+used by default unless one is manually passed into the function}
 }
 \value{
 a list of requested account details
 }
 \description{
-The output will be a list of requested details for TD Ameritrade accounts 
-linked to the access token. Use act_data_df for a cleaner output in a dataframe.
-Request can be for current positions, current balances, or current day orders.
+The output will be a list of requested details for TD Ameritrade accounts
+linked to the access token. Use \code{\link{act_data_df}} for a cleaner
+output in a dataframe. Request can be for current positions, current
+balances, or current day orders.
 }
 \examples{
 \dontrun{

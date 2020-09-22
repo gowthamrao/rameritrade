@@ -9,18 +9,19 @@ order_detail(orderId, accountNumber, accessToken = NULL)
 \arguments{
 \item{orderId}{A valid TD Ameritrade Order ID}
 
-\item{accountNumber}{The account number associated with the Order ID and Access Token}
+\item{accountNumber}{The TD brokerage account number associated with the
+Access Token}
 
-\item{accessToken}{A valid Access Token must be set using auth_new_accessToken.
-The most recent access token will be used by default unless one is manually 
-passed into the function}
+\item{accessToken}{A valid Access Token must be set using
+\code{\link{auth_new_accessToken}}. The most recent access token will be
+used by default unless one is manually passed into the function}
 }
 \value{
 list of order details
 }
 \description{
-Pass an order ID and Account number to get details such as status,
-quantity, ticker, executions (if applicable), etc.
+Pass an order ID and Account number to get details such as status, quantity,
+ticker, executions (if applicable), etc.
 }
 \examples{
 \dontrun{

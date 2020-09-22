@@ -2,7 +2,7 @@
 % Please edit documentation in R/account.R
 \name{act_data_df}
 \alias{act_data_df}
-\title{Get a dataframe of data associated with TD Brokerage Accounts linked to the Access Token}
+\title{Get a dataframe of data for the Access Token TD Brokerage Accounts}
 \usage{
 act_data_df(
   dataType = c("balances", "positions", "orders"),
@@ -10,20 +10,21 @@ act_data_df(
 )
 }
 \arguments{
-\item{dataType}{'balances' for current cash balances, 'positions' for
-current account positions, 'orders' for orders entered on the current day. Default is to 'balances'}
+\item{dataType}{'balances' for current cash balances, 'positions' for current
+account positions, 'orders' for orders entered on the current day}
 
-\item{accessToken}{A valid Access Token must be set using auth_new_accessToken. 
-The most recent access token will be used by default unless one is manually
-passed into the function}
+\item{accessToken}{A valid Access Token must be set using
+\code{\link{auth_new_accessToken}}. The most recent access token will be
+used by default unless one is manually passed into the function}
 }
 \value{
 a dataframe of requested account details
 }
 \description{
-The output will be a dataframe of requested details for TD Ameritrade accounts 
-linked to the access token. Use act_data_list for an output in list form.
-Request can be for current positions, current balances, or current day orders.
+The output will be a dataframe of requested details for TD Ameritrade
+accounts linked to the access token. Use \code{\link{act_data_list}} for an
+output in list form. Request can be for current positions, current balances,
+or current day orders.
 }
 \examples{
 \dontrun{

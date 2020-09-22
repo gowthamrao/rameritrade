@@ -7,44 +7,61 @@
 auth_new_refreshToken(refreshToken, consumerKey)
 }
 \arguments{
-\item{refreshToken}{An existing refresh token generated using auth_init_refreshToken or auth_new_refreshToken}
+\item{refreshToken}{An existing Refresh Token generated using
+\code{\link{auth_init_refreshToken}} or \code{\link{auth_new_refreshToken}}}
 
-\item{consumerKey}{TD generated Consumer key associated with registered TD app}
+\item{consumerKey}{TD generated Consumer key associated with registered TD
+app. Essentially an API key.}
 }
 \value{
-refresh token that is valid for 90 days
+Refresh Token that is valid for 90 days
 }
 \description{
 Get a new Refresh Token using an existing Refresh Token
 }
 \details{
 A Refresh Token is used to generate Access Tokens through the function
-auth_new_accessToken. The initial Refresh Token must be generated manually 
-using a URL specific to a registered app. Use auth_init_loginURL to generate
-an app specific URL and then use auth_init_refreshToken to process the 
-authorization code and generate the initial refresh token. The refresh token
-will expire every 90 days. This function uses the current refresh token to 
-generate a new refresh token, avoiding the manual process above. 
-TD indicates they do look for frequent Refresh Token generation. 
-This function should be used conservatively and as close to every 90 days as possible.
+\code{\link{auth_new_accessToken}} The initial Refresh Token must be
+generated manually using a URL specific to a registered app. Use
+\code{\link{auth_init_loginURL}} to generate an app specific URL and then use
+\code{\link{auth_init_refreshToken}} to process the Authorization Code and
+generate the initial Refresh Token. The Refresh Token will expire every 90
+days. This function uses the current Refresh Token to generate a new Refresh
+Token, avoiding the manual process above. TD indicates they do look for
+frequent Refresh Token generation. This function should be used
+conservatively and as close to every 90 days as possible.
 
 When running this function manually (i.e. through RStudio), the function will
-check the days left until expiration for the Refresh Token being passed. If the 
-remaining time is greater than 15 days, the user will be prompted to verify 
-that a new refresh token should be created. The user can select to request a new token,
-but there is no net benefit in doing so and TD encourages limiting new token generation.
-When running this function in a non-interactive environment (i.e. CRON Job), 
-if the remaining time until expiration is greater than 15 days,
-the default behavior will be to NOT reset the Refresh Token because the new token
-will have the same access and capabilities as the existing token.
+check the days left until expiration for the Refresh Token being passed. If
+the remaining time is greater than 15 days, the user will be prompted to
+verify that a new Refresh Token should be created. The user can select to
+request a new token, but there is no net benefit in doing so and TD
+encourages limiting new token generation. When running this function in a
+non-interactive environment (i.e. CRON Job), if the remaining time until
+expiration is greater than 15 days, the default behavior will be to NOT reset
+the Refresh Token because the new token will have the same access and
+capabilities as the existing token.
 }
 \examples{
 \dontrun{
 
-### A valid refresh token can be fed into the function below for a new refresh token
+### A valid Refresh Token can be fed into the function below for a new Refresh Token
 currefreshToken = readRDS('/secure/location/')
 newrefreshToken = auth_new_refreshToken(currefreshToken,'APPCONSUMERKEY')
 saveRDS(newrefreshToken,'/secure/location/')
 
 }
 }
+\seealso{
+\code{\link{auth_init_loginURL}} for login url,
+  \code{\link{auth_init_refreshToken}} for initial Refresh Token,
+  \code{\link{auth_new_accessToken}} for a new Access Token,
+  \code{\link{auth_new_refreshToken}} to reset an existing Refresh Token
+  before expiration
+
+Other authentication functions: 
+\code{\link{auth_init_loginURL}()},
+\code{\link{auth_init_refreshToken}()},
+\code{\link{auth_new_accessToken}()}
+}
+\concept{authentication functions}

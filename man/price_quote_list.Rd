@@ -9,17 +9,17 @@ price_quote_list(tickers = c("AAPL", "MSFT"), accessToken = NULL)
 \arguments{
 \item{tickers}{One or more tickers}
 
-\item{accessToken}{A valid Access Token must be set using auth_new_accessToken. 
-The most recent access token will be used by default unless one is manually
-passed into the function}
+\item{accessToken}{A valid Access Token must be set using
+\code{\link{auth_new_accessToken}}. The most recent access token will be
+used by default unless one is manually passed into the function}
 }
 \value{
 a list of data with quote details for each valid ticker submitted
 }
 \description{
-Quotes may be delayed depending on agreement with TD Ameritrade. If the account
-is set up for real-time quotes then this will return real-time. Otherwise the 
-quotes will be delayed.
+Quotes may be delayed depending on agreement with TD Ameritrade. If the
+account is set up for real-time quotes then this will return real-time.
+Otherwise the quotes will be delayed.
 }
 \examples{
 \dontrun{

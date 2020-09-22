@@ -19,22 +19,21 @@ price_history_single(
 
 \item{endDate}{the Ending point of the data}
 
-\item{freq}{the frequency of the interval. Can be daily, 1min,
-5min, 10min, 15min, or 30min}
+\item{freq}{the frequency of the interval. Can be daily, 1min, 5min, 10min,
+15min, or 30min}
 
-\item{accessToken}{A valid Access Token must be set using auth_new_accessToken. 
-The most recent access token will be used by default unless one is manually
-passed into the function}
+\item{accessToken}{A valid Access Token must be set using
+\code{\link{auth_new_accessToken}}. The most recent access token will be
+used by default unless one is manually passed into the function}
 }
 \value{
 a tibble of price data
 }
 \description{
-Pulls price history for a single security based on the parameters
-that include a date range and frequency of the interval. Depending on
-the frequency interval, data can only be pulled back to a certain
-date. For example, at a one minute interval, data can only be pulled
-for 30-35 days
+Pulls price history for a single security based on the parameters that
+include a date range and frequency of the interval. Depending on the
+frequency interval, data can only be pulled back to a certain date. For
+example, at a one minute interval, data can only be pulled for 30-35 days
 }
 \examples{
 
