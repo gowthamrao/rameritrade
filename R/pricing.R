@@ -1,23 +1,21 @@
 #' Get Quotes for specified tickers in List form
-#' 
-#' Quotes may be delayed depending on agreement with TD Ameritrade. If the account
-#' is set up for real-time quotes then this will return real-time. Otherwise the 
-#' quotes will be delayed.
+#'
+#' Quotes may be delayed depending on agreement with TD Ameritrade. If the
+#' account is set up for real-time quotes then this will return real-time.
+#' Otherwise the quotes will be delayed.
 #'
 #' @param tickers One or more tickers
-#' @param accessToken A valid Access Token must be set using auth_new_accessToken. 
-#' The most recent access token will be used by default unless one is manually
-#' passed into the function
+#' @inheritParams act_data_list
 #'
 #' @return a list of data with quote details for each valid ticker submitted
 #' @export
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
-#' 
+#'
 #' ### Use a valid access token and a vector of one or more tickers
 #' quoteList = price_quote_list(c('GOOG','TSLA'),accessToken)
-#' 
+#'
 #' }
 price_quote_list = function(tickers = c('AAPL','MSFT'),accessToken=NULL) {
   
@@ -35,25 +33,23 @@ price_quote_list = function(tickers = c('AAPL','MSFT'),accessToken=NULL) {
 }
 
 #' Get Quotes for specified tickers in data frame form
-#' 
-#' Quotes may be delayed depending on agreement with TD Ameritrade. If the account
-#' is set up for real-time quotes then this will return real-time. Otherwise the 
-#' quotes will be delayed.
+#'
+#' Quotes may be delayed depending on agreement with TD Ameritrade. If the
+#' account is set up for real-time quotes then this will return real-time.
+#' Otherwise the quotes will be delayed.
 #'
 #' @param tickers One or more tickers
-#' @param accessToken A valid Access Token must be set using auth_new_accessToken. 
-#' The most recent access token will be used by default unless one is manually
-#' passed into the function
+#' @inheritParams act_data_list
 #'
 #' @return a data frame with quote details for each valid ticker submitted
 #' @export
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
-#' 
+#'
 #' ### Use a valid access token and a vector of one or more tickers
 #' quoteList = price_quote_df(c('GOOG','TSLA'),accessToken)
-#' 
+#'
 #' }
 price_quote_df = function(tickers = c('AAPL','MSFT'),accessToken=NULL) {
   
@@ -72,32 +68,29 @@ price_quote_df = function(tickers = c('AAPL','MSFT'),accessToken=NULL) {
 
 
 #' Get price history for a single security
-#' 
-#' Pulls price history for a single security based on the parameters
-#' that include a date range and frequency of the interval. Depending on
-#' the frequency interval, data can only be pulled back to a certain
-#' date. For example, at a one minute interval, data can only be pulled
-#' for 30-35 days
+#'
+#' Pulls price history for a single security based on the parameters that
+#' include a date range and frequency of the interval. Depending on the
+#' frequency interval, data can only be pulled back to a certain date. For
+#' example, at a one minute interval, data can only be pulled for 30-35 days
 #'
 #' @param ticker a single ticker
-#' @param startDate the Starting point of the data 
+#' @param startDate the Starting point of the data
 #' @param endDate the Ending point of the data
-#' @param freq the frequency of the interval. Can be daily, 1min,
-#' 5min, 10min, 15min, or 30min
-#' @param accessToken A valid Access Token must be set using auth_new_accessToken. 
-#' The most recent access token will be used by default unless one is manually
-#' passed into the function 
+#' @param freq the frequency of the interval. Can be daily, 1min, 5min, 10min,
+#'   15min, or 30min
+#' @inheritParams act_data_list
 #'
 #' @return a tibble of price data
 #' @export
 #'
 #' @examples
-#' 
+#'
 #' \dontrun{
-#' 
+#'
 #' ### Use a valid access token and a vector of one or more tickers
 #' tickHist5min = price_history_single(c('GOOG','TSLA'),freq='5min')
-#' 
+#'
 #' }
 price_history_single = function(ticker='AAPL',startDate=Sys.Date()-months(1),endDate=Sys.Date(),
                                 freq=c('daily','1min','5min','10min','15min','30min'),
@@ -151,35 +144,30 @@ price_history_single = function(ticker='AAPL',startDate=Sys.Date()-months(1),end
 }  
 
 #' Get price history for a multiple securities
-#' 
-#' Pulls price history for a list of security based on the parameters
-#' that include a date range and frequency of the interval. Depending on
-#' the frequency interval, data can only be pulled back to a certain
-#' date. For example, at a one minute interval, data can only be pulled
-#' for 30-35 days. PLEASE NOTE: Large data requests will take time to pull
-#' back because of the looping nature. TD Does not allow bulk ticker 
-#' request, so this is simply running each ticker individually. For faster and
-#' better historical data pulls, try Tiingo or FMP Cloud
 #'
-#' @param tickers a vector of tickers - no more than 15 will be puled. for bigger requests, 
-#' split up the request or use Tiingo, FMP Cloud, or other free data providers
-#' @param startDate the Starting point of the data 
-#' @param endDate the Ending point of the data
-#' @param freq the frequency of the interval. Can be daily, 1min,
-#' 5min, 10min, 15min, or 30min
-#' @param accessToken A valid Access Token must be set using auth_new_accessToken. 
-#' The most recent access token will be used by default unless one is manually
-#' passed into the function 
+#' Pulls price history for a list of security based on the parameters that
+#' include a date range and frequency of the interval. Depending on the
+#' frequency interval, data can only be pulled back to a certain date. For
+#' example, at a one minute interval, data can only be pulled for 30-35 days.
+#' PLEASE NOTE: Large data requests will take time to pull back because of the
+#' looping nature. TD Does not allow bulk ticker request, so this is simply
+#' running each ticker individually. For faster and better historical data
+#' pulls, try Tiingo or FMP Cloud
+#'
+#' @param tickers a vector of tickers - no more than 15 will be pulled. for
+#'   bigger requests, split up the request or use Tiingo, FMP Cloud, or other
+#'   free data providers
+#' @inheritParams price_history_single
 #'
 #' @return a tibble of price data
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' ### Use a valid access token and a vector of one or more tickers
 #' tickHistday = price_hisotry_mult(c('GOOG','TSLA'),freq='5min')
-#' 
+#'
 #' }
 price_hisotry_mult = function(tickers=c('AAPL','MSFT'),startDate=Sys.Date()-months(1),endDate=Sys.Date(),
                               freq=c('daily','1min','5min','10min','15min','30min'),

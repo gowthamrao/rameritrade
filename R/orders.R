@@ -1,22 +1,21 @@
 #' Get Details for a Single Order
-#' 
-#' Pass an order ID and Account number to get details such as status,
-#' quantity, ticker, executions (if applicable), etc.
+#'
+#' Pass an order ID and Account number to get details such as status, quantity,
+#' ticker, executions (if applicable), etc.
 #'
 #' @param orderId A valid TD Ameritrade Order ID
-#' @param accountNumber The account number associated with the Order ID and Access Token
-#' @param accessToken A valid Access Token must be set using auth_new_accessToken.  
-#' The most recent access token will be used by default unless one is manually 
-#' passed into the function 
+#' @param accountNumber The TD brokerage account number associated with the
+#'   Access Token
+#' @inheritParams act_data_list
 #'
 #' @return list of order details
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' order_detail(orderId=123456789,accountNumber=987654321)
-#' 
+#'
 #' }
 order_detail = function(orderId,accountNumber,accessToken=NULL){
   
@@ -38,13 +37,9 @@ order_detail = function(orderId,accountNumber,accessToken=NULL){
 #' 
 #' Pass an order ID and Account number to cancel an existing open order
 #'
-#' @param orderId A valid TD Ameritrade Order ID
-#' @param accountNumber The account number associated with the Order ID and Access Token
-#' @param accessToken A valid Access Token must be set using auth_new_accessToken.
-#' The most recent access token will be used by default unless one is manually
-#' passed into the function 
+#' @inheritParams order_detail
 #'
-#' @return order URL
+#' @return order API URL
 #' @export
 #'
 #' @examples
@@ -72,30 +67,34 @@ order_cancel =  function(orderId,accountNumber,accessToken=NULL){
 
 
 #' Search for orders by date
-#' 
-#' Search for orders associated with a TD account over the previous 60 days. The result
-#' is a list of three objects: a jsonlite formatted extract of all orders, 
-#' all entered orders with details, a data frame of all executed orders with the executions
 #'
-#' @param accountNumber The account number associated with the Access Token
-#' @param startDate Orders from a certain date. Will not pull back orders older than 60 days. format yyyy-mm-dd
-#' @param endDate Filter orders that occurred before a certain date. format yyyy-mm-dd
+#' Search for orders associated with a TD account over the previous 60 days. The
+#' result is a list of three objects: 
+#' \enumerate{ 
+#' \item jsonlite formatted extract of all orders 
+#' \item all entered orders with details 
+#' \item a data frame of all executed orders with the executions }
+#'
+#' @inheritParams order_detail
+#' @param startDate Orders from a certain date. Will not pull back orders older
+#'   than 60 days. format yyyy-mm-dd
+#' @param endDate Filter orders that occurred before a certain date. format
+#'   yyyy-mm-dd
 #' @param maxResults the max results to return in the query
-#' @param orderStatus search by order status (ACCEPTED, FILLED, EXPIRED, CANCELED, REJECTED, etc)
-#' @param accessToken A valid Access Token must be set using auth_new_accessToken.
-#' The most recent access token will be used by default unless one is manually
-#' passed into the function 
+#' @param orderStatus search by order status (ACCEPTED, FILLED, EXPIRED,
+#'   CANCELED, REJECTED, etc)
 #'
-#' @return a list of three objects: a jsonlite formatted extract of all orders, 
-#' all entered orders with details, a data frame of all executed orders with the executions
+#' @return a list of three objects: a jsonlite formatted extract of all orders,
+#'   all entered orders with details, a data frame of all executed orders with
+#'   the executions
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' order_search(accountNumber=987654321, startDate = Sys.Date()-days(5),
 #'              maxResult = 100, orderStatus = 'FILLED')
-#' 
+#'
 #' }
 order_search = function(accountNumber,startDate=Sys.Date()-months(1),endDate=Sys.Date(),
                         maxResults=50,orderStatus='',accessToken=NULL){
@@ -159,85 +158,89 @@ order_search = function(accountNumber,startDate=Sys.Date()-months(1),endDate=Sys
 
 
 #' Place Order for a specific account
-#' 
-#' Place trades through the TD Ameritrade API using a range of parameters.
-#' WARNING: TRADES THAT ARE SUCCESSFULLY ENTERED WILL BE SUBMITTED IMMEDIATELY
-#' THERE IS NO REVIEW PROCESS. THIS FUNCTION HAS 100S OF POTENTIAL 
-#' COMBINATIONS AND ONLY A HANDFUL HAVE BEEN TESTED. IT IS STRONGLY RECOMMENDED
-#' TO TEST THE DESIRED ORDER ON A VERY SMALL QUANTITY WITH LITTLE MONEY AT STAKE.
-#' ANOTHER OPTION IS TO USE LIMIT ORDERS FAR FROM THE CURRENT PRICE. TD AMERITRADE
-#' HAS THEIR OWN ERROR HANDLING BUT IF A SUCCESSFUL COMBINATION IS ENTERED
-#' IT COULD BE EXECUTED IMMEDIATELY. DOUBLE CHECK ALL ENTRIES BEFORE SUBMITTING.
-#'  
-#' A valid account and access token must be passed. An access token will be passed 
-#' by default when auth_new_accessToken is executed successfully
-#' and the token has not expired, which occurs after 30 minutes.
-#' Only equities and options can be traded at this time.
-#' This function is built to allow a single trade submission. More complex 
-#' trades can be executed through the API, but a custom function or submission
-#' will need to be constructed. See details below. 
-#' To build more custom trading strategies, reference the TD Ameritrade
-#' API Instructions (https://developer.tdameritrade.com/account-access/apis)
-#' or referencing the order sample guide 
-#' (https://developer.tdameritrade.com/content/place-order-samples). A full
-#' list of the input parameters and details can be found at the links above.
-#' Please note that in rare cases, the documentation may not be accurate in the
-#' API section, so the Order Sample guide is a better reference. TEST ALL 
-#' ORDERS FIRST WITH SMALL DOLLAR AMOUNTS!!!
-#'   
 #'
-#' @param accountNumber a valid TD Ameritrade brokerage account number linked to the Access Token
+#' Place trades through the TD Ameritrade API using a range of parameters.
+#'
+#' A valid account and access token must be passed. An access token will be
+#' passed by default when \code{\link{auth_new_accessToken}} is executed
+#' successfully and the token has not expired, which occurs after 30 minutes.
+#' Only equities and options can be traded at this time. This function is built
+#' to allow a single trade submission. More complex trades can be executed
+#' through the API, but a custom function or submission will need to be
+#' constructed. See details below. To build more custom trading strategies,
+#' reference the
+#' \href{https://developer.tdameritrade.com/account-access/apis}{TD Ameritrade
+#' API Instructions} or the
+#' \href{https://developer.tdameritrade.com/content/place-order-samples}{order
+#' sample guide}. A full list of the input parameters and details can be found
+#' at the links above. Please note that in rare cases, the documentation may not
+#' be accurate in the API section, so the Order Sample guide is a better
+#' reference. TEST ALL ORDERS FIRST WITH SMALL DOLLAR AMOUNTS!!!
+#'
+#' @section Warning: TRADES THAT ARE SUCCESSFULLY ENTERED WILL BE SUBMITTED
+#'   IMMEDIATELY THERE IS NO REVIEW PROCESS. THIS FUNCTION HAS 100S OF POTENTIAL
+#'   COMBINATIONS AND ONLY A HANDFUL HAVE BEEN TESTED. IT IS STRONGLY
+#'   RECOMMENDED TO TEST THE DESIRED ORDER ON A VERY SMALL QUANTITY WITH LITTLE
+#'   MONEY AT STAKE. ANOTHER OPTION IS TO USE LIMIT ORDERS FAR FROM THE CURRENT
+#'   PRICE. TD AMERITRADE HAS THEIR OWN ERROR HANDLING BUT IF A SUCCESSFUL
+#'   COMBINATION IS ENTERED IT COULD BE EXECUTED IMMEDIATELY. DOUBLE CHECK ALL
+#'   ENTRIES BEFORE SUBMITTING.
+#'
+#'
+#' @inheritParams order_detail
 #' @param ticker a valid Equity/ETF or option. Use symbol_detail to confirm
-#' @param quantity the number of shares to be bought or sold. Must be an integer. TD has indicated
-#' they have capabilities for fractional shares but have not 'yet' enabled the feature
-#' @param instruction Equity instructions include buy, sell, buy_to_cover, sell_short
-#' Option instructions include buy_to_open
-#' @param orderType MARKET, LIMIT (requiring limitPrice), STOP (requiring stopPrice),
-#' STOP_LIMIT, TRAILING_STOP (requiring stopPriceBasis, stopPriceType, stopPriceOffset)
+#' @param quantity the number of shares to be bought or sold. Must be an
+#'   integer. TD has indicated they have capabilities for fractional shares but
+#'   have not 'yet' enabled the feature
+#' @param instruction Equity instructions include buy, sell, buy_to_cover,
+#'   sell_short Option instructions include buy_to_open
+#' @param orderType MARKET, LIMIT (requiring limitPrice), STOP (requiring
+#'   stopPrice), STOP_LIMIT, TRAILING_STOP (requiring stopPriceBasis,
+#'   stopPriceType, stopPriceOffset)
 #' @param limitPrice the limit price for a limit or stop_limit order
 #' @param stopPrice the stop price for a STOP or STOP_LIMIT order
-#' @param assetType Equity or Option. No other asset types are available at this time
-#' @param session Normal for normal market hours, AM or PM for extended market hours
-#' @param duration how long will the trade stay open without a fill: 
-#' DAY, GOOD_UNTIL_CANCEL, FILL_OR_KILL 
-#' @param stopPriceBasis the basis for a STOP, STOP_LIMIT, or TRAILING_STOP which include
-#' LAST, BID, ASK
-#' @param stopPriceType the link to the stopPriceBasis. VALUE for dollar difference or
-#' PERCENT for a percentage offset from the price basis
-#' @param stopPriceOffset the offset used for the stopPriceType, 10 and PERCENT is a 10%
-#' offset from the current price basis. 5 and value is a $5 offset from the current price basis
-#' @param accessToken A valid Access Token must be set using auth_new_accessToken. 
-#' The most recent access token will be used by default unless one is manually
-#' passed into the function. The Access Token must be linked to the accountNumber
+#' @param assetType Equity or Option. No other asset types are available at this
+#'   time
+#' @param session Normal for normal market hours, AM or PM for extended market
+#'   hours
+#' @param duration how long will the trade stay open without a fill: DAY,
+#'   GOOD_UNTIL_CANCEL, FILL_OR_KILL
+#' @param stopPriceBasis the basis for a STOP, STOP_LIMIT, or TRAILING_STOP
+#'   which include LAST, BID, ASK
+#' @param stopPriceType the link to the stopPriceBasis. VALUE for dollar
+#'   difference or PERCENT for a percentage offset from the price basis
+#' @param stopPriceOffset the offset used for the stopPriceType, 10 and PERCENT
+#'   is a 10% offset from the current price basis. 5 and value is a $5 offset
+#'   from the current price basis
 #'
 #' @return the trade id, account id, and other basic details
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' accountNumber = 1234567890
-#' 
+#'
 #' ### Standard market buy order
 #' order_place(accountNumber = accountNumber,ticker='AAPL',quantity = 1,instruction='buy')
-#' 
+#'
 #' ### Stop limit order
 #' order_place(accountNumber = accountNumber,ticker='AAPL',
 #'             quantity = 1,instruction='sell',duration='good_till_cancel',
 #'             orderType = 'stop_limit',limitPrice=98,stopPrice=100)
-#'             
+#'
 #' ### Trailing Stop Order
 #' order_place(accountNumber = accountNumber,ticker='AAPL',quantity = 1,
 #'             instruction='sell', orderType = 'trailing_stop',stopPriceBasis = 'BID',
 #'             stopPriceType = 'percent',stopPriceOffset = 10)
-#'             
+#'
 #' ### Option Order with a limit price
 #' order_place(accountNumber = accountNumber, ticker='SLV_091820P24.5',
 #'             quantity = 1, instruction='BUY_TO_OPEN', duration='Day',
 #'             orderType = 'LIMIT', limitPrice = .02, assetType = 'OPTION')
-#' 
+#'
 #' }
-#' 
+#'
 #' 
 order_place = function(accountNumber,ticker,quantity,instruction,
                        orderType='MARKET',limitPrice=NULL,stopPrice=NULL,

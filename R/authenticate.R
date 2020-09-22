@@ -1,39 +1,52 @@
 #' Auth Step 1: Initial Log In URL
-#' 
-#' Create URL for initial login to grant registered app permission to TD brokerage account
-#' 
-#' To generate the initial authorization and access the TD Ameritrade API an application 
-#' needs to be registered at https://developer.tdameritrade.com/. Once a log in
-#' has been created, use My Apps to register an application. The two inputs needed are 
-#' from the application, a Consumer Key provided by TD Ameritrade and a Callback URL 
-#' which the user creates. The URL output should result in a landing page to log into a 
-#' TD Ameritrade Brokerage account.
-#' 
-#' The call back URL can be anything. The example below assumes the Callback URL is 
-#' https://myTDapp. The Consumer Key is auto generated and can be found under 
-#' My Apps > Keys. This function will use these two inputs to generate a URL where
-#' the user can log in to their standard TD Ameritrade Brokerage Account and grant the
-#' application access to the brokerage account, enabling the API. The Authorization 
-#' Code generated at the end of the log in process will feed into auth_init_refreshToken.
-#' For questions, please reference the guide at 
-#' https://developer.tdameritrade.com/content/authentication-faq
 #'
-#' @param callbackURL User generated Callback URL associated with registered TD app 
-#' @param consumerKey TD generated Consumer key associated with registered TD app
+#' Create URL to grant App access to a TD Brokerage account
+#'
+#' To access the TD Ameritrade API the user will need to create an account on
+#' the \href{https://developer.tdameritrade.com/}{TD Ameritrade Developer} site.
+#' Note, this is separate and distinct from a TD Brokerage account. Once logged
+#' in to the developer site, use My Apps to register an application. The two
+#' inputs to this function come from the new application. A Consumer Key
+#' functions like an API key and is provided by TD Ameritrade. A Callback URL is
+#' created by the user. The output of this function will be a URL that leads to
+#' a landing page that allows a user to log into a TD Ameritrade Brokerage
+#' account.
+#'
+#' The Callback URL can be anything. The example below assumes the Callback URL
+#' is https://myTDapp. The Consumer Key is auto generated and can be found under
+#' My Apps > Keys. This function will use these two inputs to generate a URL
+#' where the user can log in to their standard TD Ameritrade Brokerage Account
+#' and grant the application access to the brokerage account, enabling the API.
+#' The Authorization Code generated at the end of the log in process will feed
+#' into \code{\link{auth_init_refreshToken.}} For questions, please reference
+#' the \href{https://developer.tdameritrade.com/content/authentication-faq}{TD
+#' Ameritrade Authentication FAQ}
+#'
+#' @family authentication functions
+#' @seealso \code{\link{auth_init_loginURL}} for login url,
+#'   \code{\link{auth_init_refreshToken}} for initial Refresh Token,
+#'   \code{\link{auth_new_accessToken}} for a new Access Token,
+#'   \code{\link{auth_new_refreshToken}} to reset an existing Refresh Token
+#'   before expiration
+#'
+#' @param callbackURL User generated Callback URL associated with registered TD
+#'   app
+#' @param consumerKey TD generated Consumer key associated with registered TD
+#'   app. Essentially an API key.
 #'
 #' @return login url to grant app permission to TD Brokerage account
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' 
-#' ### Visit the URL below to log in to a TD Brokerage account
+#'
+#' ### Visit the URL generated from the function below to log in to a TD Brokerage account
 #' ### Once a successful log in is completed the landing page will be a blank page
-#' ### The full URL of the landing page is the authorization code for auth_init_refreshToken
-#' 
+#' ### The full URL of the landing page is the Authorization Code for auth_init_refreshToken
+#'
 #' loginURL = auth_init_loginURL('https://myTDapp',
 #'                               'consumerKey')
-#' 
+#'
 #' }
 auth_init_loginURL = function(callbackURL,consumerKey){
   
@@ -47,45 +60,51 @@ auth_init_loginURL = function(callbackURL,consumerKey){
 
 
 #' Auth Step 2: Obtain Initial Refresh Token
-#' 
-#' Get an initial Refresh Token using the Authorization code URL
-#' 
-#' Once a URL has been generated using auth_init_loginURL, a user can visit that URL
-#' to log into a TD brokerage account, granting access to the TD app. A successful 
-#' log in will result in an authorization code embedded in the URL which will be fed
-#' into this function. Once the button "Allow" is pressed, the user will be
+#'
+#' Get an initial Refresh Token using the Authorization Code
+#'
+#' Once a URL has been generated using \code{\link{auth_init_loginURL}}, a user
+#' can visit that URL to log into a TD brokerage account, granting the TD app
+#' access to the account. Once the button "Allow" is pressed, the user will be
 #' redirected, potentially to "This site can't be reached". This indicates a
-#' successful log in. The URL of the page contains the authorization code.
-#' Paste the entire URL, not just the authorization code, into this function.
-#' The code will be an extremely long alpha numeric string.
-#' The output of this function will be a refresh token which will be used
-#' to gain access to the TD Brokerage account(s) going forward, avoiding auth_init. 
-#' The Refresh Token will last for 90 days, but the user can use auth_new_refreshToken 
-#' to reset the token before expiration. If the Refresh Token expires, a new
-#' authorization code will need to be generated by logging into the URL from 
-#' auth_init_loginURL. 
-#' 
-#' The Refresh Token output should be saved in a very safe location, but
-#' also accessible. It will be needed to generate an Access Token (which 
-#' expire every 30 minutes) which is used for general account access.
-#' 
+#' successful log in. The URL of this page contains the Authorization Code.
+#' Paste the entire URL, not just the Authorization Code, into this function.
+#' The code will be an extremely long alpha numeric string. The output of this
+#' function will be a Refresh Token which will be used to gain access to the TD
+#' Brokerage account(s) going forward, avoiding the auth_init functions going
+#' forward. The Refresh Token will last for 90 days, but the user can use
+#' \code{\link{auth_new_refreshToken}} to reset the token before expiration. If
+#' the Refresh Token expires, a new Authorization Code will need to be generated
+#' by logging into the URL from \code{\link{auth_init_loginURL}}
 #'
-#' @param callbackURL User generated Callback URL associated with registered TD app 
-#' @param consumerKey TD generated Consumer key associated with registered TD app
-#' @param authcode_url Authorization URL Code generated from a successful log in to the auth_init_loginURL
+#' The Refresh Token output should be saved in a very safe location, but also
+#' accessible. It will be needed to generate an Access Token, which is used for
+#' general account access. The Access Token expire every 30 minutes.
 #'
-#' @return refresh token that is valid for 90 days
+#'
+#' @inheritParams auth_init_loginURL
+#' @param authcode_url Authorization URL Code generated from a successful log in
+#'   to the \code{\link{auth_init_loginURL}}
+#'
+#' @family authentication functions
+#' @seealso \code{\link{auth_init_loginURL}} for login url,
+#'   \code{\link{auth_init_refreshToken}} for initial Refresh Token,
+#'   \code{\link{auth_new_accessToken}} for a new Access Token,
+#'   \code{\link{auth_new_refreshToken}} to reset an existing Refresh Token
+#'   before expiration
+#'
+#' @return Refresh Token that is valid for 90 days
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' ### The URL after a successful login can be fed into the function below
 #' refreshToken = auth_init_refreshToken('https://myTDapp','consumerKey',
 #'                                       'https://myTDapp/?code=Auhtorizationcode')
-#' 
+#'
 #' saveRDS(refreshToken,'/secure/location/')
-#' 
+#'
 #' }
 auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url){
   
@@ -99,7 +118,7 @@ auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url){
   decodedtoken = urltools::url_decode(gsub('.*code=','',authcode_url))
   
   ### Get Refresh Token using URL Authorization Code and registered TD Application
-  ### Access token is good for 30 minutes, the refresh token is good for 90 days
+  ### Access Token is good for 30 minutes, the Refresh Token is good for 90 days
   authreq = list(grant_type='authorization_code',
                  refresh_token='',
                  access_type='offline',
@@ -116,9 +135,9 @@ auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url){
   ram_status(authresponse,'. Review the TD Auth FAQ or the Auth Guide at https://developer.tdameritrade.com/ for more details')
   print("Successful Refresh Token Generated")
   
-  ### Modify Refresh token with expire times
+  ### Modify Refresh Token with expire times
   refreshToken = httr::content(authresponse)
-  ### To reduce confusion, remove access token components from refresh token
+  ### To reduce confusion, remove Access Token components from Refresh Token
   refreshToken$access_token = NULL
   refreshToken$expires_in = NULL
   refreshToken$refreshExpire = Sys.time() + refreshToken$refresh_token_expires_in
@@ -133,57 +152,67 @@ auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url){
 
 
 #' Auth Step 3: Get Access Token
-#' 
+#'
 #' Get a new Access Token using a valid Refresh Token
-#' 
-#' An Access Token is required for most functions within rameritrade. 
-#' It serves as a user log in for a TD Brokerage account. The token is valid for 
-#' 30 minutes and allows the user to place trades, get account information,
-#' get order history, pull historical stock prices, etc. A Refresh Token is 
-#' required to generate an Access Token. Functions auth_init_refreshToken or 
-#' auth_new_refreshToken can be used to generate Refresh Tokens which stay valid
-#' for 90 days. The Consumer Key is generated automatically when an App is 
-#' registered on https://developer.tdameritrade.com/.  
-#' By default, the Access Token is stored and will automatically be passed to
-#' downstream function. However, the user can also submit an access token 
-#' manually if multiple tokens are in use (for example: when managing more than
-#' one log in.)
-#' 
+#'
+#' An Access Token is required for most functions within rameritrade. It serves
+#' as a user log in to a TD Brokerage account. The token is valid for 30 minutes
+#' and allows the user to place trades, get account information, get order
+#' history, pull historical stock prices, etc. A Refresh Token is required to
+#' generate an Access Token. Functions \code{\link{auth_init_refreshToken}} or
+#' \code{\link{auth_new_refreshToken}} can be used to generate Refresh Tokens
+#' which stay valid for 90 days. The Consumer Key is generated automatically
+#' when an App is registered on the
+#' \href{https://developer.tdameritrade.com/}{TD Ameritrade Developer} site. By
+#' default, the Access Token is stored into options and will automatically be
+#' passed to downstream function. However, the user can also submit an Access
+#' Token manually if multiple tokens are in use (for example: when managing more
+#' than one log in.)
+#'
 #' When running this function manually (i.e. through RStudio), the function will
-#' check for a default Access Token. If the default Access Token has not expired,
-#' the user will be prompted to verify a new access token is desired. This may be the case
-#' if more than one TD log in is being used.
-#' When running this function in a non-interactive environment (i.e. CRON Job), 
-#' the default behavior will be to refresh the Access Token. 
-#' 
+#' check for a default Access Token. If the default Access Token has not
+#' expired, the user will be prompted to verify a new Access Token is desired.
+#' This may be the case if more than one TD log in is being used. When running
+#' this function in a non-interactive environment (i.e. CRON Job), the default
+#' behavior will be to refresh the Access Token.
 #'
-#' @param refreshToken An existing refresh token generated using auth_init_refreshToken or auth_new_refreshToken
-#' @param consumerKey TD generated Consumer key associated with registered TD app
 #'
-#' @return Access Token that is valid for 30 minutes. By default it is stored in options.
+#' @param refreshToken An existing Refresh Token generated using
+#'   \code{\link{auth_init_refreshToken}} or \code{\link{auth_new_refreshToken}}
+#' @inheritParams auth_init_loginURL
+#'
+#' @family authentication functions
+#' @seealso \code{\link{auth_init_loginURL}} for login url,
+#'   \code{\link{auth_init_refreshToken}} for initial Refresh Token,
+#'   \code{\link{auth_new_accessToken}} for a new Access Token,
+#'   \code{\link{auth_new_refreshToken}} to reset an existing Refresh Token
+#'   before expiration
+#'
+#' @return Access Token that is valid for 30 minutes. By default it is stored in
+#'   options.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' 
-#' ### A valid refresh token can be fed into the function below for a new Access Token
+#'
+#' ### A valid Refresh Token can be fed into the function below for a new Access Token
 #' refreshToken = readRDS('/secure/location/')
 #' accessToken = auth_new_accessToken(refreshToken,'APPCONSUMERKEY')
-#' 
+#'
 #' }
 auth_new_accessToken = function(refreshToken,consumerKey){
   
-  ### Get default access token in environment if available
+  ### Get default Access Token in environment if available
   accessToken <- getOption("td_access_token")
   
-  ### If default access token is not null and environment is interactive, check for expiration
+  ### If default Access Token is not null and environment is interactive, check for expiration
   if(!is.null(accessToken) & interactive()){
     
-    ### If access token has not expired, ask if new access token should be generated if more than 5 minutes left
+    ### If Access Token has not expired, ask if new Access Token should be generated if more than 5 minutes left
     MinTillExp = round(as.numeric(accessToken$expireTime-Sys.time()),1)
     if(MinTillExp>5){
       ChkRef = utils::menu(c('Yes','No'),
-                           title = paste0('Your default access token has ',MinTillExp,' minutes until expiration, ',
+                           title = paste0('Your default Access Token has ',MinTillExp,' minutes until expiration, ',
                                           'are you sure you want a new Access Token?'))
       
       ### If user selects No or exits, return default accessToken otherwise get new token
@@ -194,12 +223,12 @@ auth_new_accessToken = function(refreshToken,consumerKey){
   ### Validate Refresh Token
   ram_checkRefresh(refreshToken)
   
-  ### Get a new access token using a refresh token
+  ### Get a new Access Token using a Refresh Token
   accessreq = list(grant_type='refresh_token',
                    refresh_token=refreshToken$refresh_token,
                    client_id=consumerKey)
   
-  ### Post refresh token and retrieve access token
+  ### Post Refresh Token and retrieve Access Token
   getaccess = httr::POST('https://api.tdameritrade.com/v1/oauth2/token', 
                          httr::add_headers('Content-Type'='application/x-www-form-urlencoded'),body=accessreq,encode='form')
   
@@ -207,7 +236,7 @@ auth_new_accessToken = function(refreshToken,consumerKey){
   ram_status(getaccess)
   print("Successful Login. Access Token has been stored and will be valid for 30 minutes")
   
-  ### Extract content and add expriation time to access token 
+  ### Extract content and add expriation time to Access Token 
   accessToken = httr::content(getaccess)
   accessToken$expireTime = Sys.time() + lubridate::seconds(accessToken$expires_in) - lubridate::seconds(5)
   accessToken$createTime = Sys.time()
@@ -223,68 +252,76 @@ auth_new_accessToken = function(refreshToken,consumerKey){
 
 
 #' Auth Step 4: New Refresh Token before expiration
-#' 
+#'
 #' Get a new Refresh Token using an existing Refresh Token
-#' 
+#'
 #' A Refresh Token is used to generate Access Tokens through the function
-#' auth_new_accessToken. The initial Refresh Token must be generated manually 
-#' using a URL specific to a registered app. Use auth_init_loginURL to generate
-#' an app specific URL and then use auth_init_refreshToken to process the 
-#' authorization code and generate the initial refresh token. The refresh token
-#' will expire every 90 days. This function uses the current refresh token to 
-#' generate a new refresh token, avoiding the manual process above. 
-#' TD indicates they do look for frequent Refresh Token generation. 
-#' This function should be used conservatively and as close to every 90 days as possible.
-#' 
+#' \code{\link{auth_new_accessToken}} The initial Refresh Token must be
+#' generated manually using a URL specific to a registered app. Use
+#' \code{\link{auth_init_loginURL}} to generate an app specific URL and then use
+#' \code{\link{auth_init_refreshToken}} to process the Authorization Code and
+#' generate the initial Refresh Token. The Refresh Token will expire every 90
+#' days. This function uses the current Refresh Token to generate a new Refresh
+#' Token, avoiding the manual process above. TD indicates they do look for
+#' frequent Refresh Token generation. This function should be used
+#' conservatively and as close to every 90 days as possible.
+#'
 #' When running this function manually (i.e. through RStudio), the function will
-#' check the days left until expiration for the Refresh Token being passed. If the 
-#' remaining time is greater than 15 days, the user will be prompted to verify 
-#' that a new refresh token should be created. The user can select to request a new token,
-#' but there is no net benefit in doing so and TD encourages limiting new token generation.
-#' When running this function in a non-interactive environment (i.e. CRON Job), 
-#' if the remaining time until expiration is greater than 15 days,
-#' the default behavior will be to NOT reset the Refresh Token because the new token
-#' will have the same access and capabilities as the existing token. 
+#' check the days left until expiration for the Refresh Token being passed. If
+#' the remaining time is greater than 15 days, the user will be prompted to
+#' verify that a new Refresh Token should be created. The user can select to
+#' request a new token, but there is no net benefit in doing so and TD
+#' encourages limiting new token generation. When running this function in a
+#' non-interactive environment (i.e. CRON Job), if the remaining time until
+#' expiration is greater than 15 days, the default behavior will be to NOT reset
+#' the Refresh Token because the new token will have the same access and
+#' capabilities as the existing token.
 #'
-#' @param refreshToken An existing refresh token generated using auth_init_refreshToken or auth_new_refreshToken
-#' @param consumerKey TD generated Consumer key associated with registered TD app
+#' @inheritParams auth_new_accessToken
 #'
-#' @return refresh token that is valid for 90 days
+#' @family authentication functions
+#' @seealso \code{\link{auth_init_loginURL}} for login url,
+#'   \code{\link{auth_init_refreshToken}} for initial Refresh Token,
+#'   \code{\link{auth_new_accessToken}} for a new Access Token,
+#'   \code{\link{auth_new_refreshToken}} to reset an existing Refresh Token
+#'   before expiration
+#'
+#' @return Refresh Token that is valid for 90 days
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' 
-#' ### A valid refresh token can be fed into the function below for a new refresh token
+#'
+#' ### A valid Refresh Token can be fed into the function below for a new Refresh Token
 #' currefreshToken = readRDS('/secure/location/')
 #' newrefreshToken = auth_new_refreshToken(currefreshToken,'APPCONSUMERKEY')
 #' saveRDS(newrefreshToken,'/secure/location/')
-#' 
+#'
 #' }
 auth_new_refreshToken = function(refreshToken,consumerKey){
   
   ### Validate Refresh Token
   ram_checkRefresh(refreshToken)
   
-  ### Check age of refresh token
+  ### Check age of Refresh Token
   daysUntilExp = as.numeric(as.Date(refreshToken$refreshExpire)-Sys.Date())
   
-  ### If refresh token has more than 15 days check if refresh required
+  ### If Refresh Token has more than 15 days check if refresh required
   if(daysUntilExp>15){
     
-    ### If non-interactive and refresh token has more than 15 days, do not refresh
+    ### If non-interactive and Refresh Token has more than 15 days, do not refresh
     if(interactive()==FALSE) return(refreshToken)
     
     ### If interactive, ask user if refresh is still needed
     ChkRef = utils::menu(c('Yes','No'),title = paste0('Your token still has ',daysUntilExp,' days until expiration.\n',
                                                       'Are you sure you want to reset your Refresh Token?'))
     
-    ### If user selects no, return current refresh token
+    ### If user selects no, return current Refresh Token
     if(ChkRef %in% c(0,2)) return(refreshToken)
     }
   
   
-  ### Get a New Refresh Token using existing refresh token before 90 day expiration
+  ### Get a New Refresh Token using existing Refresh Token before 90 day expiration
   refreshreq = list(grant_type='refresh_token',
                     refresh_token=refreshToken$refresh_token,
                     access_type='offline',
@@ -299,16 +336,16 @@ auth_new_refreshToken = function(refreshToken,consumerKey){
   ram_status(newrefresh,'. If the current Refresh Token has expired. Re-authenticate using the auth_init functions.')
   print("Successful Refresh Token Generated")
   
-  ### Modify Refresh token with expire times
+  ### Modify Refresh Token with expire times
   new_refreshToken = httr::content(newrefresh)
-  ### To reduce confusion, remove access token components from refresh token
+  ### To reduce confusion, remove Access Token components from Refresh Token
   new_refreshToken$access_token = NULL
   new_refreshToken$expires_in = NULL
   new_refreshToken$refreshExpire = Sys.time() + new_refreshToken$refresh_token_expires_in
   new_refreshToken$createTime = Sys.time()
   
   
-  ### Return only the refresh token even though an access token is also provided
+  ### Return only the Refresh Token even though an Access Token is also provided
   return(new_refreshToken)
   
 }

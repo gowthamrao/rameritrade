@@ -1,24 +1,25 @@
-#' Get a list of data associated with TD Brokerage Accounts linked to the Access Token
-#' 
-#' The output will be a list of requested details for TD Ameritrade accounts 
-#' linked to the access token. Use act_data_df for a cleaner output in a dataframe.
-#' Request can be for current positions, current balances, or current day orders.
+#' Get a list of data for the Access Token TD Brokerage Accounts
 #'
-#' @param dataType 'balances' for current cash balances, 'positions' for
-#' current account positions, 'orders' for orders entered on the current day
-#' @param accessToken A valid Access Token must be set using auth_new_accessToken. 
-#' The most recent access token will be used by default unless one is manually
-#' passed into the function
+#' The output will be a list of requested details for TD Ameritrade accounts
+#' linked to the access token. Use \code{\link{act_data_df}} for a cleaner
+#' output in a dataframe. Request can be for current positions, current
+#' balances, or current day orders.
+#'
+#' @param dataType 'balances' for current cash balances, 'positions' for current
+#'   account positions, 'orders' for orders entered on the current day
+#' @param accessToken A valid Access Token must be set using
+#'   \code{\link{auth_new_accessToken}}. The most recent access token will be
+#'   used by default unless one is manually passed into the function
 #'
 #' @return a list of requested account details
 #' @export
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
-#' 
+#'
 #' ### A valid refresh token can be fed into the function below for a new Access Token
 #' positions = act_data_list('positions',accessToken)
-#' 
+#'
 #' }
 act_data_list = function(dataType=c('balances','positions','orders'),accessToken=NULL){
   
@@ -43,27 +44,24 @@ act_data_list = function(dataType=c('balances','positions','orders'),accessToken
   
 }
 
-#' Get a dataframe of data associated with TD Brokerage Accounts linked to the Access Token
-#' 
-#' The output will be a dataframe of requested details for TD Ameritrade accounts 
-#' linked to the access token. Use act_data_list for an output in list form.
-#' Request can be for current positions, current balances, or current day orders.
+#' Get a dataframe of data for the Access Token TD Brokerage Accounts
 #'
-#' @param dataType 'balances' for current cash balances, 'positions' for
-#' current account positions, 'orders' for orders entered on the current day. Default is to 'balances'
-#' @param accessToken A valid Access Token must be set using auth_new_accessToken. 
-#' The most recent access token will be used by default unless one is manually
-#' passed into the function
+#' The output will be a dataframe of requested details for TD Ameritrade
+#' accounts linked to the access token. Use \code{\link{act_data_list}} for an
+#' output in list form. Request can be for current positions, current balances,
+#' or current day orders.
+#'
+#' @inheritParams act_data_list
 #'
 #' @return a dataframe of requested account details
 #' @export
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
-#' 
+#'
 #' ### A valid refresh token can be fed into the function below for a new Access Token
 #' positions = act_data_df('positions')
-#' 
+#'
 #' }
 act_data_df = function(dataType=c('balances','positions','orders'),accessToken=NULL){
   
