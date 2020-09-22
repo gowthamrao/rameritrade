@@ -9,9 +9,9 @@ symbol_detail(ticker, accessToken = NULL)
 \arguments{
 \item{ticker}{a valid ticker or symbol}
 
-\item{accessToken}{A valid Access Token must be set using auth_new_accessToken. 
-The most recent access token will be used by default unless one is manually
-passed into the function}
+\item{accessToken}{A valid Access Token must be set using
+\code{\link{auth_new_accessToken}}. The most recent access token will be
+used by default unless one is manually passed into the function}
 }
 \value{
 data frame of ticker details

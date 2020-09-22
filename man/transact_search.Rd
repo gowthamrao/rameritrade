@@ -13,23 +13,30 @@ transact_search(
 )
 }
 \arguments{
-\item{accountNumber}{The account number associated with the Access Token}
+\item{accountNumber}{The TD brokerage account number associated with the
+Access Token}
 
-\item{startDate}{Transactions after a certain date. Will not pull back transactions older than 1 year. format yyyy-mm-dd}
+\item{startDate}{Transactions after a certain date. Will not pull back
+transactions older than 1 year. format yyyy-mm-dd}
 
-\item{endDate}{Filter transactions that occurred before a certain date. format yyyy-mm-dd}
+\item{endDate}{Filter transactions that occurred before a certain date.
+format yyyy-mm-dd}
 
-\item{transType}{Filter for a specific Transaction type. No entry will return all types.
-For example: TRADE, CASH_IN_OR_CASH_OUT, CHECKING, DIVIDEND, INTEREST, OTHER}
+\item{transType}{Filter for a specific Transaction type. No entry will return
+all types. For example: TRADE, CASH_IN_OR_CASH_OUT, CHECKING, DIVIDEND,
+INTEREST, OTHER}
 
-\item{accessToken}{A valid Access Token must be set using auth_new_accessToken. 
-The most recent access token will be used by default unless one is manually
-passed into the function}
+\item{accessToken}{A valid Access Token must be set using
+\code{\link{auth_new_accessToken}}. The most recent access token will be
+used by default unless one is manually passed into the function}
 }
 \value{
 a jsonlite data frame of transactions
 }
 \description{
+Search for all Transaction types
+}
+\details{
 Can pull trades as well as transfers, dividend reinvestment, interest, etc.
 Any activity assoicated with the account.
 }
