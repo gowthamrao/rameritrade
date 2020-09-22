@@ -69,7 +69,7 @@ You can install rameritrade using:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("ttrevisan18/rameritrade")
+devtools::install_github("tonytrevisan/rameritrade")
 
 ### NOT YET AVAILABLE ON CRAN
 # install.packages("rameritrade")
