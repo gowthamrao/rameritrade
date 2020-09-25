@@ -21,21 +21,23 @@
 #' @examples
 #' \dontrun{
 #'
-#' ### Pull all option contracts expiring over the next 6 months
-#' ### with 5 strikes above and below the at-the-money price
-#' option_chain(ticker='SPY',strikes=5,endDate = Sys.Date() + months(6))
+#' # Pull all option contracts expiring over the next 6 months
+#' # with 5 strikes above and below the at-the-money price
+#' option_chain(ticker = 'SPY',
+#'              strikes = 5,
+#'              endDate = Sys.Date() + months(6))
 #'
 #' }
-option_chain = function(ticker,strikes=10,inclQuote=TRUE,startDate = Sys.Date(),
-                        endDate = Sys.Date() + months(12),accessToken=NULL) {
+option_chain = function(ticker, strikes = 10, inclQuote = TRUE, startDate = Sys.Date(),
+                        endDate = Sys.Date() + months(12), accessToken = NULL) {
   
-  ### Get access token from options if one is not passed
+  # Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
   
-  ### Set value to NULL to pass check()
+  # Set value to NULL to pass check()
   daysToExpiration <- NULL
   
-  ### Create URL
+  # Create URL
   optionURL = base::paste0('https://api.tdameritrade.com/v1/marketdata/chains?symbol=',ticker,
                            '&strikeCount=',strikes,
                            '&includeQuotes=',inclQuote,
@@ -43,33 +45,36 @@ option_chain = function(ticker,strikes=10,inclQuote=TRUE,startDate = Sys.Date(),
                            '&toDate=',endDate)
   options =  httr::GET(optionURL,ram_headers(accessToken))
   
-  ### Confirm status code of 200
+  # Confirm status code of 200
   ram_status(options)
   
-  ### Parse Data
+  # Parse Data
   jsonOptions <- httr::content(options, as = "text",encoding = 'UTF-8')
   jsonOptions <- jsonlite::fromJSON(jsonOptions)
   
-  underlying = data.frame(jsonOptions$underlying) %>% dplyr::as_tibble()
+  # Extract underlying data
+  underlying = data.frame(jsonOptions$underlying) %>% 
+    dplyr::as_tibble()
+  # Extract PUT data
   puts =  dplyr::bind_rows(lapply(jsonOptions$putExpDateMap,dplyr::bind_rows)) %>%
     dplyr::mutate(expireDate = Sys.Date() + lubridate::days(daysToExpiration))
+  # Extract CALL data
   calls = dplyr::bind_rows(lapply(jsonOptions$callExpDateMap,dplyr::bind_rows)) %>%
     dplyr::mutate(expireDate = Sys.Date() + lubridate::days(daysToExpiration))
-  fullChain = dplyr::bind_rows(puts,calls) %>% dplyr::as_tibble()
+  # Bind Put and Call data into a single data frame
+  fullChain = dplyr::bind_rows(puts,calls) %>% 
+    dplyr::as_tibble()
   
-  returnVal = list(underlying=underlying,fullChain=fullChain)
+  returnVal = list(underlying = underlying, fullChain = fullChain)
   
-  return(returnVal)
+  returnVal
 }
 
 
-
-#' Search for all Transaction types
-#'
 #' Search for all Transaction types
 #'
 #' Can pull trades as well as transfers, dividend reinvestment, interest, etc.
-#' Any activity assoicated with the account.
+#' Any activity associated with the account.
 #'
 #' @inheritParams order_detail
 #' @param startDate Transactions after a certain date. Will not pull back
@@ -86,28 +91,35 @@ option_chain = function(ticker,strikes=10,inclQuote=TRUE,startDate = Sys.Date(),
 #' @examples
 #' \dontrun{
 #'
-#' ### Transactions for the last 5 days
-#' transact_search(accountNumber=987654321, startDate = Sys.Date()-days(5))
+#' # Access Token must be set using auth_new_accessToken
+#' # Transactions for the last 5 days
+#' transact_search(accountNumber = 987654321, 
+#'                 startDate = Sys.Date()-days(5))
 #'
 #' }
-transact_search = function(accountNumber,startDate=Sys.Date()-months(1),endDate=Sys.Date(),
-                           transType='All',accessToken=NULL){
+transact_search = function(accountNumber, startDate = Sys.Date()-months(1),
+                           endDate = Sys.Date(), transType = 'All', 
+                           accessToken = NULL){
   
-  ### Get access token from options if one is not passed
+  # Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
   
+  # Construct URL
   transactURL = paste0('https://api.tdameritrade.com/v1/accounts/',accountNumber,
                        '/transactions?startDate=',as.Date(startDate),
                        '&endDate=',as.Date(endDate),'&type=',transType)
+  
+  # Make GET request for transactions
   searchTransact = httr::GET(transactURL,ram_headers(accessToken),encode='json')
   
-  ### Confirm status code of 200
+  # Confirm status code of 200
   ram_status(searchTransact)
   
-  jsonTransact = httr::content(searchTransact, as = "text",encoding = 'UTF-8')
+  # Parse Data
+  jsonTransact <- httr::content(searchTransact, as = "text",encoding = 'UTF-8')
   jsonTransact <- jsonlite::fromJSON(jsonTransact)
   
-  return(jsonTransact)
+  jsonTransact
 }
 
 
@@ -118,9 +130,9 @@ transact_search = function(accountNumber,startDate=Sys.Date()-months(1),endDate=
 #' window for that day
 #'
 #' @inheritParams act_data_list
-#' @param marketDate The market date to pull details for
-#' @param marketType The asset class for hour:
-#'   'EQUITY','OPTION','BOND','FUTURE','FOREX'
+#' @param marketDate The market date to pull details
+#' @param marketType The asset class to pull:
+#'   'EQUITY','OPTION','BOND','FUTURE','FOREX'. Default is EQUITY
 #'
 #' @return List output of times and if the specified date is a trading day
 #' @export
@@ -128,26 +140,32 @@ transact_search = function(accountNumber,startDate=Sys.Date()-months(1),endDate=
 #' @examples
 #' \dontrun{
 #'
-#' ### Market hours for the current date
+#' # Access Token must be set using auth_new_accessToken
+#' # Market hours for the current date
 #' market_hours()
+#' market_hours('2020-06-24', 'OPTION')
 #'
 #' }
-market_hours = function(marketDate = Sys.Date(),marketType = c('EQUITY','OPTION','BOND','FUTURE','FOREX'),accessToken=NULL){
+market_hours = function(marketDate = Sys.Date(),
+                        marketType = c('EQUITY','OPTION','BOND','FUTURE','FOREX'),
+                        accessToken = NULL){
   
-  ### Get access token from options if one is not passed
+  # Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
   
-  ### Create URL for market
-  if(missing(marketType)){marketType='EQUITY'}
+  # Create URL for market
+  if (missing(marketType)) marketType='EQUITY'
   marketURL = paste0('https://api.tdameritrade.com/v1/marketdata/',marketType,'/hours')
   
-  ### Make Get Request using token
-  marketHours = httr::GET(marketURL,ram_headers(accessToken),body=list(date = marketDate),encode='json')
+  # Make Get Request using token
+  marketHours = httr::GET(marketURL, ram_headers(accessToken), 
+                          body = list(date = marketDate), encode='json')
   
-  ### Confirm status code of 200
+  # Confirm status code of 200
   ram_status(marketHours)
   
-  return(httr::content(marketHours))
+  # Return raw content - market hours in list form
+  httr::content(marketHours)
 }
 
 
@@ -164,32 +182,36 @@ market_hours = function(marketDate = Sys.Date(),marketType = c('EQUITY','OPTION'
 #' @examples
 #' \dontrun{
 #'
-#' ### details for Apple
+#' # Details for Apple
 #' symbol_detail('AAPL')
 #'
 #' }
-symbol_detail = function(ticker,accessToken=NULL) {
+symbol_detail = function(ticker, accessToken = NULL) {
   
-  ### Get access token from options if one is not passed
+  # Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
   
-  tickerURL = paste0('https://api.tdameritrade.com/v1/instruments?symbol=',ticker,'&projection=fundamental')
+  # Construct URL
+  tickerURL = paste0('https://api.tdameritrade.com/v1/instruments?symbol=',
+                     ticker,'&projection=fundamental')
   
-  ### Make Get Request using token
-  tickerDet = httr::GET(tickerURL,ram_headers(accessToken))
+  # Make Get Request using token
+  tickerDet = httr::GET(tickerURL, ram_headers(accessToken))
   
-  ### Confirm status code of 200
+  # Confirm status code of 200
   ram_status(tickerDet)
   
-  ### Get Content
+  # Get Content
   tickCont = httr::content(tickerDet)
-  if(length(tickCont)==0){stop('Ticker not valid')}
+  if (length(tickCont)==0) stop('Ticker not valid')
   
   Fund = data.frame(tickCont[[1]]$fundamental)
   Tick = tickCont[[1]]
-  Tick$fundamental=NULL
-  TickOut = merge(data.frame(Tick),Fund) %>% dplyr::as_tibble()
+  Tick$fundamental = NULL
+  TickOut = merge(data.frame(Tick),Fund) %>% 
+    dplyr::as_tibble()
   
-  return(TickOut)
+  # Return data as a data frame
+  TickOut
 }
       
