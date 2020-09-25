@@ -282,48 +282,72 @@ trade entries.
 ``` r
 library(rameritrade)
 
+# Set Access Token using a valid Refresh Token
 refreshToken = readRDS('/secure/location/')
-accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
+accessToken = rameritrade::auth_new_accessToken(refreshToken, consumerKey)
 accountNumber = 1234567890
 
 # Market Order
-Ord0 = rameritrade::order_place(accountNumber,ticker='PSLV',quantity=1,instruction='BUY')
-rameritrade::order_cancel(Ord0$orderId,accountNumber)
+Ord0 = rameritrade::order_place(accountNumber,
+                                ticker = 'PSLV',
+                                quantity = 1,
+                                instruction = 'BUY')
+rameritrade::order_cancel(Ord0$orderId, accountNumber)
 # [1] "Order Cancelled"
 
 
 
-# Good till cancelled Incorrect entry
-Ordr1 = rameritrade::order_place(accountNumber = accountNumber,ticker='SCHB',
-                    quantity = 1,instruction='buy',duration='good_till_cancel',
-                    orderType = 'stop_limit',limitPrice=50,stopPrice=49)
+# Good till cancelled stop limit Incorrect entry
+Ordr1 = rameritrade::order_place(accountNumber = accountNumber,
+                                 ticker = 'SCHB',
+                                 quantity = 1,
+                                 instruction = 'buy',
+                                 duration = 'good_till_cancel',
+                                 orderType = 'stop_limit',
+                                 limitPrice = 50,
+                                 stopPrice = 49)
 # Error: 400 - The stop price must be above the current ask for buy stop orders 
 #        and below the bid for sell stop orders.
 
 
 
 # Good till Cancelled Stop Limit Order correct entry
-Ordr1 = rameritrade::order_place(accountNumber = accountNumber,ticker='SCHB',
-                    quantity = 1,instruction='buy',duration='good_till_cancel',
-                    orderType = 'stop_limit',limitPrice=86,stopPrice=85)
-rameritrade::order_cancel(Ordr1$orderId,accountNumber)
+Ordr1 = rameritrade::order_place(accountNumber = accountNumber,
+                                 ticker = 'SCHB',
+                                 quantity = 1,
+                                 instruction = 'buy',
+                                 duration = 'good_till_cancel',
+                                 orderType = 'stop_limit',
+                                 limitPrice = 86,
+                                 stopPrice = 85)
+rameritrade::order_cancel(Ordr1$orderId, accountNumber)
 # [1] "Order Cancelled"
 
 
 
 # Trailing Stop Order
-Ordr2 = rameritrade::order_place(accountNumber = accountNumber,ticker='SPY',quantity = 1,
-                    instruction='sell', orderType = 'trailing_stop',stopPriceBasis = 'BID',
-                    stopPriceType = 'percent',stopPriceOffset = 10)
+Ordr2 = rameritrade::order_place(accountNumber = accountNumber,
+                                 ticker = 'SPY',
+                                 quantity = 1,
+                                 instruction = 'sell',
+                                 orderType = 'trailing_stop',
+                                 stopPriceBasis = 'BID',
+                                 stopPriceType = 'percent',
+                                 stopPriceOffset = 10)
 rameritrade::order_cancel(Ordr2$orderId,accountNumber)
-
+# [1] "Order Cancelled"
 
 # Option Order
-Ord3 = rameritrade::order_place(accountNumber = accountNumber, ticker='SLV_091820P24.5',
-                   quantity = 1, instruction='BUY_TO_OPEN', duration='Day',
-                   orderType = 'LIMIT', limitPrice = .02, assetType = 'OPTION')
-rameritrade::order_cancel(Ord3$orderId,accountNumber)
-
+Ord3 = rameritrade::order_place(accountNumber = accountNumber,
+                                ticker = 'SLV_091820P24.5',
+                                quantity = 1,
+                                instruction = 'BUY_TO_OPEN',
+                                duration = 'Day',
+                                orderType = 'LIMIT',
+                                limitPrice = .02,
+                                assetType = 'OPTION')
+rameritrade::order_cancel(Ord3$orderId, accountNumber)
+# [1] "Order Cancelled"
 ```
 
 ## Working with multiple accounts
@@ -335,12 +359,13 @@ used for two separate log ins.
 ``` r
 
 library(rameritrade)
+consumerKey = 'APP_CONSUMER_KEY'
 
 refreshToken1 = readRDS('/secure/location/1')
-accessToken1 = rameritrade::auth_new_accessToken(refreshToken1,consumerKey)
+accessToken1 = rameritrade::auth_new_accessToken(refreshToken1, consumerKey)
 
 refreshToken2 = readRDS('/secure/location/2')
-accessToken2 = rameritrade::auth_new_accessToken(refreshToken2,consumerKey)
+accessToken2 = rameritrade::auth_new_accessToken(refreshToken2, consumerKey)
 
 ActBal1 = rameritrade::act_data_list(accessToken = accessToken1)
 
