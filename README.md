@@ -7,11 +7,12 @@
 
 <!-- badges: end -->
 
-Use R to interface with the TD Ameritrade API. Functions facilitate
-authentication, trading, price requests, account information, etc. A
-user will need a TD Brokerage account and TD Ameritrade developer app.
-Please note, the fate of the TD Ameritrade API is in question after the
-Charles Schwab acquisition, but there is optimism the API will remain.
+R package for the TD Ameritrade API. Functions include authentication,
+trading, price requests, account balances, positions, order history, and
+option chains. A user will need a TD Brokerage account and TD Ameritrade
+developer app. Please note, the fate of the TD Ameritrade API is in
+question after the Charles Schwab acquisition, but there is optimism the
+API will remain.
 
 ## Introduction
 
@@ -142,7 +143,7 @@ new refreshToken.
 # Use the auth_init_loginURL to generate an app specific URL. See the TD Authentication FAQ for issues.
 
 callbackURL = 'https://myTDapp'
-consumerKey = 'consumerKey'
+consumerKey = 'APP_CONSUMER_KEY'
 
 rameritrade::auth_init_loginURL(callbackURL,consumerKey)
 # "https://auth.tdameritrade.com/auth?response_type=code&redirect_uri=https://myTDapp&client_id=consumerKey%40AMER.OAUTHAP"
@@ -169,7 +170,7 @@ saveRDS(refreshToken,'/secure/location/')
 refreshToken = readRDS('/secure/location/')
 accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
 # "Successful Login. Token has been stored and will be valid for 30 minutes"
-
+# Authentication has been completed. Other functions can now be used.
 
 # --------- Step 4 (when needed) -----------
 # The Refresh Token should be reset before it expires after 90 days. 
@@ -190,6 +191,7 @@ including balances, positions, and current day orders.
 library(rameritrade)
 
 refreshToken = readRDS('/secure/location/')
+consumerKey = 'APP_CONSUMER_KEY'
 accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
 # By default balances are returned. Access token does not have to be passed
 ActBal = rameritrade::act_data_list()  
@@ -229,6 +231,7 @@ will be real-time if the account has access to real-time quotes.
 library(rameritrade)
 
 refreshToken = readRDS('/secure/location/')
+consumerKey = 'APP_CONSUMER_KEY'
 accessToken = rameritrade::auth_new_accessToken(refreshToken, consumerKey)
 
 ### Quote data
@@ -284,6 +287,7 @@ library(rameritrade)
 
 # Set Access Token using a valid Refresh Token
 refreshToken = readRDS('/secure/location/')
+consumerKey = 'APP_CONSUMER_KEY'
 accessToken = rameritrade::auth_new_accessToken(refreshToken, consumerKey)
 accountNumber = 1234567890
 

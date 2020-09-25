@@ -39,7 +39,7 @@ act_data_list = function(dataType=c('balances','positions','orders'),accessToken
   
   # Check Data Type, default to balances, stop if not one of the three options passed
   if (missing(dataType)) dataType='balances'
-  if (!(dataType %in% c('balanes','positions','orders'))) {
+  if (!(dataType %in% c('balances','positions','orders'))) {
     stop('dataType must be "balances", "positons", or "orders"', call. = FALSE)
   }
   
