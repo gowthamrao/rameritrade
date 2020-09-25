@@ -7,17 +7,16 @@
 
 <!-- badges: end -->
 
-R package for using the TD Ameritrade API. A TD Ameritrade brokerage
-account and a TD Ameritrade Developer app are required for
-authentication (see below). The TD API allows for trading of equities
-and options, pulling historical stock prices and current stock quotes,
-downloading option chains, pulling account balances and positions, and
-accessing historical transactions.
+Use R to interface with the TD Ameritrade API. Functions facilitate
+authentication, trading, price requests, account information, etc. A
+user will need a TD Brokerage account and TD Ameritrade developer app.
+Please note, the fate of the TD Ameritrade API is in question after the
+Charles Schwab acquisition, but there is optimism the API will remain.
 
 ## Introduction
 
 TD Ameritrade is one of many trading platforms that offer a trade API.
-Others include Alpaca, Robinhood, InteractiveBrokers, and eTrade. Alpaca
+Others include Alpaca, RobinHood, InteractiveBrokers, and eTrade. Alpaca
 and Robinhood offer great capabilities, and there are existing R
 packages for both. Unfortunately, they do not offer the full
 capabilities of a major brokerage firm such as IRAs, multiple accounts,
@@ -71,7 +70,7 @@ You can install rameritrade using:
 # install.packages("devtools")
 devtools::install_github("tonytrevisan/rameritrade")
 
-### NOT YET AVAILABLE ON CRAN
+# NOT YET AVAILABLE ON CRAN
 # install.packages("rameritrade")
 ```
 
@@ -108,16 +107,16 @@ Details are also provided within the functions.
     lost, you can always follow steps 6-8 above.
 10. The Refresh Token is used to generate an Access Token which gives
     account access for 30 minutes
-11. The most recent Access Token is stored by default into getOptions.
+11. The most recent Access Token is stored by default into Options.
     Passing it into the functions is optional unless accessing multiple
     accounts.
 12. To reset the Refresh Token as it approaches expiration, you can
-    follow steps 6-8 or use auth\_get\_refresh
+    follow steps 6-8 or use auth\_new\_refreshToken
 
 Please note: TD has indicated they prefer infrequent token generation
 and will take action on excessive tokens being generated
 
-#### Terminology
+### Terminology
 
   - Authorization Code: generated from the app specific URL when a TD
     Brokerage account logs in
@@ -126,39 +125,56 @@ and will take action on excessive tokens being generated
   - Access Token: generated using the Refresh Token and creates the
     connection to the API. Valid for 30 minutes.
 
-<!-- end list -->
+### Example
+
+The auth\_init functions are used to gain initial access to the API.
+They are used to generate a Refresh Token. Once a Refresh Token is
+generated, the auth\_init functions will not be required unless the
+Refresh Token expires. This can be avoided using
+auth\_new\_refreshToken, which uses an existing refreshToken to create a
+new refreshToken.
 
 ``` r
 
-### Step 1 - Register an app and generate a log in URL
-### Register an App with TD Ameritrade Developer, create a Callback URL, and get a Consumer Key
-### The callback URL can be anything (for example: https://myTDapp) 
-### Use the auth_init_loginURL to generate an app specific URL. See the TD Authentication FAQ for issues.
+# --------- Step 1 -----------
+# Register an App with TD Ameritrade Developer, create a Callback URL, and get a Consumer Key
+# The callback URL can be anything (for example: https://myTDapp) 
+# Use the auth_init_loginURL to generate an app specific URL. See the TD Authentication FAQ for issues.
+
 callbackURL = 'https://myTDapp'
 consumerKey = 'consumerKey'
+
 rameritrade::auth_init_loginURL(callbackURL,consumerKey)
 # "https://auth.tdameritrade.com/auth?response_type=code&redirect_uri=https://myTDapp&client_id=consumerKey%40AMER.OAUTHAP"
 
-### Visit the URL above to see a TD log in screen. Log in with a TD Brokerage account to grant the app access. 
+# Visit the URL above to see a TD log in screen. Log in with a TD Brokerage account to grant the app access. 
 
 
-### Step 2 - Feed the Authorization Code URL into auth_init_refreshToken to get a Refresh Token
-### The Authorization Code will be embedded in the URL once access is "Allowed"
-### The page may indicate "This site can't be reached". The URL is still valid.
+# --------- Step 2 -----------
+# Feed the Authorization Code URL into auth_init_refreshToken to get a Refresh Token
+# The Authorization Code will be embedded in the URL once access is "Allowed" from Step 1
+# The page may indicate "This site can't be reached". The URL is still valid.
+
 refreshToken = rameritrade::auth_init_refreshToken(callbackURL,consumerKey,'https://myTDapp/?code=AUTHORIZATIONCODE')
 # "Successful Refresh Token Generated"
 
-### Save the Refresh Token to a safe location so it can be retrieved as needed. It will be valid for 90 days.
+# Save the Refresh Token to a safe location so it can be retrieved as needed. It will be valid for 90 days.
 saveRDS(refreshToken,'/secure/location/')
 
-### Step 3 - Use the Refresh Token to get an Access Token
-### The function will return an Access Token and also store it for use as a default token
+
+# --------- Step 3 -----------
+# Use the Refresh Token to get an Access Token
+# The function will return an Access Token and also store it for use as a default token in Options
+
 refreshToken = readRDS('/secure/location/')
 accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
 # "Successful Login. Token has been stored and will be valid for 30 minutes"
 
-### Step 4 - When needed, the Refresh Token should be reset before it expires after 90 days. 
-### TD indicates they do look for frequent Refresh Token generation. This function should be used conservatively. 
+
+# --------- Step 4 (when needed) -----------
+# The Refresh Token should be reset before it expires after 90 days. 
+# TD indicates they do look for frequent Refresh Token generation. This function should be used conservatively. 
+
 refreshToken = readRDS('/secure/location/')
 refreshToken = rameritrade::auth_new_refreshToken(refreshToken,consumerKey)
 # "Successful Refresh Token Generated"
@@ -175,8 +191,9 @@ library(rameritrade)
 
 refreshToken = readRDS('/secure/location/')
 accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
-## By default balances are returned. Access token does not have to be passed
+# By default balances are returned. Access token does not have to be passed
 ActBal = rameritrade::act_data_list()  
+
 str(ActBal)
 # List of 2
 # $ :List of 1
@@ -189,9 +206,10 @@ str(ActBal)
 # .. ..$ initialBalances        :List of 18
 # .. .. ..$ accruedInterest           : num 0
 
-## Get current account positions
+# Get current account positions
 ActPos = rameritrade::act_data_df('positions')
- str(ActPos)
+
+str(ActPos)
 # 'data.frame': 6 obs. of  19 variables:
 # $ accountId                     : chr  "" ...
 # $ type                          : chr  "CASH" "CASH" "CASH" "CASH" ...
@@ -211,10 +229,10 @@ will be real-time if the account has access to real-time quotes.
 library(rameritrade)
 
 refreshToken = readRDS('/secure/location/')
-accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
+accessToken = rameritrade::auth_new_accessToken(refreshToken, consumerKey)
 
 ### Quote data
-SP500Qt = rameritrade::price_quote_df(c('SPY','IVV','VOO'))
+SP500Qt = rameritrade::price_quote_df(c('SPY', 'IVV', 'VOO'))
 str(SP500Qt)
 
 # 'data.frame': 3 obs. of  48 variables:
@@ -227,7 +245,7 @@ str(SP500Qt)
 # $ bidPrice                          : num  331 332 305
 
 
-### Historical Data
+# Historical Data
 SP500H = rameritrade::price_hisotry_mult(c(c('SPY','IVV','VOO')))
 head(SP500H)
 # A tibble: 6 x 8
@@ -241,8 +259,8 @@ head(SP500H)
 # 6 SPY    2020-08-25 2020-08-25 01:00:00  344.  344.  342.  344. 38463381
 
 
-### Time series data
-### History is only available back to a certain time depending on frequency
+# Time series data
+# History is only available back to a certain time depending on frequency
 rameritrade::price_history_single('AAPL', startDate = '2020-09-01', freq='5min')
 # # A tibble: 2,424 x 8
 # ticker date       date_time            open  high   low close volume
@@ -268,14 +286,14 @@ refreshToken = readRDS('/secure/location/')
 accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
 accountNumber = 1234567890
 
-### Market Order
+# Market Order
 Ord0 = rameritrade::order_place(accountNumber,ticker='PSLV',quantity=1,instruction='BUY')
 rameritrade::order_cancel(Ord0$orderId,accountNumber)
 # [1] "Order Cancelled"
 
 
 
-### Good till cancelled Incorrect entry
+# Good till cancelled Incorrect entry
 Ordr1 = rameritrade::order_place(accountNumber = accountNumber,ticker='SCHB',
                     quantity = 1,instruction='buy',duration='good_till_cancel',
                     orderType = 'stop_limit',limitPrice=50,stopPrice=49)
@@ -284,7 +302,7 @@ Ordr1 = rameritrade::order_place(accountNumber = accountNumber,ticker='SCHB',
 
 
 
-### Good till Cancelled Stop Limit Order correct entry
+# Good till Cancelled Stop Limit Order correct entry
 Ordr1 = rameritrade::order_place(accountNumber = accountNumber,ticker='SCHB',
                     quantity = 1,instruction='buy',duration='good_till_cancel',
                     orderType = 'stop_limit',limitPrice=86,stopPrice=85)
@@ -293,14 +311,14 @@ rameritrade::order_cancel(Ordr1$orderId,accountNumber)
 
 
 
-### Trailing Stop Order
+# Trailing Stop Order
 Ordr2 = rameritrade::order_place(accountNumber = accountNumber,ticker='SPY',quantity = 1,
                     instruction='sell', orderType = 'trailing_stop',stopPriceBasis = 'BID',
                     stopPriceType = 'percent',stopPriceOffset = 10)
 rameritrade::order_cancel(Ordr2$orderId,accountNumber)
 
 
-### Option Order
+# Option Order
 Ord3 = rameritrade::order_place(accountNumber = accountNumber, ticker='SLV_091820P24.5',
                    quantity = 1, instruction='BUY_TO_OPEN', duration='Day',
                    orderType = 'LIMIT', limitPrice = .02, assetType = 'OPTION')
