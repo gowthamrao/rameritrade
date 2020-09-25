@@ -14,6 +14,6 @@ The rameritrade package provides four categories of important functions:
 }
 }
 \details{
-Details for the functions can be found within the function help pages with
-examples also available within the README.
+Details for the functions can be found within the function help pages. 
+Detailed examples also available within the README.
 }

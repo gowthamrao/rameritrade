@@ -183,7 +183,7 @@ order_search = function(accountNumber, startDate = Sys.Date()-months(1), endDate
 #' Only equities and options can be traded at this time. This function is built
 #' to allow a single trade submission. More complex trades can be executed
 #' through the API, but a custom function or submission will need to be
-#' constructed. To build more custom trading strategies,reference the
+#' constructed. To build more custom trading strategies, reference the
 #' \href{https://developer.tdameritrade.com/account-access/apis}{TD Ameritrade
 #' API Instructions} or the
 #' \href{https://developer.tdameritrade.com/content/place-order-samples}{order

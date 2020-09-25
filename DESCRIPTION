@@ -1,7 +1,7 @@
 Package: rameritrade
 Title: TD Ameritrade API Interface for R
 Version: 0.0.0.9000
-Author:
+Authors@R:
     person(given = "Tony",
            family = "Trevisan",
            role = c("aut", "cre"),
