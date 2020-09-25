@@ -58,10 +58,4 @@ saveRDS(newrefreshToken,'/secure/location/')
   \code{\link{auth_new_accessToken}} for a new Access Token,
   \code{\link{auth_new_refreshToken}} to reset an existing Refresh Token
   before expiration
-
-Other authentication functions: 
-\code{\link{auth_init_loginURL}()},
-\code{\link{auth_init_refreshToken}()},
-\code{\link{auth_new_accessToken}()}
 }
-\concept{authentication functions}

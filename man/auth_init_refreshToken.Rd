@@ -38,7 +38,7 @@ sure to save the Refresh Token to a safe location or the two step auth_init
 prorcess will be required again. The user can use
 \code{\link{auth_new_refreshToken}} to reset the token before expiration. If
 the Refresh Token expires, a new Authorization Code will need to be generated
-by logging into the URL from \code{\link{auth_init_loginURL}}
+by logging into the URL from \code{\link{auth_init_loginURL}}.
 
 The Refresh Token output should be saved in a very safe location, but also
 accessible. It will be needed to generate an Access Token using
@@ -64,10 +64,4 @@ saveRDS(refreshToken,'/secure/location/')
   \code{\link{auth_new_accessToken}} for a new Access Token,
   \code{\link{auth_new_refreshToken}} to reset an existing Refresh Token
   before expiration
-
-Other authentication functions: 
-\code{\link{auth_init_loginURL}()},
-\code{\link{auth_new_accessToken}()},
-\code{\link{auth_new_refreshToken}()}
 }
-\concept{authentication functions}

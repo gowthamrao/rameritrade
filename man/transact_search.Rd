@@ -27,8 +27,8 @@ all types. For example: TRADE, CASH_IN_OR_CASH_OUT, CHECKING, DIVIDEND,
 INTEREST, OTHER}
 
 \item{accessToken}{A valid Access Token must be set using
-\code{\link{auth_new_accessToken}}. The most recent access token will be
-used by default unless one is manually passed into the function}
+\code{\link{auth_new_accessToken}}. The most recent Access Token will be
+used by default unless one is manually passed into the function.}
 }
 \value{
 a jsonlite data frame of transactions

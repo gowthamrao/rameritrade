@@ -29,12 +29,11 @@ Access Token}
 confirm. This should be a ticker/symbol, not a CUSIP}
 
 \item{quantity}{the number of shares to be bought or sold. Must be an
-integer. TD has indicated they have capabilities for fractional shares but
-have not 'yet' enabled the feature}
+integer.}
 
 \item{instruction}{Equity instructions include 'BUY', 'SELL', 'BUY_TO_COVER',
-or 'SELL_SHORT'. Options instructions include 'BUY_TO_OPEN', 'BUY_TO_CLOSE',
-'SELL_TO_OPEN', or 'SELL_TO_CLOSE'}
+or 'SELL_SHORT'. Options instructions include 'BUY_TO_OPEN',
+'BUY_TO_CLOSE', 'SELL_TO_OPEN', or 'SELL_TO_CLOSE'}
 
 \item{orderType}{MARKET, LIMIT (requiring limitPrice), STOP (requiring
 stopPrice), STOP_LIMIT, TRAILING_STOP (requiring stopPriceBasis,
@@ -44,8 +43,8 @@ stopPriceType, stopPriceOffset)}
 
 \item{stopPrice}{the stop price for a STOP or STOP_LIMIT order}
 
-\item{assetType}{Equity or Option. No other asset types are available at this
-time}
+\item{assetType}{EQUITY or OPTION. No other asset types are available at this
+time. EQUITY is the default.}
 
 \item{session}{NORMAL for normal market hours, AM or PM for extended market
 hours}
@@ -53,19 +52,19 @@ hours}
 \item{duration}{how long will the trade stay open without a fill: DAY,
 GOOD_UNTIL_CANCEL, FILL_OR_KILL}
 
-\item{stopPriceBasis}{the basis for a STOP, STOP_LIMIT, or TRAILING_STOP
-which include LAST, BID, ASK}
+\item{stopPriceBasis}{LAST, BID, or ASK which is the basis for a STOP,
+STOP_LIMIT, or TRAILING_STOP}
 
 \item{stopPriceType}{the link to the stopPriceBasis. VALUE for dollar
 difference or PERCENT for a percentage offset from the price basis}
 
-\item{stopPriceOffset}{the offset used for the stopPriceType, 10 and PERCENT
-is a 10% offset from the current price basis. 5 and VALUE is a $5 offset
-from the current price basis}
+\item{stopPriceOffset}{an integer that indicates the offset used for the
+stopPriceType, 10 and PERCENT is a 10 percent offset from the current price
+basis. 5 and VALUE is a 5 dollar offset from the current price basis}
 
 \item{accessToken}{A valid Access Token must be set using
-\code{\link{auth_new_accessToken}}. The most recent access token will be
-used by default unless one is manually passed into the function}
+\code{\link{auth_new_accessToken}}. The most recent Access Token will be
+used by default unless one is manually passed into the function.}
 }
 \value{
 the trade id, account id, and other order details
@@ -80,7 +79,7 @@ successfully and the token has not expired, which occurs after 30 minutes.
 Only equities and options can be traded at this time. This function is built
 to allow a single trade submission. More complex trades can be executed
 through the API, but a custom function or submission will need to be
-constructed. To build more custom trading strategies,reference the
+constructed. To build more custom trading strategies, reference the
 \href{https://developer.tdameritrade.com/account-access/apis}{TD Ameritrade
 API Instructions} or the
 \href{https://developer.tdameritrade.com/content/place-order-samples}{order
@@ -119,16 +118,16 @@ accountNumber = 1234567890
 
 # Standard market buy order
 # Every order must have at least these 4 paramters
-order_place(accountNumber = accountNumber, 
+order_place(accountNumber = accountNumber,
             ticker = 'AAPL',
-            quantity = 1, 
+            quantity = 1,
             instruction = 'buy')
 
 # Stop limit order - good until canceled
-order_place(accountNumber = accountNumber, 
+order_place(accountNumber = accountNumber,
             ticker = 'AAPL',
-            quantity = 1, 
-            instruction = 'sell', 
+            quantity = 1,
+            instruction = 'sell',
             duration = 'good_till_cancel',
             orderType = 'stop_limit',
             limitPrice = 98,
@@ -138,20 +137,20 @@ order_place(accountNumber = accountNumber,
 order_place(accountNumber = accountNumber,
             ticker='AAPL',
             quantity = 1,
-            instruction='sell', 
+            instruction='sell',
             orderType = 'trailing_stop',
             stopPriceBasis = 'BID',
             stopPriceType = 'percent',
             stopPriceOffset = 10)
 
 # Option Order with a limit price
-order_place(accountNumber = accountNumber, 
+order_place(accountNumber = accountNumber,
             ticker = 'SLV_091820P24.5',
-            quantity = 1, 
-            instruction = 'BUY_TO_OPEN', 
+            quantity = 1,
+            instruction = 'BUY_TO_OPEN',
             duration = 'Day',
-            orderType = 'LIMIT', 
-            limitPrice = .02, 
+            orderType = 'LIMIT',
+            limitPrice = .02,
             assetType = 'OPTION')
 
 }

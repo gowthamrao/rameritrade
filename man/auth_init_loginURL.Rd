@@ -34,12 +34,12 @@ This function will use these two inputs to generate a URL where the user can
 log in to their standard TD Ameritrade Brokerage Account and grant the
 application access to the brokerage account, enabling the API. The
 Authorization Code generated at the end of the log in process will feed into
-\code{\link{auth_init_refreshToken}} For questions, please reference the
+\code{\link{auth_init_refreshToken}}. For questions, please reference the
 \href{https://developer.tdameritrade.com/content/authentication-faq}{TD
 Ameritrade Authentication FAQ} or see the examples in the rameritrade readme.
-If the callback URL uses localhost or an IP (e.g. 127.0.0.0.1), the output of
-this function may not work. Pleases reference the TD documentation to find
-the appropriate URL.
+If the callback URL uses punctuation, numbers, or an IP (e.g. 127.0.0.0.1),
+the output of this function may not work. Please reference the TD
+documentation to create the appropriate URL.
 }
 \examples{
 \dontrun{
@@ -58,10 +58,4 @@ loginURL = auth_init_loginURL('https://myTDapp','consumerKey')
   \code{\link{auth_new_accessToken}} for a new Access Token,
   \code{\link{auth_new_refreshToken}} to reset an existing Refresh Token
   before expiration
-
-Other authentication functions: 
-\code{\link{auth_init_refreshToken}()},
-\code{\link{auth_new_accessToken}()},
-\code{\link{auth_new_refreshToken}()}
 }
-\concept{authentication functions}

@@ -29,8 +29,8 @@ yyyy-mm-dd}
 CANCELED, REJECTED, etc)}
 
 \item{accessToken}{A valid Access Token must be set using
-\code{\link{auth_new_accessToken}}. The most recent access token will be
-used by default unless one is manually passed into the function}
+\code{\link{auth_new_accessToken}}. The most recent Access Token will be
+used by default unless one is manually passed into the function.}
 }
 \value{
 a list of three objects: a jsonlite formatted extract of all orders,
@@ -48,6 +48,7 @@ result is a list of three objects:
 \examples{
 \dontrun{
 
+# Get all orders run over the last 50 days (up to 500)
 order_search(accountNumber = 987654321, 
              startDate = Sys.Date()-days(50),
              maxResult = 500, orderStatus = 'FILLED')

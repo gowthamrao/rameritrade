@@ -25,8 +25,8 @@ free data providers}
 15min, or 30min}
 
 \item{accessToken}{A valid Access Token must be set using
-\code{\link{auth_new_accessToken}}. The most recent access token will be
-used by default unless one is manually passed into the function}
+\code{\link{auth_new_accessToken}}. The most recent Access Token will be
+used by default unless one is manually passed into the function.}
 }
 \value{
 a tibble of price data
@@ -59,3 +59,10 @@ tickHistDay = price_hisotry_mult(c('SPY','IWM'), startDate = '1990-01-01')
 
 }
 }
+\seealso{
+Other pricing functions: 
+\code{\link{price_history_single}()},
+\code{\link{price_quote_df}()},
+\code{\link{price_quote_list}()}
+}
+\concept{pricing functions}

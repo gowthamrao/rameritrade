@@ -18,17 +18,18 @@ option_chain(
 
 \item{strikes}{the number of strikes above and below the current strike}
 
-\item{inclQuote}{include pricing details (will be delayed if account is set
-for delayed quotes)}
+\item{inclQuote}{set TRUE to include pricing details (will be delayed if
+account is set for delayed quotes)}
 
 \item{startDate}{the start date for expiration (should be greater than or
-equal to today). format yyyy-mm-dd}
+equal to today). Format: yyyy-mm-dd}
 
-\item{endDate}{the end date for expiration. format yyyy-mm-dd}
+\item{endDate}{the end date for expiration (should be greater than or equal
+to today). Format: yyyy-mm-dd}
 
 \item{accessToken}{A valid Access Token must be set using
-\code{\link{auth_new_accessToken}}. The most recent access token will be
-used by default unless one is manually passed into the function}
+\code{\link{auth_new_accessToken}}. The most recent Access Token will be
+used by default unless one is manually passed into the function.}
 }
 \value{
 a list of 2 data frames - underlying and options chain
@@ -38,8 +39,8 @@ Search an Option Chain for a specific ticker
 }
 \details{
 Return a list containing two data frames. The first is the underlying data
-for the symbol. The second item in the list is a data from that contains the
-options chain for the specified ticker
+for the symbol. The second item in the list is a data frame that contains the
+options chain for the specified ticker.
 }
 \examples{
 \dontrun{

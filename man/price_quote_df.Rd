@@ -10,14 +10,14 @@ price_quote_df(tickers = c("AAPL", "MSFT"), accessToken = NULL)
 \item{tickers}{One or more tickers}
 
 \item{accessToken}{A valid Access Token must be set using
-\code{\link{auth_new_accessToken}}. The most recent access token will be
-used by default unless one is manually passed into the function}
+\code{\link{auth_new_accessToken}}. The most recent Access Token will be
+used by default unless one is manually passed into the function.}
 }
 \value{
 a data frame with quote details for each valid ticker submitted
 }
 \description{
-Enter tickers for real time or delayed quotes as data frame
+Enter tickers for real time or delayed quotes returned as a data frame
 }
 \details{
 Quotes may be delayed depending on agreement with TD Ameritrade. If the
@@ -40,3 +40,10 @@ quoteList = price_quote_df(c('GOOG','TSLA'), accessToken)
 
 }
 }
+\seealso{
+Other pricing functions: 
+\code{\link{price_hisotry_mult}()},
+\code{\link{price_history_single}()},
+\code{\link{price_quote_list}()}
+}
+\concept{pricing functions}

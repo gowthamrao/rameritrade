@@ -5,27 +5,24 @@
 \title{Get Market Hours}
 \usage{
 market_hours(
-  marketDate = Sys.Date(),
   marketType = c("EQUITY", "OPTION", "BOND", "FUTURE", "FOREX"),
   accessToken = NULL
 )
 }
 \arguments{
-\item{marketDate}{The market date to pull details}
-
 \item{marketType}{The asset class to pull:
 'EQUITY','OPTION','BOND','FUTURE','FOREX'. Default is EQUITY}
 
 \item{accessToken}{A valid Access Token must be set using
-\code{\link{auth_new_accessToken}}. The most recent access token will be
-used by default unless one is manually passed into the function}
+\code{\link{auth_new_accessToken}}. The most recent Access Token will be
+used by default unless one is manually passed into the function.}
 }
 \value{
-List output of times and if the specified date is a trading day
+List output of times and if the current date is a trading day
 }
 \description{
-Returns a list output for a specified day and market that details the trading
-window for that day
+Returns a list output for current day and specified market that details the
+trading window
 }
 \examples{
 \dontrun{

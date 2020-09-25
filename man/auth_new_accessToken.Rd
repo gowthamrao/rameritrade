@@ -31,7 +31,7 @@ which stay valid for 90 days. The Consumer Key is generated automatically
 when an App is registered on the
 \href{https://developer.tdameritrade.com/}{TD Ameritrade Developer} site. By
 default, the Access Token is stored into options and will automatically be
-passed to downstream function. However, the user can also submit an Access
+passed to downstream functions. However, the user can also submit an Access
 Token manually if multiple tokens are in use (for example: when managing more
 than one log in.)
 
@@ -57,10 +57,4 @@ accessToken = auth_new_accessToken(refreshToken,'APPCONSUMERKEY')
   \code{\link{auth_new_accessToken}} for a new Access Token,
   \code{\link{auth_new_refreshToken}} to reset an existing Refresh Token
   before expiration
-
-Other authentication functions: 
-\code{\link{auth_init_loginURL}()},
-\code{\link{auth_init_refreshToken}()},
-\code{\link{auth_new_refreshToken}()}
 }
-\concept{authentication functions}
