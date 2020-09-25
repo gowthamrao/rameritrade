@@ -3,16 +3,17 @@
 #' Search an Option Chain for a specific ticker
 #'
 #' Return a list containing two data frames. The first is the underlying data
-#' for the symbol. The second item in the list is a data from that contains the
-#' options chain for the specified ticker
+#' for the symbol. The second item in the list is a data frame that contains the
+#' options chain for the specified ticker.
 #'
 #' @param ticker underlying ticker for the options chain
 #' @param strikes the number of strikes above and below the current strike
-#' @param inclQuote include pricing details (will be delayed if account is set
-#'   for delayed quotes)
+#' @param inclQuote set TRUE to include pricing details (will be delayed if
+#'   account is set for delayed quotes)
 #' @param startDate the start date for expiration (should be greater than or
-#'   equal to today). format yyyy-mm-dd
-#' @param endDate the end date for expiration. format yyyy-mm-dd
+#'   equal to today). Format: yyyy-mm-dd
+#' @param endDate the end date for expiration (should be greater than or equal
+#'   to today). Format: yyyy-mm-dd
 #' @inheritParams act_data_list
 #'
 #' @return a list of 2 data frames - underlying and options chain
@@ -25,11 +26,11 @@
 #' # with 5 strikes above and below the at-the-money price
 #' option_chain(ticker = 'SPY',
 #'              strikes = 5,
-#'              endDate = Sys.Date() + months(6))
+#'              endDate = Sys.Date() + 180)
 #'
 #' }
 option_chain = function(ticker, strikes = 10, inclQuote = TRUE, startDate = Sys.Date(),
-                        endDate = Sys.Date() + months(12), accessToken = NULL) {
+                        endDate = Sys.Date() + 360, accessToken = NULL) {
   
   # Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
@@ -97,7 +98,7 @@ option_chain = function(ticker, strikes = 10, inclQuote = TRUE, startDate = Sys.
 #'                 startDate = Sys.Date()-days(5))
 #'
 #' }
-transact_search = function(accountNumber, startDate = Sys.Date()-months(1),
+transact_search = function(accountNumber, startDate = Sys.Date()-30,
                            endDate = Sys.Date(), transType = 'All', 
                            accessToken = NULL){
   
@@ -126,15 +127,14 @@ transact_search = function(accountNumber, startDate = Sys.Date()-months(1),
 
 #' Get Market Hours
 #'
-#' Returns a list output for a specified day and market that details the trading
-#' window for that day
+#' Returns a list output for current day and specified market that details the
+#' trading window
 #'
 #' @inheritParams act_data_list
-#' @param marketDate The market date to pull details
 #' @param marketType The asset class to pull:
 #'   'EQUITY','OPTION','BOND','FUTURE','FOREX'. Default is EQUITY
 #'
-#' @return List output of times and if the specified date is a trading day
+#' @return List output of times and if the current date is a trading day
 #' @export
 #'
 #' @examples
@@ -146,8 +146,7 @@ transact_search = function(accountNumber, startDate = Sys.Date()-months(1),
 #' market_hours('2020-06-24', 'OPTION')
 #'
 #' }
-market_hours = function(marketDate = Sys.Date(),
-                        marketType = c('EQUITY','OPTION','BOND','FUTURE','FOREX'),
+market_hours = function(marketType = c('EQUITY','OPTION','BOND','FUTURE','FOREX'),
                         accessToken = NULL){
   
   # Get access token from options if one is not passed
@@ -158,8 +157,7 @@ market_hours = function(marketDate = Sys.Date(),
   marketURL = paste0('https://api.tdameritrade.com/v1/marketdata/',marketType,'/hours')
   
   # Make Get Request using token
-  marketHours = httr::GET(marketURL, ram_headers(accessToken), 
-                          body = list(date = marketDate), encode='json')
+  marketHours = httr::GET(marketURL, ram_headers(accessToken), encode='json')
   
   # Confirm status code of 200
   ram_status(marketHours)

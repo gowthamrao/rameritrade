@@ -44,7 +44,7 @@ order_detail = function(orderId, accountNumber, accessToken=NULL) {
 
 #' Cancel an Open Order
 #' 
-#' Pass an order ID and Account number to cancel an existing open order
+#' Pass an Drder ID and Account number to cancel an existing open order
 #'
 #' @inheritParams order_detail
 #'
@@ -103,12 +103,13 @@ order_cancel =  function(orderId,accountNumber,accessToken=NULL){
 #' @examples
 #' \dontrun{
 #'
+#' # Get all orders run over the last 50 days (up to 500)
 #' order_search(accountNumber = 987654321, 
 #'              startDate = Sys.Date()-days(50),
 #'              maxResult = 500, orderStatus = 'FILLED')
 #'
 #' }
-order_search = function(accountNumber, startDate = Sys.Date()-months(1), endDate = Sys.Date(),
+order_search = function(accountNumber, startDate = Sys.Date()-30, endDate = Sys.Date(),
                         maxResults = 50, orderStatus = '', accessToken = NULL){
   
   # Bind variables to quiet warning
@@ -191,7 +192,7 @@ order_search = function(accountNumber, startDate = Sys.Date()-months(1), endDate
 #' at the links above. Please note that in rare cases, the documentation may not
 #' be accurate in the API section, so the Order Sample guide is a better
 #' reference. TEST ALL ORDERS FIRST WITH SMALL DOLLAR AMOUNTS!!!
-#' 
+#'
 #' Four parameters are required for submission: ticker, instruction, quantity,
 #' and account number associated with the Access Token. The following parameters
 #' default: session - NORMAL, duration - DAY, asset type - EQUITY, and order
@@ -211,29 +212,28 @@ order_search = function(accountNumber, startDate = Sys.Date()-months(1), endDate
 #' @param ticker a valid Equity/ETF or option. If needed, use symbol_detail to
 #'   confirm. This should be a ticker/symbol, not a CUSIP
 #' @param quantity the number of shares to be bought or sold. Must be an
-#'   integer. TD has indicated they have capabilities for fractional shares but
-#'   have not 'yet' enabled the feature
+#'   integer.
 #' @param instruction Equity instructions include 'BUY', 'SELL', 'BUY_TO_COVER',
-#'   or 'SELL_SHORT'. Options instructions include 'BUY_TO_OPEN', 'BUY_TO_CLOSE',
-#'   'SELL_TO_OPEN', or 'SELL_TO_CLOSE'
+#'   or 'SELL_SHORT'. Options instructions include 'BUY_TO_OPEN',
+#'   'BUY_TO_CLOSE', 'SELL_TO_OPEN', or 'SELL_TO_CLOSE'
 #' @param orderType MARKET, LIMIT (requiring limitPrice), STOP (requiring
 #'   stopPrice), STOP_LIMIT, TRAILING_STOP (requiring stopPriceBasis,
 #'   stopPriceType, stopPriceOffset)
 #' @param limitPrice the limit price for a LIMIT or STOP_LIMIT order
 #' @param stopPrice the stop price for a STOP or STOP_LIMIT order
-#' @param assetType Equity or Option. No other asset types are available at this
-#'   time
+#' @param assetType EQUITY or OPTION. No other asset types are available at this
+#'   time. EQUITY is the default.
 #' @param session NORMAL for normal market hours, AM or PM for extended market
 #'   hours
 #' @param duration how long will the trade stay open without a fill: DAY,
 #'   GOOD_UNTIL_CANCEL, FILL_OR_KILL
-#' @param stopPriceBasis the basis for a STOP, STOP_LIMIT, or TRAILING_STOP
-#'   which include LAST, BID, ASK
+#' @param stopPriceBasis LAST, BID, or ASK which is the basis for a STOP,
+#'   STOP_LIMIT, or TRAILING_STOP
 #' @param stopPriceType the link to the stopPriceBasis. VALUE for dollar
 #'   difference or PERCENT for a percentage offset from the price basis
-#' @param stopPriceOffset the offset used for the stopPriceType, 10 and PERCENT
-#'   is a 10% offset from the current price basis. 5 and VALUE is a $5 offset
-#'   from the current price basis
+#' @param stopPriceOffset an integer that indicates the offset used for the
+#'   stopPriceType, 10 and PERCENT is a 10 percent offset from the current price
+#'   basis. 5 and VALUE is a 5 dollar offset from the current price basis
 #'
 #' @return the trade id, account id, and other order details
 #' @export
@@ -252,16 +252,16 @@ order_search = function(accountNumber, startDate = Sys.Date()-months(1), endDate
 #'
 #' # Standard market buy order
 #' # Every order must have at least these 4 paramters
-#' order_place(accountNumber = accountNumber, 
+#' order_place(accountNumber = accountNumber,
 #'             ticker = 'AAPL',
-#'             quantity = 1, 
+#'             quantity = 1,
 #'             instruction = 'buy')
 #'
 #' # Stop limit order - good until canceled
-#' order_place(accountNumber = accountNumber, 
+#' order_place(accountNumber = accountNumber,
 #'             ticker = 'AAPL',
-#'             quantity = 1, 
-#'             instruction = 'sell', 
+#'             quantity = 1,
+#'             instruction = 'sell',
 #'             duration = 'good_till_cancel',
 #'             orderType = 'stop_limit',
 #'             limitPrice = 98,
@@ -271,20 +271,20 @@ order_search = function(accountNumber, startDate = Sys.Date()-months(1), endDate
 #' order_place(accountNumber = accountNumber,
 #'             ticker='AAPL',
 #'             quantity = 1,
-#'             instruction='sell', 
+#'             instruction='sell',
 #'             orderType = 'trailing_stop',
 #'             stopPriceBasis = 'BID',
 #'             stopPriceType = 'percent',
 #'             stopPriceOffset = 10)
 #'
 #' # Option Order with a limit price
-#' order_place(accountNumber = accountNumber, 
+#' order_place(accountNumber = accountNumber,
 #'             ticker = 'SLV_091820P24.5',
-#'             quantity = 1, 
-#'             instruction = 'BUY_TO_OPEN', 
+#'             quantity = 1,
+#'             instruction = 'BUY_TO_OPEN',
 #'             duration = 'Day',
-#'             orderType = 'LIMIT', 
-#'             limitPrice = .02, 
+#'             orderType = 'LIMIT',
+#'             limitPrice = .02,
 #'             assetType = 'OPTION')
 #'
 #' }

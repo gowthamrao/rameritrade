@@ -9,10 +9,11 @@
 #' \code{\link{order_search}}.
 #'
 #' @param dataType 'balances' for current cash balances, 'positions' for current
-#'   account positions, 'orders' for orders entered on the current day
+#'   account positions, 'orders' for orders entered on the current day. Default
+#'   is set to 'balances'.
 #' @param accessToken A valid Access Token must be set using
-#'   \code{\link{auth_new_accessToken}}. The most recent access token will be
-#'   used by default unless one is manually passed into the function
+#'   \code{\link{auth_new_accessToken}}. The most recent Access Token will be
+#'   used by default unless one is manually passed into the function.
 #'
 #' @return a list of requested account details
 #' @export
@@ -23,7 +24,7 @@
 #' # Get stored refresh token
 #' refreshToken = readRDS('/secure/location/')
 #'
-#' # generate a new access token
+#' # Generate a new access token
 #' accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
 #'
 #' # Passing the accessToken is optional. The default will return balances
@@ -79,6 +80,12 @@ act_data_list = function(dataType=c('balances','positions','orders'),accessToken
 #'
 #' @examples
 #' \dontrun{
+#' 
+#' # Get stored refresh token
+#' refreshToken = readRDS('/secure/location/')
+#'
+#' # Generate a new access token
+#' accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
 #'
 #' # Passing the accessToken is optional. The default will return balances
 #' balances = act_data_df()

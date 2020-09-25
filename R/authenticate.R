@@ -17,14 +17,13 @@
 #' log in to their standard TD Ameritrade Brokerage Account and grant the
 #' application access to the brokerage account, enabling the API. The
 #' Authorization Code generated at the end of the log in process will feed into
-#' \code{\link{auth_init_refreshToken}} For questions, please reference the
+#' \code{\link{auth_init_refreshToken}}. For questions, please reference the
 #' \href{https://developer.tdameritrade.com/content/authentication-faq}{TD
 #' Ameritrade Authentication FAQ} or see the examples in the rameritrade readme.
-#' If the callback URL uses localhost or an IP (e.g. 127.0.0.0.1), the output of
-#' this function may not work. Pleases reference the TD documentation to find
-#' the appropriate URL.
+#' If the callback URL uses punctuation, numbers, or an IP (e.g. 127.0.0.0.1),
+#' the output of this function may not work. Please reference the TD
+#' documentation to create the appropriate URL.
 #'
-#' @family authentication functions
 #' @seealso \code{\link{auth_init_loginURL}} for login url,
 #'   \code{\link{auth_init_refreshToken}} for initial Refresh Token,
 #'   \code{\link{auth_new_accessToken}} for a new Access Token,
@@ -80,7 +79,7 @@ auth_init_loginURL = function(callbackURL,consumerKey) {
 #' prorcess will be required again. The user can use
 #' \code{\link{auth_new_refreshToken}} to reset the token before expiration. If
 #' the Refresh Token expires, a new Authorization Code will need to be generated
-#' by logging into the URL from \code{\link{auth_init_loginURL}}
+#' by logging into the URL from \code{\link{auth_init_loginURL}}.
 #'
 #' The Refresh Token output should be saved in a very safe location, but also
 #' accessible. It will be needed to generate an Access Token using
@@ -92,7 +91,6 @@ auth_init_loginURL = function(callbackURL,consumerKey) {
 #' @param authcode_url Authorization URL Code generated from a successful log in
 #'   to the \code{\link{auth_init_loginURL}}
 #'
-#' @family authentication functions
 #' @seealso \code{\link{auth_init_loginURL}} for login url,
 #'   \code{\link{auth_init_refreshToken}} for initial Refresh Token,
 #'   \code{\link{auth_new_accessToken}} for a new Access Token,
@@ -177,7 +175,7 @@ auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url) {
 #' when an App is registered on the
 #' \href{https://developer.tdameritrade.com/}{TD Ameritrade Developer} site. By
 #' default, the Access Token is stored into options and will automatically be
-#' passed to downstream function. However, the user can also submit an Access
+#' passed to downstream functions. However, the user can also submit an Access
 #' Token manually if multiple tokens are in use (for example: when managing more
 #' than one log in.)
 #'
@@ -193,7 +191,6 @@ auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url) {
 #'   \code{\link{auth_init_refreshToken}} or \code{\link{auth_new_refreshToken}}
 #' @inheritParams auth_init_loginURL
 #'
-#' @family authentication functions
 #' @seealso \code{\link{auth_init_loginURL}} for login url,
 #'   \code{\link{auth_init_refreshToken}} for initial Refresh Token,
 #'   \code{\link{auth_new_accessToken}} for a new Access Token,
@@ -291,7 +288,6 @@ auth_new_accessToken = function(refreshToken,consumerKey) {
 #'
 #' @inheritParams auth_new_accessToken
 #'
-#' @family authentication functions
 #' @seealso \code{\link{auth_init_loginURL}} for login url,
 #'   \code{\link{auth_init_refreshToken}} for initial Refresh Token,
 #'   \code{\link{auth_new_accessToken}} for a new Access Token,

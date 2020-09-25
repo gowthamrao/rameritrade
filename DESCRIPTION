@@ -9,8 +9,8 @@ Authors@R:
 Maintainer: Tony Trevisan <anthonytrevisan@gmail.com>
 URL: https://github.com/tonytrevisan/rameritrade/, https://developer.tdameritrade.com/
 BugReports: https://github.com/tonytrevisan/rameritrade/issues
-Description: Use R to interface with the TD Ameritrade API. Functions facilitate authentication,
-    trading, price requests, account information, etc. A user will need a TD Brokerage 
+Description: Use R to interface with the TD Ameritrade API, including authentication, trading,
+    price requests, account information, and option chains. A user will need a TD Brokerage 
     account and TD Ameritrade developer app. Please note, the fate of the TD Ameritrade API is
     in question after the Charles Schwab acquisition, but there is optimism the API will remain. 
 License: GPL-3

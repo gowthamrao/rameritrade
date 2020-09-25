@@ -1,6 +1,6 @@
 #' Get Quotes for specified tickers in List form
 #' 
-#' Enter tickers for real time or delayed quotes as list
+#' Enter tickers for real time or delayed quotes returned as a list
 #'
 #' Quotes may be delayed depending on agreement with TD Ameritrade. If the
 #' account is set up for real-time quotes then this will return real-time.
@@ -9,6 +9,7 @@
 #' @param tickers One or more tickers
 #' @inheritParams act_data_list
 #'
+#' @family pricing functions
 #' @return a list of data with quote details for each valid ticker submitted
 #' @export
 #'
@@ -46,7 +47,7 @@ price_quote_list = function(tickers = c('AAPL','MSFT'), accessToken=NULL) {
 
 #' Get Quotes for specified tickers in data frame form
 #' 
-#' Enter tickers for real time or delayed quotes as data frame
+#' Enter tickers for real time or delayed quotes returned as a data frame
 #'
 #' Quotes may be delayed depending on agreement with TD Ameritrade. If the
 #' account is set up for real-time quotes then this will return real-time.
@@ -54,6 +55,8 @@ price_quote_list = function(tickers = c('AAPL','MSFT'), accessToken=NULL) {
 #'
 #' @param tickers One or more tickers
 #' @inheritParams act_data_list
+#'
+#' @family pricing functions
 #'
 #' @return a data frame with quote details for each valid ticker submitted
 #' @export
@@ -103,6 +106,8 @@ price_quote_df = function(tickers = c('AAPL','MSFT'),accessToken=NULL) {
 #'   15min, or 30min
 #' @inheritParams act_data_list
 #'
+#' @family pricing functions
+#'
 #' @return a tibble of price data
 #' @export
 #'
@@ -119,7 +124,7 @@ price_quote_df = function(tickers = c('AAPL','MSFT'),accessToken=NULL) {
 #' tickHistDay = price_history_single('SPY', startDate = '1990-01-01')
 #'
 #' }
-price_history_single = function(ticker='AAPL',startDate=Sys.Date()-months(1),endDate=Sys.Date(),
+price_history_single = function(ticker='AAPL',startDate=Sys.Date()-30,endDate=Sys.Date(),
                                 freq=c('daily','1min','5min','10min','15min','30min'),
                                 accessToken=NULL){
   
@@ -194,6 +199,8 @@ price_history_single = function(ticker='AAPL',startDate=Sys.Date()-months(1),end
 #'   free data providers
 #' @inheritParams price_history_single
 #'
+#' @family pricing functions
+#'
 #' @return a tibble of price data
 #' @export
 #'
@@ -209,7 +216,7 @@ price_history_single = function(ticker='AAPL',startDate=Sys.Date()-months(1),end
 #' tickHistDay = price_hisotry_mult(c('SPY','IWM'), startDate = '1990-01-01')
 #'
 #' }
-price_hisotry_mult = function(tickers=c('AAPL','MSFT'),startDate=Sys.Date()-months(1),endDate=Sys.Date(),
+price_hisotry_mult = function(tickers=c('AAPL','MSFT'),startDate=Sys.Date()-30,endDate=Sys.Date(),
                               freq=c('daily','1min','5min','10min','15min','30min'),
                               accessToken=NULL){
   
