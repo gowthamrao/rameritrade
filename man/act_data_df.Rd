@@ -2,7 +2,7 @@
 % Please edit documentation in R/account.R
 \name{act_data_df}
 \alias{act_data_df}
-\title{Get a dataframe of data for the Access Token TD Brokerage Accounts}
+\title{Get account balances, positions, or orders returned as a data frame}
 \usage{
 act_data_df(
   dataType = c("balances", "positions", "orders"),
@@ -18,19 +18,24 @@ account positions, 'orders' for orders entered on the current day}
 used by default unless one is manually passed into the function}
 }
 \value{
-a dataframe of requested account details
+a data frame of requested account details
 }
 \description{
-The output will be a dataframe of requested details for TD Ameritrade
+Retrieves a data frame of data for the accounts linked to the Access Token
+}
+\details{
+The output will be a data frame of requested details for TD Ameritrade
 accounts linked to the access token. Use \code{\link{act_data_list}} for an
 output in list form. Request can be for current positions, current balances,
-or current day orders.
+or current day orders. For historical orders, see \code{\link{order_search}}.
 }
 \examples{
 \dontrun{
 
-### A valid refresh token can be fed into the function below for a new Access Token
-positions = act_data_df('positions')
+# Passing the accessToken is optional. The default will return balances
+balances = act_data_df()
+positions = act_data_df('positions',accessToken)
+orders = act_data_df('orders')
 
 }
 }

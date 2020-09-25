@@ -44,9 +44,11 @@ options chain for the specified ticker
 \examples{
 \dontrun{
 
-### Pull all option contracts expiring over the next 6 months
-### with 5 strikes above and below the at-the-money price
-option_chain(ticker='SPY',strikes=5,endDate = Sys.Date() + months(6))
+# Pull all option contracts expiring over the next 6 months
+# with 5 strikes above and below the at-the-money price
+option_chain(ticker = 'SPY',
+             strikes = 5,
+             endDate = Sys.Date() + months(6))
 
 }
 }

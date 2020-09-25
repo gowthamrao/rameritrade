@@ -34,17 +34,16 @@ used by default unless one is manually passed into the function}
 a jsonlite data frame of transactions
 }
 \description{
-Search for all Transaction types
-}
-\details{
 Can pull trades as well as transfers, dividend reinvestment, interest, etc.
-Any activity assoicated with the account.
+Any activity associated with the account.
 }
 \examples{
 \dontrun{
 
-### Transactions for the last 5 days
-transact_search(accountNumber=987654321, startDate = Sys.Date()-days(5))
+# Access Token must be set using auth_new_accessToken
+# Transactions for the last 5 days
+transact_search(accountNumber = 987654321, 
+                startDate = Sys.Date()-days(5))
 
 }
 }

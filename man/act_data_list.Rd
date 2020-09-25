@@ -2,7 +2,7 @@
 % Please edit documentation in R/account.R
 \name{act_data_list}
 \alias{act_data_list}
-\title{Get a list of data for the Access Token TD Brokerage Accounts}
+\title{Get account balances positions, or orders returned as a list}
 \usage{
 act_data_list(
   dataType = c("balances", "positions", "orders"),
@@ -21,16 +21,28 @@ used by default unless one is manually passed into the function}
 a list of requested account details
 }
 \description{
+Retrieves a list of account data for the accounts linked to the Access Token
+}
+\details{
 The output will be a list of requested details for TD Ameritrade accounts
 linked to the access token. Use \code{\link{act_data_df}} for a cleaner
-output in a dataframe. Request can be for current positions, current
-balances, or current day orders.
+output in a data frame. Request can be for current positions, current
+balances, or current day orders. For historical orders, see
+\code{\link{order_search}}.
 }
 \examples{
 \dontrun{
 
-### A valid refresh token can be fed into the function below for a new Access Token
+# Get stored refresh token
+refreshToken = readRDS('/secure/location/')
+
+# generate a new access token
+accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
+
+# Passing the accessToken is optional. The default will return balances
+balances = act_data_list()
 positions = act_data_list('positions',accessToken)
+orders = act_data_list('orders')
 
 }
 }

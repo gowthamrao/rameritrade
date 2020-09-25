@@ -22,7 +22,7 @@ Get identifiers and fundamental data for a specific ticker
 \examples{
 \dontrun{
 
-### details for Apple
+# Details for Apple
 symbol_detail('AAPL')
 
 }

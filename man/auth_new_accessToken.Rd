@@ -10,8 +10,8 @@ auth_new_accessToken(refreshToken, consumerKey)
 \item{refreshToken}{An existing Refresh Token generated using
 \code{\link{auth_init_refreshToken}} or \code{\link{auth_new_refreshToken}}}
 
-\item{consumerKey}{TD generated Consumer key associated with registered TD
-app. Essentially an API key.}
+\item{consumerKey}{TD generated Consumer key for the registered TD app.
+Essentially an API key.}
 }
 \value{
 Access Token that is valid for 30 minutes. By default it is stored in
@@ -21,7 +21,7 @@ Access Token that is valid for 30 minutes. By default it is stored in
 Get a new Access Token using a valid Refresh Token
 }
 \details{
-An Access Token is required for most functions within rameritrade. It serves
+An Access Token is required for the functions within rameritrade. It serves
 as a user log in to a TD Brokerage account. The token is valid for 30 minutes
 and allows the user to place trades, get account information, get order
 history, pull historical stock prices, etc. A Refresh Token is required to
@@ -45,7 +45,7 @@ behavior will be to refresh the Access Token.
 \examples{
 \dontrun{
 
-### A valid Refresh Token can be fed into the function below for a new Access Token
+# A valid Refresh Token can be fed into the function below for a new Access Token
 refreshToken = readRDS('/secure/location/')
 accessToken = auth_new_accessToken(refreshToken,'APPCONSUMERKEY')
 

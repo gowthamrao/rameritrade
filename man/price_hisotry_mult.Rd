@@ -32,10 +32,15 @@ used by default unless one is manually passed into the function}
 a tibble of price data
 }
 \description{
+Open, Close, High, Low, and Volume for one or more securities
+}
+\details{
 Pulls price history for a list of security based on the parameters that
 include a date range and frequency of the interval. Depending on the
 frequency interval, data can only be pulled back to a certain date. For
 example, at a one minute interval, data can only be pulled for 30-35 days.
+Prices are adjusted for splits but not dividends.
+
 PLEASE NOTE: Large data requests will take time to pull back because of the
 looping nature. TD Does not allow bulk ticker request, so this is simply
 running each ticker individually. For faster and better historical data
@@ -44,8 +49,13 @@ pulls, try Tiingo or FMP Cloud
 \examples{
 \dontrun{
 
-### Use a valid access token and a vector of one or more tickers
-tickHistday = price_hisotry_mult(c('GOOG','TSLA'),freq='5min')
+# Set the access token and a provide a vector of one or more tickers
+refreshToken = readRDS('/secure/location/')
+accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
+tickHist5min = price_hisotry_mult(c('TSLA','AAPL'), freq='5min')
+
+# The default is daily. Access token is optional once it's been set
+tickHistDay = price_hisotry_mult(c('SPY','IWM'), startDate = '1990-01-01')
 
 }
 }

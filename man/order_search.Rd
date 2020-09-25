@@ -17,10 +17,10 @@ order_search(
 \item{accountNumber}{The TD brokerage account number associated with the
 Access Token}
 
-\item{startDate}{Orders from a certain date. Will not pull back orders older
-than 60 days. format yyyy-mm-dd}
+\item{startDate}{Orders from a certain date with. Format yyyy-mm-dd. TD
+indicates there is a 60 day max, but this limit may not always apply}
 
-\item{endDate}{Filter orders that occurred before a certain date. format
+\item{endDate}{Filter orders that occurred before a certain date. Format
 yyyy-mm-dd}
 
 \item{maxResults}{the max results to return in the query}
@@ -48,8 +48,9 @@ result is a list of three objects:
 \examples{
 \dontrun{
 
-order_search(accountNumber=987654321, startDate = Sys.Date()-days(5),
-             maxResult = 100, orderStatus = 'FILLED')
+order_search(accountNumber = 987654321, 
+             startDate = Sys.Date()-days(50),
+             maxResult = 500, orderStatus = 'FILLED')
 
 }
 }

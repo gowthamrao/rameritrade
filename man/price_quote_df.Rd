@@ -17,6 +17,9 @@ used by default unless one is manually passed into the function}
 a data frame with quote details for each valid ticker submitted
 }
 \description{
+Enter tickers for real time or delayed quotes as data frame
+}
+\details{
 Quotes may be delayed depending on agreement with TD Ameritrade. If the
 account is set up for real-time quotes then this will return real-time.
 Otherwise the quotes will be delayed.
@@ -24,8 +27,16 @@ Otherwise the quotes will be delayed.
 \examples{
 \dontrun{
 
-### Use a valid access token and a vector of one or more tickers
-quoteList = price_quote_df(c('GOOG','TSLA'),accessToken)
+# Get stored refresh token
+refreshToken = readRDS('/secure/location/')
+
+# generate a new access token
+accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
+
+# Pass one or more tickers as a vector
+# accessToken is optional once it is set
+quoteSPY = price_quote_df('SPY')
+quoteList = price_quote_df(c('GOOG','TSLA'), accessToken)
 
 }
 }

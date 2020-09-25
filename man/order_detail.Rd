@@ -21,12 +21,20 @@ list of order details
 }
 \description{
 Pass an order ID and Account number to get details such as status, quantity,
-ticker, executions (if applicable), etc.
+ticker, executions (if applicable), account, etc.
 }
 \examples{
 \dontrun{
 
-order_detail(orderId=123456789,accountNumber=987654321)
+# Get stored refresh token
+refreshToken = readRDS('/secure/location/')
+
+# generate a new access token
+accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
+
+# Get order details for a single order
+# Passing Access Token is optional once it's been set
+order_detail(orderId = 123456789, accountNumber = 987654321)
 
 }
 }

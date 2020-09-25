@@ -25,27 +25,29 @@ order_place(
 \item{accountNumber}{The TD brokerage account number associated with the
 Access Token}
 
-\item{ticker}{a valid Equity/ETF or option. Use symbol_detail to confirm}
+\item{ticker}{a valid Equity/ETF or option. If needed, use symbol_detail to
+confirm. This should be a ticker/symbol, not a CUSIP}
 
 \item{quantity}{the number of shares to be bought or sold. Must be an
 integer. TD has indicated they have capabilities for fractional shares but
 have not 'yet' enabled the feature}
 
-\item{instruction}{Equity instructions include buy, sell, buy_to_cover,
-sell_short Option instructions include buy_to_open}
+\item{instruction}{Equity instructions include 'BUY', 'SELL', 'BUY_TO_COVER',
+or 'SELL_SHORT'. Options instructions include 'BUY_TO_OPEN', 'BUY_TO_CLOSE',
+'SELL_TO_OPEN', or 'SELL_TO_CLOSE'}
 
 \item{orderType}{MARKET, LIMIT (requiring limitPrice), STOP (requiring
 stopPrice), STOP_LIMIT, TRAILING_STOP (requiring stopPriceBasis,
 stopPriceType, stopPriceOffset)}
 
-\item{limitPrice}{the limit price for a limit or stop_limit order}
+\item{limitPrice}{the limit price for a LIMIT or STOP_LIMIT order}
 
 \item{stopPrice}{the stop price for a STOP or STOP_LIMIT order}
 
 \item{assetType}{Equity or Option. No other asset types are available at this
 time}
 
-\item{session}{Normal for normal market hours, AM or PM for extended market
+\item{session}{NORMAL for normal market hours, AM or PM for extended market
 hours}
 
 \item{duration}{how long will the trade stay open without a fill: DAY,
@@ -58,7 +60,7 @@ which include LAST, BID, ASK}
 difference or PERCENT for a percentage offset from the price basis}
 
 \item{stopPriceOffset}{the offset used for the stopPriceType, 10 and PERCENT
-is a 10% offset from the current price basis. 5 and value is a $5 offset
+is a 10% offset from the current price basis. 5 and VALUE is a $5 offset
 from the current price basis}
 
 \item{accessToken}{A valid Access Token must be set using
@@ -66,10 +68,10 @@ from the current price basis}
 used by default unless one is manually passed into the function}
 }
 \value{
-the trade id, account id, and other basic details
+the trade id, account id, and other order details
 }
 \description{
-Place trades through the TD Ameritrade API using a range of parameters.
+Place trades through the TD Ameritrade API using a range of parameters
 }
 \details{
 A valid account and access token must be passed. An access token will be
@@ -78,8 +80,7 @@ successfully and the token has not expired, which occurs after 30 minutes.
 Only equities and options can be traded at this time. This function is built
 to allow a single trade submission. More complex trades can be executed
 through the API, but a custom function or submission will need to be
-constructed. See details below. To build more custom trading strategies,
-reference the
+constructed. To build more custom trading strategies,reference the
 \href{https://developer.tdameritrade.com/account-access/apis}{TD Ameritrade
 API Instructions} or the
 \href{https://developer.tdameritrade.com/content/place-order-samples}{order
@@ -87,11 +88,16 @@ sample guide}. A full list of the input parameters and details can be found
 at the links above. Please note that in rare cases, the documentation may not
 be accurate in the API section, so the Order Sample guide is a better
 reference. TEST ALL ORDERS FIRST WITH SMALL DOLLAR AMOUNTS!!!
+
+Four parameters are required for submission: ticker, instruction, quantity,
+and account number associated with the Access Token. The following parameters
+default: session - NORMAL, duration - DAY, asset type - EQUITY, and order
+type - MARKET
 }
 \section{Warning}{
  TRADES THAT ARE SUCCESSFULLY ENTERED WILL BE SUBMITTED
-  IMMEDIATELY THERE IS NO REVIEW PROCESS. THIS FUNCTION HAS 100S OF POTENTIAL
-  COMBINATIONS AND ONLY A HANDFUL HAVE BEEN TESTED. IT IS STRONGLY
+  IMMEDIATELY THERE IS NO REVIEW PROCESS. THIS FUNCTION HAS HUNDREDS OF
+  POTENTIAL COMBINATIONS AND ONLY A HANDFUL HAVE BEEN TESTED. IT IS STRONGLY
   RECOMMENDED TO TEST THE DESIRED ORDER ON A VERY SMALL QUANTITY WITH LITTLE
   MONEY AT STAKE. ANOTHER OPTION IS TO USE LIMIT ORDERS FAR FROM THE CURRENT
   PRICE. TD AMERITRADE HAS THEIR OWN ERROR HANDLING BUT IF A SUCCESSFUL
@@ -102,25 +108,51 @@ reference. TEST ALL ORDERS FIRST WITH SMALL DOLLAR AMOUNTS!!!
 \examples{
 \dontrun{
 
+# Get stored refresh token
+refreshToken = readRDS('/secure/location/')
+
+# generate a new access token
+accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
+
+# Set Account Number
 accountNumber = 1234567890
 
-### Standard market buy order
-order_place(accountNumber = accountNumber,ticker='AAPL',quantity = 1,instruction='buy')
+# Standard market buy order
+# Every order must have at least these 4 paramters
+order_place(accountNumber = accountNumber, 
+            ticker = 'AAPL',
+            quantity = 1, 
+            instruction = 'buy')
 
-### Stop limit order
-order_place(accountNumber = accountNumber,ticker='AAPL',
-            quantity = 1,instruction='sell',duration='good_till_cancel',
-            orderType = 'stop_limit',limitPrice=98,stopPrice=100)
+# Stop limit order - good until canceled
+order_place(accountNumber = accountNumber, 
+            ticker = 'AAPL',
+            quantity = 1, 
+            instruction = 'sell', 
+            duration = 'good_till_cancel',
+            orderType = 'stop_limit',
+            limitPrice = 98,
+            stopPrice = 100)
 
-### Trailing Stop Order
-order_place(accountNumber = accountNumber,ticker='AAPL',quantity = 1,
-            instruction='sell', orderType = 'trailing_stop',stopPriceBasis = 'BID',
-            stopPriceType = 'percent',stopPriceOffset = 10)
+# Trailing Stop Order
+order_place(accountNumber = accountNumber,
+            ticker='AAPL',
+            quantity = 1,
+            instruction='sell', 
+            orderType = 'trailing_stop',
+            stopPriceBasis = 'BID',
+            stopPriceType = 'percent',
+            stopPriceOffset = 10)
 
-### Option Order with a limit price
-order_place(accountNumber = accountNumber, ticker='SLV_091820P24.5',
-            quantity = 1, instruction='BUY_TO_OPEN', duration='Day',
-            orderType = 'LIMIT', limitPrice = .02, assetType = 'OPTION')
+# Option Order with a limit price
+order_place(accountNumber = accountNumber, 
+            ticker = 'SLV_091820P24.5',
+            quantity = 1, 
+            instruction = 'BUY_TO_OPEN', 
+            duration = 'Day',
+            orderType = 'LIMIT', 
+            limitPrice = .02, 
+            assetType = 'OPTION')
 
 }
 

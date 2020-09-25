@@ -11,10 +11,10 @@ market_hours(
 )
 }
 \arguments{
-\item{marketDate}{The market date to pull details for}
+\item{marketDate}{The market date to pull details}
 
-\item{marketType}{The asset class for hour:
-'EQUITY','OPTION','BOND','FUTURE','FOREX'}
+\item{marketType}{The asset class to pull:
+'EQUITY','OPTION','BOND','FUTURE','FOREX'. Default is EQUITY}
 
 \item{accessToken}{A valid Access Token must be set using
 \code{\link{auth_new_accessToken}}. The most recent access token will be
@@ -30,8 +30,10 @@ window for that day
 \examples{
 \dontrun{
 
-### Market hours for the current date
+# Access Token must be set using auth_new_accessToken
+# Market hours for the current date
 market_hours()
+market_hours('2020-06-24', 'OPTION')
 
 }
 }

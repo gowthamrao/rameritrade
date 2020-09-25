@@ -17,7 +17,7 @@ Access Token}
 used by default unless one is manually passed into the function}
 }
 \value{
-order API URL
+order API URL. Message confirming cancellation
 }
 \description{
 Pass an order ID and Account number to cancel an existing open order
@@ -25,7 +25,7 @@ Pass an order ID and Account number to cancel an existing open order
 \examples{
  \dontrun{
 
-order_cancel(orderId=123456789,accountNumber=987654321)
+order_cancel(orderId = 123456789, accountNumber = 987654321)
 
 }
 }

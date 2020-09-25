@@ -10,8 +10,8 @@ auth_new_refreshToken(refreshToken, consumerKey)
 \item{refreshToken}{An existing Refresh Token generated using
 \code{\link{auth_init_refreshToken}} or \code{\link{auth_new_refreshToken}}}
 
-\item{consumerKey}{TD generated Consumer key associated with registered TD
-app. Essentially an API key.}
+\item{consumerKey}{TD generated Consumer key for the registered TD app.
+Essentially an API key.}
 }
 \value{
 Refresh Token that is valid for 90 days
@@ -21,7 +21,7 @@ Get a new Refresh Token using an existing Refresh Token
 }
 \details{
 A Refresh Token is used to generate Access Tokens through the function
-\code{\link{auth_new_accessToken}} The initial Refresh Token must be
+\code{\link{auth_new_accessToken}}. The initial Refresh Token must be
 generated manually using a URL specific to a registered app. Use
 \code{\link{auth_init_loginURL}} to generate an app specific URL and then use
 \code{\link{auth_init_refreshToken}} to process the Authorization Code and
@@ -37,7 +37,7 @@ the remaining time is greater than 15 days, the user will be prompted to
 verify that a new Refresh Token should be created. The user can select to
 request a new token, but there is no net benefit in doing so and TD
 encourages limiting new token generation. When running this function in a
-non-interactive environment (i.e. CRON Job), if the remaining time until
+non-interactive environment (e.g. CRON Job), if the remaining time until
 expiration is greater than 15 days, the default behavior will be to NOT reset
 the Refresh Token because the new token will have the same access and
 capabilities as the existing token.
@@ -45,9 +45,9 @@ capabilities as the existing token.
 \examples{
 \dontrun{
 
-### A valid Refresh Token can be fed into the function below for a new Refresh Token
+# A valid Refresh Token can be fed into the function below for a new Refresh Token
 currefreshToken = readRDS('/secure/location/')
-newrefreshToken = auth_new_refreshToken(currefreshToken,'APPCONSUMERKEY')
+newrefreshToken = auth_new_refreshToken(currefreshToken,'consumerKey')
 saveRDS(newrefreshToken,'/secure/location/')
 
 }
