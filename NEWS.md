@@ -1,6 +1,6 @@
 # Release Notes and News
 
-# rameritrade 0.1.0 - 9/27/2020
+# rameritrade 0.1.0 - 9/26/2020
 
 Initial release includes basic functionality
 and API calls. Authentication, Placing Orders,
