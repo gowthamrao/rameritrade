@@ -44,7 +44,7 @@ order_detail = function(orderId, accountNumber, accessToken=NULL) {
 
 #' Cancel an Open Order
 #' 
-#' Pass an Drder ID and Account number to cancel an existing open order
+#' Pass an Order ID and Account number to cancel an existing open order
 #'
 #' @inheritParams order_detail
 #'
