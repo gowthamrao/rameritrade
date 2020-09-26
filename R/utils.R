@@ -80,6 +80,13 @@ ram_headers = function(accessToken){
 # Check if Refresh token is valid and not expired
 ram_checkRefresh = function(refreshToken){
   
+  # check if refresh token is a list
+  if (class(refreshToken) != 'list') {
+    stop(paste0('Incorrect object type passed as Refresh Token. Please pass ',
+                'the output from auth_init_refreshToken or auth_new_refreshToken.', 
+                call. = FALSE))
+  }
+  
   # Validate refresh token
   if (ls(refreshToken)[[2]]!='refresh_token') {
     stop(paste0('Incorrect object type passed as Refresh Token. Please pass ',
