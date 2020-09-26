@@ -7,12 +7,10 @@
 
 <!-- badges: end -->
 
-R package for the TD Ameritrade API. Functions include authentication,
-trading, price requests, account balances, positions, order history, and
-option chains. A user will need a TD Brokerage account and TD Ameritrade
-developer app. Please note, the fate of the TD Ameritrade API is in
-question after the Charles Schwab acquisition, but there is optimism the
-API will remain.
+R package for the TD Ameritrade API, facilitating authentication,
+trading, price requests, account balances, positions, order history,
+option chains, and more. A user will need a TD Brokerage account and TD
+Ameritrade developer app.
 
 ## Introduction
 
@@ -23,18 +21,17 @@ packages for both. Unfortunately, they do not offer the full
 capabilities of a major brokerage firm such as IRAs, multiple accounts,
 etc. InteractiveBrokers requires the IB workstation to be open and
 active which can make it hard to build automated trading strategies
-using CRON jobs on a linux server (e.g. AWS). Using the TD API you can
-fully automate trade execution across multiple accounts and multiple log
-ins, assuming you have access and permission to do so. This can be a
-great way to dollar cost average into the market for an IRA\!
+using tools like CRON jobs. Using the TD API you can fully automate
+trade execution across multiple accounts and multiple log ins, assuming
+you have access and permission to do so. This can be a great way to
+dollar cost average into the market for an IRA\!
 
-The authentication process takes a few steps and requires a manual log
-in (see process description below), but once initial authentication is
-granted, all API calls can be fully automated without needing to
-manually log in again. Additionally, because of the use of tokens and a
-middle layer App, user name and passwords never need to be entered into
-the R code. This can help protect the security of accounts assuming
-tokens are stored securely.
+The initial authentication requires a few manual steps, but once initial
+authorization is granted, all API calls can be fully automated without
+needing to manually log in again. Additionally, because of the use of
+tokens and a middle layer App, user name and passwords never need to be
+entered into the R code. This can help protect the security of accounts
+assuming tokens are stored securely.
 
 ### Disclosure
 
@@ -55,13 +52,13 @@ package at their own risk.
 
 Please heed the following warning for the order\_place function.
 WARNING: TRADES THAT ARE SUCCESSFULLY ENTERED WILL BE SUBMITTED
-IMMEDIATELY THERE IS NO REVIEW PROCESS. THIS FUNCTION HAS HUNDREDS OF
-POTENTIAL COMBINATIONS AND ONLY A HANDFUL HAVE BEEN TESTED. IT IS
-STRONGLY RECOMMENDED TO TEST THE DESIRED ORDER ON A VERY SMALL QUANTITY
-WITH LITTLE MONEY AT STAKE. ANOTHER OPTION IS TO USE LIMIT ORDERS FAR
-FROM THE CURRENT PRICE. TD AMERITRADE HAS THEIR OWN ERROR HANDLING BUT
-IF A SUCCESSFUL COMBINATION IS ENTERED IT COULD BE EXECUTED IMMEDIATELY.
-DOUBLE CHECK ALL ENTRIES BEFORE SUBMITTING.
+IMMEDIATELY THERE IS NO REVIEW PROCESS. THE `order_place` FUNCTION HAS
+HUNDREDS OF POTENTIAL COMBINATIONS AND ONLY A HANDFUL HAVE BEEN TESTED.
+IT IS STRONGLY RECOMMENDED TO TEST THE DESIRED ORDER ON A VERY SMALL
+QUANTITY WITH LITTLE MONEY AT STAKE. ANOTHER OPTION IS TO USE LIMIT
+ORDERS FAR FROM THE CURRENT PRICE. TD AMERITRADE HAS THEIR OWN ERROR
+HANDLING BUT IF A SUCCESSFUL COMBINATION IS ENTERED IT COULD BE EXECUTED
+IMMEDIATELY. DOUBLE CHECK ALL ENTRIES BEFORE SUBMITTING.
 
 ## Installation
 
@@ -71,7 +68,7 @@ You can install rameritrade using:
 # install.packages("devtools")
 devtools::install_github("tonytrevisan/rameritrade")
 
-# NOT YET AVAILABLE ON CRAN
+# NOT CURRENTLY AVAILABLE ON CRAN
 # install.packages("rameritrade")
 ```
 
@@ -88,20 +85,20 @@ Guide](https://developer.tdameritrade.com/content/getting-started#registerApp).
 Details are also provided within the functions.
 
 1.  Register an API Developer account with [TD Ameritrade
-    Developer](https://developer.tdameritrade.com/)
+    Developer](https://developer.tdameritrade.com/).
 2.  Create an app under My Apps. The app serves as a middle layer
-    between the brokerage account and API
-3.  Identify the Consumer Key provided by TD (essentially an API Key)
+    between the brokerage account and API.
+3.  Identify the Consumer Key provided by TD (essentially an API Key).
 4.  Under Edit App, create a Callback URL. This can be relatively simple
-    (for example: <https://YourAppName>)
-5.  Pass the Callback URL and Consumer Key to auth\_init\_url to
-    generate a URL specific to the app for user log in
-6.  Visit the URL in a web browser and Log in to a TD Brokerage account,
-    granting the app access to the user account
+    (for example: <https://YourAppName>).
+5.  Pass the Callback URL and Consumer Key to `auth_init_url` to
+    generate a URL specific to the app for user log in.
+6.  Visit the URL in a web browser and log in to a TD Brokerage account,
+    granting the app access to the user account.
 7.  When “Allow” is clicked, it will redirect to a blank page. The URL
     of this page is the authorization code.
-8.  Feed the authorization code into auth\_init\_refresh to get a
-    Refresh Token
+8.  Feed the authorization code into `auth_init_refreshToken` to get a
+    Refresh Token.
 9.  The Refresh Token is valid for 90 days so be sure to store it
     somewhere safe. The Refresh Token is the only component needed from
     then on for account access. However, if your token expires or is
@@ -112,12 +109,12 @@ Details are also provided within the functions.
     Passing it into the functions is optional unless accessing multiple
     accounts.
 12. To reset the Refresh Token as it approaches expiration, you can
-    follow steps 6-8 or use auth\_new\_refreshToken
+    follow steps 6-8 or use `auth_new_refreshToken`
 
 Please note: TD has indicated they prefer infrequent token generation
 and will take action on excessive tokens being generated
 
-### Terminology
+#### Terminology
 
   - Authorization Code: generated from the app specific URL when a TD
     Brokerage account logs in
@@ -126,20 +123,20 @@ and will take action on excessive tokens being generated
   - Access Token: generated using the Refresh Token and creates the
     connection to the API. Valid for 30 minutes.
 
-### Example
+## Authentication Example
 
-The auth\_init functions are used to gain initial access to the API.
+The `auth_init` functions are used to gain initial access to the API.
 They are used to generate a Refresh Token. Once a Refresh Token is
-generated, the auth\_init functions will not be required unless the
+generated, the `auth_init` functions will not be required unless the
 Refresh Token expires. This can be avoided using
-auth\_new\_refreshToken, which uses an existing refreshToken to create a
-new refreshToken.
+`auth_new_refreshToken`, which uses an existing Refresh Token to create
+a new Refresh Token.
 
 ``` r
 
 # --------- Step 1 -----------
-# Register an App with TD Ameritrade Developer, create a Callback URL, and get a Consumer Key
-# The callback URL can be anything (for example: https://myTDapp) 
+# Register an App with TD Ameritrade Developer, create a Callback URL, and get a Consumer Key.
+# The callback URL can be anything (for example: https://myTDapp).
 # Use the auth_init_loginURL to generate an app specific URL. See the TD Authentication FAQ for issues.
 
 callbackURL = 'https://myTDapp'
@@ -152,11 +149,13 @@ rameritrade::auth_init_loginURL(callbackURL,consumerKey)
 
 
 # --------- Step 2 -----------
-# Feed the Authorization Code URL into auth_init_refreshToken to get a Refresh Token
-# The Authorization Code will be embedded in the URL once access is "Allowed" from Step 1
-# The page may indicate "This site can't be reached". The URL is still valid.
+# A successful log in to the URL from Step 1 will result in a blank page once "Allow" is clicked. 
+# The URL of this blank page is the authorization code. 
+# The blank page may indicate "This site can't be reached". The URL is still valid.
+# Feed the Authorization Code URL into auth_init_refreshToken to get a Refresh Token.
 
-refreshToken = rameritrade::auth_init_refreshToken(callbackURL,consumerKey,'https://myTDapp/?code=AUTHORIZATIONCODE')
+authCode = 'https://myTDapp/?code=AUTHORIZATIONCODE' # This could be over 1,000 alpha numeric characters
+refreshToken = rameritrade::auth_init_refreshToken(callbackURL,consumerKey,authCode)
 # "Successful Refresh Token Generated"
 
 # Save the Refresh Token to a safe location so it can be retrieved as needed. It will be valid for 90 days.
@@ -170,7 +169,9 @@ saveRDS(refreshToken,'/secure/location/')
 refreshToken = readRDS('/secure/location/')
 accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
 # "Successful Login. Token has been stored and will be valid for 30 minutes"
+
 # Authentication has been completed. Other functions can now be used.
+
 
 # --------- Step 4 (when needed) -----------
 # The Refresh Token should be reset before it expires after 90 days. 
@@ -184,7 +185,7 @@ saveRDS(refreshToken,'/secure/location/')
 
 ## Get Account Data
 
-Use the act\_data\_list or act\_data\_df to get current account data,
+Use the `act_data_list` or `act_data_df` to get current account data,
 including balances, positions, and current day orders.
 
 ``` r
@@ -208,7 +209,7 @@ str(ActBal)
 # .. ..$ initialBalances        :List of 18
 # .. .. ..$ accruedInterest           : num 0
 
-# Get current account positions
+# Get current account positions as a data frame
 ActPos = rameritrade::act_data_df('positions')
 
 str(ActPos)
@@ -224,7 +225,7 @@ str(ActPos)
 
 ## Get Pricing Data
 
-Use the price\_ functions to get quotes or historical pricing. Quotes
+Use the `price_` functions to get quotes or historical pricing. Quotes
 will be real-time if the account has access to real-time quotes.
 
 ``` r
@@ -280,7 +281,11 @@ rameritrade::price_history_single('AAPL', startDate = '2020-09-01', freq='5min')
 
 Order entry offers hundreds of potential combinations. It is strongly
 recommended to submit trades outside market hours first to test the
-trade entries.
+trade entries. See the [order sample
+guide](https://developer.tdameritrade.com/content/place-order-samples)
+for more examples. Please note, this function only allows for single
+order entry and will not support some of the complex examples in the
+guide.
 
 ``` r
 library(rameritrade)
@@ -301,7 +306,7 @@ rameritrade::order_cancel(Ord0$orderId, accountNumber)
 
 
 
-# Good till cancelled stop limit Incorrect entry
+# Good till cancelled stop limit INCORRECT ENTRY
 Ordr1 = rameritrade::order_place(accountNumber = accountNumber,
                                  ticker = 'SCHB',
                                  quantity = 1,
