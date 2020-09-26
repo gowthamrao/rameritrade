@@ -6,7 +6,7 @@
 \usage{
 price_history_single(
   ticker = "AAPL",
-  startDate = Sys.Date() - months(1),
+  startDate = Sys.Date() - 30,
   endDate = Sys.Date(),
   freq = c("daily", "1min", "5min", "10min", "15min", "30min"),
   accessToken = NULL

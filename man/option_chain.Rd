@@ -9,7 +9,7 @@ option_chain(
   strikes = 10,
   inclQuote = TRUE,
   startDate = Sys.Date(),
-  endDate = Sys.Date() + months(12),
+  endDate = Sys.Date() + 360,
   accessToken = NULL
 )
 }
@@ -49,7 +49,7 @@ options chain for the specified ticker.
 # with 5 strikes above and below the at-the-money price
 option_chain(ticker = 'SPY',
              strikes = 5,
-             endDate = Sys.Date() + months(6))
+             endDate = Sys.Date() + 180)
 
 }
 }

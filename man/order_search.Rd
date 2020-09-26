@@ -6,7 +6,7 @@
 \usage{
 order_search(
   accountNumber,
-  startDate = Sys.Date() - months(1),
+  startDate = Sys.Date() - 30,
   endDate = Sys.Date(),
   maxResults = 50,
   orderStatus = "",

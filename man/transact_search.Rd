@@ -6,7 +6,7 @@
 \usage{
 transact_search(
   accountNumber,
-  startDate = Sys.Date() - months(1),
+  startDate = Sys.Date() - 30,
   endDate = Sys.Date(),
   transType = "All",
   accessToken = NULL
