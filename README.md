@@ -90,7 +90,7 @@ Details are also provided within the functions.
     between the brokerage account and API.
 3.  Identify the Consumer Key provided by TD (essentially an API Key).
 4.  Under Edit App, create a Callback URL. This can be relatively simple
-    (for example: https://YourAppName).
+    (for example: `https://YourAppName`).
 5.  Pass the Callback URL and Consumer Key to `auth_init_url` to
     generate a URL specific to the app for user log in.
 6.  Visit the URL in a web browser and log in to a TD Brokerage account,
