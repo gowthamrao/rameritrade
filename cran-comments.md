@@ -19,3 +19,8 @@ systems (ubuntu, Mac OS X, and Windows) and found no
 issues testing all functions. All tests are blocked 
 from CRAN because they require account authentication 
 to be run successfully. 
+
+## Other Comments
+Package was resubmitted from v 0.1.1 with minor changes.
+Primarily modified the URL in the README to include ``, 
+hiding the URL.
