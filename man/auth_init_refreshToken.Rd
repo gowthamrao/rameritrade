@@ -35,7 +35,7 @@ The output of auth_init_refreshToken will be a Refresh Token which will be
 used to gain access to the TD Brokerage account(s) going forward. The Refresh
 Token will be valid for 90 days, and not require the auth_init functions. Be
 sure to save the Refresh Token to a safe location or the two step auth_init
-prorcess will be required again. The user can use
+process will be required again. The user can use
 \code{\link{auth_new_refreshToken}} to reset the token before expiration. If
 the Refresh Token expires, a new Authorization Code will need to be generated
 by logging into the URL from \code{\link{auth_init_loginURL}}.

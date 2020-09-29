@@ -2,7 +2,7 @@
 % Please edit documentation in R/authenticate.R
 \name{auth_init_loginURL}
 \alias{auth_init_loginURL}
-\title{Auth Step 1: Initial Log In URL}
+\title{Auth Step 1: Initial LogIn URL}
 \usage{
 auth_init_loginURL(callbackURL, consumerKey)
 }

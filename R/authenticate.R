@@ -1,4 +1,4 @@
-#' Auth Step 1: Initial Log In URL
+#' Auth Step 1: Initial LogIn URL
 #'
 #' Create URL to grant App access to a TD Brokerage account
 #'
@@ -166,7 +166,7 @@ auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url) {
 #' Get a new Access Token using a valid Refresh Token
 #'
 #' An Access Token is required for the functions within rameritrade. It serves
-#' as a user log in to a TD Brokerage account. The token is valid for 30 minutes
+#' as a user login to a TD Brokerage account. The token is valid for 30 minutes
 #' and allows the user to place trades, get account information, get order
 #' history, pull historical stock prices, etc. A Refresh Token is required to
 #' generate an Access Token. Functions \code{\link{auth_init_refreshToken}} or
@@ -182,9 +182,18 @@ auth_init_refreshToken = function(callbackURL,consumerKey,authcode_url) {
 #' When running this function manually (i.e. through RStudio), the function will
 #' check for a default Access Token. If the default Access Token has not
 #' expired, the user will be prompted to verify a new Access Token is desired.
-#' This may be the case if more than one TD log in is being used. When running
+#' This may be the case if more than one TD login is being used. When running
 #' this function in a non-interactive environment (i.e. CRON Job), the default
 #' behavior will be to refresh the Access Token.
+#'
+#' DISCLOSURE:
+#' This software is in no way affiliated, endorsed, or approved by TD Ameritrade
+#' or any of its affiliates. It comes with absolutely no warranty and should not
+#' be used in actual trading unless the user can read and understand the source
+#' code. The functions within this package have been tested under basic
+#' scenarios. There may be bugs or issues that could prevent a user from
+#' executing trades or canceling trades. It is also possible trades could be
+#' submitted in error. The user will use this package at their own risk.
 #'
 #'
 #' @param refreshToken An existing Refresh Token generated using

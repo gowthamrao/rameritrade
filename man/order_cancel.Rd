@@ -20,7 +20,7 @@ used by default unless one is manually passed into the function.}
 order API URL. Message confirming cancellation
 }
 \description{
-Pass an Drder ID and Account number to cancel an existing open order
+Pass an Order ID and Account number to cancel an existing open order
 }
 \examples{
  \dontrun{
