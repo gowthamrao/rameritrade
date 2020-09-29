@@ -22,7 +22,7 @@ capabilities of a major brokerage firm such as IRAs, multiple accounts,
 etc. InteractiveBrokers requires the IB workstation to be open and
 active which can make it hard to build automated trading strategies
 using tools like CRON jobs. Using the TD API you can fully automate
-trade execution across multiple accounts and multiple log ins, assuming
+trade execution across multiple accounts and multiple logins, assuming
 you have access and permission to do so. This can be a great way to
 dollar cost average into the market for an IRA\!
 
@@ -35,12 +35,6 @@ assuming tokens are stored securely.
 
 ### Disclosure
 
-Due to the Charles Schwab acquisition of TD Ameritrade, the fate of the
-TD API is unknown. There have been multiple indications that Schwab is
-excited about the technology at TD Ameritrade and will retain as much as
-possible. That being said, this package could stop working at any point
-if the acquisition results in the termination of the API.
-
 This software is in no way affiliated, endorsed, or approved by TD
 Ameritrade or any of its affiliates. It comes with absolutely no
 warranty and should not be used in actual trading unless the user can
@@ -50,15 +44,28 @@ could prevent a user from executing trades or canceling trades. It is
 also possible trades could be submitted in error. The user will use this
 package at their own risk.
 
-Please heed the following warning for the order\_place function.
+Due to the Charles Schwab acquisition of TD Ameritrade, the fate of the
+TD API is unknown. There have been multiple indications that Schwab is
+excited about the technology at TD Ameritrade and will retain as much as
+possible. That being said, this package could stop working at any point
+if the acquisition results in the termination of the API.
+
+Please heed the following warning for the `order_place` function.
 WARNING: TRADES THAT ARE SUCCESSFULLY ENTERED WILL BE SUBMITTED
 IMMEDIATELY THERE IS NO REVIEW PROCESS. THE `order_place` FUNCTION HAS
 HUNDREDS OF POTENTIAL COMBINATIONS AND ONLY A HANDFUL HAVE BEEN TESTED.
-IT IS STRONGLY RECOMMENDED TO TEST THE DESIRED ORDER ON A VERY SMALL
-QUANTITY WITH LITTLE MONEY AT STAKE. ANOTHER OPTION IS TO USE LIMIT
-ORDERS FAR FROM THE CURRENT PRICE. TD AMERITRADE HAS THEIR OWN ERROR
-HANDLING BUT IF A SUCCESSFUL COMBINATION IS ENTERED IT COULD BE EXECUTED
-IMMEDIATELY. DOUBLE CHECK ALL ENTRIES BEFORE SUBMITTING.
+TD AMERITRADE HAS THEIR OWN ERROR HANDLING BUT IF A SUCCESSFUL
+COMBINATION IS ENTERED IT COULD BE EXECUTED IMMEDIATELY. DOUBLE CHECK
+ALL ENTRIES BEFORE SUBMITTING. IT IS STRONGLY RECOMMENDED TO TEST THE
+DESIRED ORDER FIRST. THREE POTENTIAL OPTIONS ARE:
+
+1.  Enter trades outside of normal market trading hours and check the TD
+    website to ensure proper entry
+2.  Use limit orders with limit prices far outside the current bid/ask
+3.  Enter very small quantities that won’t put much capital at risk
+
+FOR OPTIONS 1 AND 2, BE SURE TO CANCEL ORDERS USING `order_cancel` OR
+THROUGH THE TD WEBSITE
 
 ## Installation
 
@@ -90,7 +97,7 @@ Details are also provided within the functions.
     between the brokerage account and API.
 3.  Identify the Consumer Key provided by TD (essentially an API Key).
 4.  Under Edit App, create a Callback URL. This can be relatively simple
-    (for example: <https://YourAppName>).
+    (for example: `https://YourAppName`).
 5.  Pass the Callback URL and Consumer Key to `auth_init_url` to
     generate a URL specific to the app for user log in.
 6.  Visit the URL in a web browser and log in to a TD Brokerage account,
@@ -145,7 +152,7 @@ consumerKey = 'APP_CONSUMER_KEY'
 rameritrade::auth_init_loginURL(callbackURL,consumerKey)
 # "https://auth.tdameritrade.com/auth?response_type=code&redirect_uri=https://myTDapp&client_id=consumerKey%40AMER.OAUTHAP"
 
-# Visit the URL above to see a TD log in screen. Log in with a TD Brokerage account to grant the app access. 
+# Visit the URL above to see a TD login screen. Log in with a TD Brokerage account to grant the app access. 
 
 
 # --------- Step 2 -----------
@@ -281,9 +288,10 @@ rameritrade::price_history_single('AAPL', startDate = '2020-09-01', freq='5min')
 
 Order entry offers hundreds of potential combinations. It is strongly
 recommended to submit trades outside market hours first to test the
-trade entries. See the [order sample
+trade entries. You can confirm proper entry on the TD website before
+canceling. See the [order sample
 guide](https://developer.tdameritrade.com/content/place-order-samples)
-for more examples. Please note, this function only allows for single
+for more examples. Please note, `order_place` only allows for single
 order entry and will not support some of the complex examples in the
 guide.
 
