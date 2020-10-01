@@ -11,14 +11,14 @@ ram_accessToken <- function(accessToken) {
     
     # check that full access token list has been passed
     ErrMsg = paste0('Incorrect object type passed as Access Token. ',
-                    'Please pass the output from auth_new_accessToken.')
+                    'Please pass the output from td_auth_accessToken.')
     if (class(accessToken) != 'list') stop(ErrMsg, call. = FALSE)
     if (length(accessToken) != 6) stop(ErrMsg, call. = FALSE)
     if (ls(accessToken)[[1]] != 'access_token') stop(ErrMsg, call. = FALSE)
 
     # check if passed access token has expired
     if(accessToken$expireTime<Sys.time()) {
-      stop('Access Token has expired. Please refresh with auth_new_accessToken.', call. = FALSE)
+      stop('Access Token has expired. Please refresh with td_auth_accessToken.', call. = FALSE)
     }
     
     # Return only the token from the list
@@ -33,7 +33,7 @@ ram_accessToken <- function(accessToken) {
     
     # check if defauly access token has expired
     if (accessToken$expireTime<Sys.time()) {
-      stop('Access Token has expired. Please refresh with auth_new_accessToken.', call. = FALSE)
+      stop('Access Token has expired. Please refresh with td_auth_accessToken.', call. = FALSE)
     }
     
     # Return only the token from the list
@@ -41,7 +41,7 @@ ram_accessToken <- function(accessToken) {
   }
   
   # If no access token has been passed or pulled from default, show error
-  stop(paste0("An Access Token has not yet been set. Please use the auth_new_accessToken ",
+  stop(paste0("An Access Token has not yet been set. Please use the td_auth_accessToken ",
               "function, with a valid Refresh Token to create an Access Token.", call. = FALSE))
 
   
