@@ -14,7 +14,7 @@
 #'   equal to today). Format: yyyy-mm-dd
 #' @param endDate the end date for expiration (should be greater than or equal
 #'   to today). Format: yyyy-mm-dd
-#' @inheritParams act_data_list
+#' @inheritParams td_accountData
 #'
 #' @return a list of 2 data frames - underlying and options chain
 #' @export
@@ -24,12 +24,12 @@
 #'
 #' # Pull all option contracts expiring over the next 6 months
 #' # with 5 strikes above and below the at-the-money price
-#' option_chain(ticker = 'SPY',
+#' td_optionChain(ticker = 'SPY',
 #'              strikes = 5,
 #'              endDate = Sys.Date() + 180)
 #'
 #' }
-option_chain = function(ticker, strikes = 10, inclQuote = TRUE, startDate = Sys.Date(),
+td_optionChain = function(ticker, strikes = 10, inclQuote = TRUE, startDate = Sys.Date(),
                         endDate = Sys.Date() + 360, accessToken = NULL) {
   
   # Get access token from options if one is not passed
@@ -77,7 +77,7 @@ option_chain = function(ticker, strikes = 10, inclQuote = TRUE, startDate = Sys.
 #' Can pull trades as well as transfers, dividend reinvestment, interest, etc.
 #' Any activity associated with the account.
 #'
-#' @inheritParams order_detail
+#' @inheritParams td_orderDetail
 #' @param startDate Transactions after a certain date. Will not pull back
 #'   transactions older than 1 year. format yyyy-mm-dd
 #' @param endDate Filter transactions that occurred before a certain date.
@@ -92,13 +92,13 @@ option_chain = function(ticker, strikes = 10, inclQuote = TRUE, startDate = Sys.
 #' @examples
 #' \dontrun{
 #'
-#' # Access Token must be set using auth_new_accessToken
+#' # Access Token must be set using td_auth_accessToken
 #' # Transactions for the last 5 days
-#' transact_search(accountNumber = 987654321, 
+#' td_transactSearch(accountNumber = 987654321, 
 #'                 startDate = Sys.Date()-days(5))
 #'
 #' }
-transact_search = function(accountNumber, startDate = Sys.Date()-30,
+td_transactSearch = function(accountNumber, startDate = Sys.Date()-30,
                            endDate = Sys.Date(), transType = 'All', 
                            accessToken = NULL){
   
@@ -130,7 +130,7 @@ transact_search = function(accountNumber, startDate = Sys.Date()-30,
 #' Returns a list output for current day and specified market that details the
 #' trading window
 #'
-#' @inheritParams act_data_list
+#' @inheritParams td_accountData
 #' @param marketType The asset class to pull:
 #'   'EQUITY','OPTION','BOND','FUTURE','FOREX'. Default is EQUITY
 #'
@@ -140,13 +140,13 @@ transact_search = function(accountNumber, startDate = Sys.Date()-30,
 #' @examples
 #' \dontrun{
 #'
-#' # Access Token must be set using auth_new_accessToken
+#' # Access Token must be set using td_auth_accessToken
 #' # Market hours for the current date
-#' market_hours()
-#' market_hours('2020-06-24', 'OPTION')
+#' td_marketHours()
+#' td_marketHours('2020-06-24', 'OPTION')
 #'
 #' }
-market_hours = function(marketType = c('EQUITY','OPTION','BOND','FUTURE','FOREX'),
+td_marketHours = function(marketType = c('EQUITY','OPTION','BOND','FUTURE','FOREX'),
                         accessToken = NULL){
   
   # Get access token from options if one is not passed
@@ -171,7 +171,7 @@ market_hours = function(marketType = c('EQUITY','OPTION','BOND','FUTURE','FOREX'
 #'
 #' Get identifiers and fundamental data for a specific ticker
 #'
-#' @inheritParams act_data_list
+#' @inheritParams td_accountData
 #' @param ticker a valid ticker or symbol
 #'
 #' @return data frame of ticker details
@@ -181,10 +181,10 @@ market_hours = function(marketType = c('EQUITY','OPTION','BOND','FUTURE','FOREX'
 #' \dontrun{
 #'
 #' # Details for Apple
-#' symbol_detail('AAPL')
+#' td_symbolDetail('AAPL')
 #'
 #' }
-symbol_detail = function(ticker, accessToken = NULL) {
+td_symbolDetail = function(ticker, accessToken = NULL) {
   
   # Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
