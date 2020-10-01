@@ -10,7 +10,7 @@ td_priceQuote(tickers = c("AAPL", "MSFT"), output = "df", accessToken = NULL)
 \item{tickers}{One or more tickers}
 
 \item{output}{indication on whether the data should be returned as a list or
-df. The deafult is 'df' for data frame, anything else would be a list.}
+df. The default is 'df' for data frame, anything else would be a list.}
 
 \item{accessToken}{A valid Access Token must be set using
 \code{\link{td_auth_accessToken}}. The most recent Access Token will be

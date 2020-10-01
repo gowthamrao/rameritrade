@@ -84,8 +84,8 @@ devtools::install_github("tonytrevisan/rameritrade")
 Initial authorization to a TD Brokerage account requires a 3 step
 authentication process. Once initial authorization is achieved, tokens
 can be used to maintain access indefinitely. Below is a detailed summary
-of the entire process followed by the code demonstrating the 3 step
-process. More can be found at the [TD authentication
+of the entire process followed by code demonstrating the 3 step process.
+More can be found at the [TD authentication
 FAQ](https://developer.tdameritrade.com/content/authentication-faq) or
 the [Authentication
 Guide](https://developer.tdameritrade.com/content/getting-started#registerApp).
@@ -102,21 +102,23 @@ Details are also provided within the functions.
     generate a URL specific to the app for user log in.
 6.  Visit the URL in a web browser and log in to a TD Brokerage account,
     granting the app access to the user account.
-7.  When “Allow” is clicked, it will redirect to a blank page. The URL
-    of this page is the authorization code.
+7.  When “Allow” is clicked, it will redirect to a blank page or
+    potentially an error page stating “This site can’t be reached”. This
+    indicates a successful log in. The URL of this page is the
+    authorization code (`https://YourAppName/?code=AUTHORIZATIONCODE`).
 8.  Feed the Consumer Key, Callback URL, and authorization code into
     `td_auth_refreshToken` to get a Refresh Token.
 9.  The Refresh Token is valid for 90 days so be sure to store it
     somewhere safe. The Refresh Token is the only component needed from
     then on for account access. However, if your token expires or is
-    lost, you can always follow steps 6-8 above.
+    lost, you can always follow steps 5-8 above.
 10. The Refresh Token is used to generate an Access Token using
-    `td_auth_accessToken` which gives account access for 30 minutes
+    `td_auth_accessToken` which gives account access for 30 minutes.
 11. The most recent Access Token is stored by default into Options.
     Passing it into the functions is optional unless accessing multiple
     accounts.
 12. To reset the Refresh Token as it approaches expiration, you can pass
-    a valid Refresh Token into `td_auth_refreshToken`
+    a valid Refresh Token into `td_auth_refreshToken`.
 
 Please note: TD has indicated they prefer infrequent token generation
 and will take action on excessive tokens being generated
@@ -124,10 +126,10 @@ and will take action on excessive tokens being generated
 #### Terminology
 
   - Authorization Code: generated from using a TD Brokerage to log into
-    the `td_auth_loginURL`
+    the `td_auth_loginURL`.
   - Refresh Token: generated using the Authorization Code or an existing
     Refresh Token and is used to create access tokens. Refresh token is
-    valid for 90 days
+    valid for 90 days.
   - Access Token: generated using the Refresh Token and creates the
     connection to the API. Valid for 30 minutes.
 
