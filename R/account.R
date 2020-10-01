@@ -1,18 +1,18 @@
-#' Get account balances positions, or orders returned as a list
+#' Get account balances positions, and orders returned as a list
 #'
-#' Retrieves a list of account data for the accounts linked to the Access Token
+#' Retrieves a account data for the accounts linked to the Access Token
 #'
-#' The output will be a list of requested details for TD Ameritrade accounts
-#' linked to the access token. Use \code{\link{act_data_df}} for a cleaner
-#' output in a data frame. Request can be for current positions, current
-#' balances, or current day orders. For historical orders, see
-#' \code{\link{order_search}}.
+#' The output will be either a list of three data frames or a list of three
+#' lists that contain balances, positions, and orders for TD Ameritrade accounts
+#' linked to the access token. For historical orders, see
+#' \code{\link{td_orderSearch}}. The default is for a data frame output which is
+#' much cleaner.
 #'
-#' @param dataType 'balances' for current cash balances, 'positions' for current
-#'   account positions, 'orders' for orders entered on the current day. Default
-#'   is set to 'balances'.
+#' @param output Use 'df' for a list of 3 data frames containing balances,
+#'   positions, and orders. Otherwise the data will be returned as a list of
+#'   lists
 #' @param accessToken A valid Access Token must be set using
-#'   \code{\link{auth_new_accessToken}}. The most recent Access Token will be
+#'   \code{\link{td_auth_accessToken}}. The most recent Access Token will be
 #'   used by default unless one is manually passed into the function.
 #'
 #' @return a list of requested account details
@@ -25,15 +25,49 @@
 #' refreshToken = readRDS('/secure/location/')
 #'
 #' # Generate a new access token
-#' accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
+#' accessToken = td_auth_accessToken(refreshToken, 'consumerKey')
 #'
 #' # Passing the accessToken is optional. The default will return balances
-#' balances = act_data_list()
-#' positions = act_data_list('positions',accessToken)
-#' orders = act_data_list('orders')
+#' asDF = td_accountData()
+#' asList = td_accountData('list',accessToken)
 #'
 #' }
-act_data_list = function(dataType=c('balances','positions','orders'),accessToken=NULL) {
+td_accountData = function(output = 'df', accessToken = NULL) {
+  
+  # Use helper functions to generate a lists or data frames
+  if (output != 'df') {
+    
+    # Create a list of each
+    bal = ram_actDataList('balances', accessToken)
+    pos = ram_actDataList('positions', accessToken)
+    ord = ram_actDataList('orders', accessToken)
+    
+  } else {
+    
+    # Create a data frame of each
+    bal = ram_actDataListDF('balances', accessToken)
+    pos = ram_actDataListDF('positions', accessToken)
+    ord = ram_actDataListDF('orders', accessToken)
+    
+  }
+  
+  # Combine them into a list
+  Result = list(balances = bal, positions = pos, orders = ord)
+  
+  Result
+  
+}
+
+
+
+############### =============================
+############### =============================
+############### =============================
+
+
+# ----------- Helper function
+# generate account data in list form
+ram_actDataList = function(dataType=c('balances','positions','orders'),accessToken=NULL) {
   
   # Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
@@ -64,36 +98,9 @@ act_data_list = function(dataType=c('balances','positions','orders'),accessToken
   
 }
 
-#' Get account balances, positions, or orders returned as a data frame
-#'
-#' Retrieves a data frame of data for the accounts linked to the Access Token
-#'
-#' The output will be a data frame of requested details for TD Ameritrade
-#' accounts linked to the access token. Use \code{\link{act_data_list}} for an
-#' output in list form. Request can be for current positions, current balances,
-#' or current day orders. For historical orders, see \code{\link{order_search}}.
-#'
-#' @inheritParams act_data_list
-#'
-#' @return a data frame of requested account details
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' 
-#' # Get stored refresh token
-#' refreshToken = readRDS('/secure/location/')
-#'
-#' # Generate a new access token
-#' accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
-#'
-#' # Passing the accessToken is optional. The default will return balances
-#' balances = act_data_df()
-#' positions = act_data_df('positions',accessToken)
-#' orders = act_data_df('orders')
-#'
-#' }
-act_data_df = function(dataType=c('balances','positions','orders'),accessToken=NULL) {
+# ----------- Helper function
+# generate account data in data frame form
+ram_actDataListDF = function(dataType=c('balances','positions','orders'),accessToken=NULL) {
  
   # Set values to Null to pass check()
   quantity <- accountId <- orderId <- instrument.symbol <- instruction <- NULL
@@ -103,7 +110,7 @@ act_data_df = function(dataType=c('balances','positions','orders'),accessToken=N
   if (missing(dataType)) dataType='balances'
   
   # Get Account Data in list form
-  actData = act_data_list(dataType,accessToken)
+  actData = ram_actDataList(dataType,accessToken)
   
   # Parse data depending on what dataType is
   if (dataType=='orders') {
@@ -139,10 +146,11 @@ act_data_df = function(dataType=c('balances','positions','orders'),accessToken=N
                                    total_qty, duration, orderType, instrument.cusip, enteredTime)
         OrdrExecAll = merge(OrdrEntDet, OrdrExec)
         OrdrExecFinal = dplyr::bind_rows(OrdrExecFinal, OrdrExecAll)
+        
       }
     }
     
-    actOutput = list(orderEntry = OrderEnterFinal, orderExecution = OrdrExecFinal)
+    actOutput = list(orderEntry = dplyr::as_tibble(OrderEnterFinal), orderExecution = dplyr::as_tibble(OrdrExecFinal))
     
   } else if (dataType=='positions') {
     
@@ -153,7 +161,7 @@ act_data_df = function(dataType=c('balances','positions','orders'),accessToken=N
             # y contains the position details
             y = dplyr::bind_rows(lapply(x[[1]]$positions,data.frame)))
       }))
-    
+    actOutput = dplyr::as_tibble(actOutput)
   } else {
     
     actOutput = dplyr::bind_rows(lapply(actData, function(x) {
@@ -162,6 +170,7 @@ act_data_df = function(dataType=c('balances','positions','orders'),accessToken=N
             # y contains the current cash balances
             y = data.frame(x[[1]]$currentBalances))
       }))
+    actOutput = dplyr::as_tibble(actOutput)
   }
   
   # Return the output from the IF function
