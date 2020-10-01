@@ -45,9 +45,9 @@ td_accountData = function(output = 'df', accessToken = NULL) {
   } else {
     
     # Create a data frame of each
-    bal = ram_actDataListDF('balances', accessToken)
-    pos = ram_actDataListDF('positions', accessToken)
-    ord = ram_actDataListDF('orders', accessToken)
+    bal = ram_actDataDF('balances', accessToken)
+    pos = ram_actDataDF('positions', accessToken)
+    ord = ram_actDataDF('orders', accessToken)
     
   }
   
@@ -100,7 +100,7 @@ ram_actDataList = function(dataType=c('balances','positions','orders'),accessTok
 
 # ----------- Helper function
 # generate account data in data frame form
-ram_actDataListDF = function(dataType=c('balances','positions','orders'),accessToken=NULL) {
+ram_actDataDF = function(dataType=c('balances','positions','orders'),accessToken=NULL) {
  
   # Set values to Null to pass check()
   quantity <- accountId <- orderId <- instrument.symbol <- instruction <- NULL
@@ -125,7 +125,7 @@ ram_actDataListDF = function(dataType=c('balances','positions','orders'),accessT
       # Run a loop for each order within the account
       UnqOrdrs = actData[[acts]]$securitiesAccount$orderStrategies
       for (ords in 1:length(UnqOrdrs)) {
-        
+        if (length(UnqOrdrs) == 0) return()
         # Get the high level order details and drop details for a clean data frame
         OrdrDet = UnqOrdrs[[ords]]
         OrdrDet$orderLegCollection = NULL
@@ -150,7 +150,8 @@ ram_actDataListDF = function(dataType=c('balances','positions','orders'),accessT
       }
     }
     
-    actOutput = list(orderEntry = dplyr::as_tibble(OrderEnterFinal), orderExecution = dplyr::as_tibble(OrdrExecFinal))
+    actOutput = list(orderEntry = dplyr::as_tibble(OrderEnterFinal), 
+                     orderExecution = dplyr::as_tibble(OrdrExecFinal))
     
   } else if (dataType=='positions') {
     
