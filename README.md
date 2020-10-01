@@ -50,9 +50,9 @@ excited about the technology at TD Ameritrade and will retain as much as
 possible. That being said, this package could stop working at any point
 if the acquisition results in the termination of the API.
 
-Please heed the following warning for the `order_place` function.
+Please heed the following warning for the `td_placeOrder` function.
 WARNING: TRADES THAT ARE SUCCESSFULLY ENTERED WILL BE SUBMITTED
-IMMEDIATELY THERE IS NO REVIEW PROCESS. THE `order_place` FUNCTION HAS
+IMMEDIATELY THERE IS NO REVIEW PROCESS. THE `td_placeOrder` FUNCTION HAS
 HUNDREDS OF POTENTIAL COMBINATIONS AND ONLY A HANDFUL HAVE BEEN TESTED.
 TD AMERITRADE HAS THEIR OWN ERROR HANDLING BUT IF A SUCCESSFUL
 COMBINATION IS ENTERED IT COULD BE EXECUTED IMMEDIATELY. DOUBLE CHECK
@@ -64,7 +64,7 @@ DESIRED ORDER FIRST. THREE POTENTIAL OPTIONS ARE:
 2.  Use limit orders with limit prices far outside the current bid/ask
 3.  Enter very small quantities that won’t put much capital at risk
 
-FOR OPTIONS 1 AND 2, BE SURE TO CANCEL ORDERS USING `order_cancel` OR
+FOR OPTIONS 1 AND 2, BE SURE TO CANCEL ORDERS USING `td_cancelOrder` OR
 THROUGH THE TD WEBSITE
 
 ## Installation
@@ -98,58 +98,57 @@ Details are also provided within the functions.
 3.  Identify the Consumer Key provided by TD (essentially an API Key).
 4.  Under Edit App, create a Callback URL. This can be relatively simple
     (for example: `https://YourAppName`).
-5.  Pass the Callback URL and Consumer Key to `auth_init_url` to
+5.  Pass the Consumer Key and Callback URL to `td_auth_loginURL` to
     generate a URL specific to the app for user log in.
 6.  Visit the URL in a web browser and log in to a TD Brokerage account,
     granting the app access to the user account.
 7.  When “Allow” is clicked, it will redirect to a blank page. The URL
     of this page is the authorization code.
-8.  Feed the authorization code into `auth_init_refreshToken` to get a
-    Refresh Token.
+8.  Feed the Consumer Key, Callback URL, and authorization code into
+    `td_auth_refreshToken` to get a Refresh Token.
 9.  The Refresh Token is valid for 90 days so be sure to store it
     somewhere safe. The Refresh Token is the only component needed from
     then on for account access. However, if your token expires or is
     lost, you can always follow steps 6-8 above.
-10. The Refresh Token is used to generate an Access Token which gives
-    account access for 30 minutes
+10. The Refresh Token is used to generate an Access Token using
+    `td_auth_accessToken` which gives account access for 30 minutes
 11. The most recent Access Token is stored by default into Options.
     Passing it into the functions is optional unless accessing multiple
     accounts.
-12. To reset the Refresh Token as it approaches expiration, you can
-    follow steps 6-8 or use `auth_new_refreshToken`
+12. To reset the Refresh Token as it approaches expiration, you can pass
+    a valid Refresh Token into `td_auth_refreshToken`
 
 Please note: TD has indicated they prefer infrequent token generation
 and will take action on excessive tokens being generated
 
 #### Terminology
 
-  - Authorization Code: generated from the app specific URL when a TD
-    Brokerage account logs in
-  - Refresh Token: generated using the Authorization Code and is used to
-    create access tokens. Refresh token is valid for 90 days
+  - Authorization Code: generated from using a TD Brokerage to log into
+    the `td_auth_loginURL`
+  - Refresh Token: generated using the Authorization Code or an existing
+    Refresh Token and is used to create access tokens. Refresh token is
+    valid for 90 days
   - Access Token: generated using the Refresh Token and creates the
     connection to the API. Valid for 30 minutes.
 
 ## Authentication Example
 
-The `auth_init` functions are used to gain initial access to the API.
-They are used to generate a Refresh Token. Once a Refresh Token is
-generated, the `auth_init` functions will not be required unless the
-Refresh Token expires. This can be avoided using
-`auth_new_refreshToken`, which uses an existing Refresh Token to create
-a new Refresh Token.
+The `td_auth_loginURL` is used to gain initial access to the API. Once a
+Refresh Token is generated using an authorization code, manual log in
+will not be required unless the Refresh Token expires. This can be
+avoided by passing a valid Refresh Token to `td_auth_refreshToken`.
 
 ``` r
 
 # --------- Step 1 -----------
 # Register an App with TD Ameritrade Developer, create a Callback URL, and get a Consumer Key.
 # The callback URL can be anything (for example: https://myTDapp).
-# Use the auth_init_loginURL to generate an app specific URL. See the TD Authentication FAQ for issues.
+# Use the td_auth_loginURL to generate an app specific URL. See the TD Authentication FAQ for issues.
 
 callbackURL = 'https://myTDapp'
-consumerKey = 'APP_CONSUMER_KEY'
+consumerKey = 'TD_CONSUMER_KEY'
 
-rameritrade::auth_init_loginURL(callbackURL,consumerKey)
+rameritrade::td_auth_loginURL(consumerKey, callbackURL)
 # "https://auth.tdameritrade.com/auth?response_type=code&redirect_uri=https://myTDapp&client_id=consumerKey%40AMER.OAUTHAP"
 
 # Visit the URL above to see a TD login screen. Log in with a TD Brokerage account to grant the app access. 
@@ -157,12 +156,12 @@ rameritrade::auth_init_loginURL(callbackURL,consumerKey)
 
 # --------- Step 2 -----------
 # A successful log in to the URL from Step 1 will result in a blank page once "Allow" is clicked. 
-# The URL of this blank page is the authorization code. 
-# The blank page may indicate "This site can't be reached". The URL is still valid.
-# Feed the Authorization Code URL into auth_init_refreshToken to get a Refresh Token.
+# The URL of this blank page is the Authorization Code. 
+# The blank page may indicate "This site can't be reached". The URL is still a valid Authorization Code.
+# Feed the Authorization Code URL into td_auth_refreshToken to get a Refresh Token.
 
 authCode = 'https://myTDapp/?code=AUTHORIZATIONCODE' # This could be over 1,000 alpha numeric characters
-refreshToken = rameritrade::auth_init_refreshToken(callbackURL,consumerKey,authCode)
+refreshToken = rameritrade::td_auth_refreshToken(consumerKey, callbackURL, authCode)
 # "Successful Refresh Token Generated"
 
 # Save the Refresh Token to a safe location so it can be retrieved as needed. It will be valid for 90 days.
@@ -174,7 +173,7 @@ saveRDS(refreshToken,'/secure/location/')
 # The function will return an Access Token and also store it for use as a default token in Options
 
 refreshToken = readRDS('/secure/location/')
-accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
+accessToken = rameritrade::td_auth_accessToken(consumerKey, refreshToken)
 # "Successful Login. Token has been stored and will be valid for 30 minutes"
 
 # Authentication has been completed. Other functions can now be used.
@@ -182,68 +181,68 @@ accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
 
 # --------- Step 4 (when needed) -----------
 # The Refresh Token should be reset before it expires after 90 days. 
-# TD indicates they do look for frequent Refresh Token generation. This function should be used conservatively. 
+# TD indicates they do look for frequent Refresh Token generation. This should be used conservatively. 
 
 refreshToken = readRDS('/secure/location/')
-refreshToken = rameritrade::auth_new_refreshToken(refreshToken,consumerKey)
+refreshToken = rameritrade::td_auth_refreshToken(consumerKey, codeToken = refreshToken) # Callback URL is not required
 # "Successful Refresh Token Generated"
 saveRDS(refreshToken,'/secure/location/')
 ```
 
 ## Get Account Data
 
-Use the `act_data_list` or `act_data_df` to get current account data,
-including balances, positions, and current day orders.
+Use the `td_accountData` to get current account data that includes
+balances, positions, and current day orders.
 
 ``` r
 library(rameritrade)
 
 refreshToken = readRDS('/secure/location/')
-consumerKey = 'APP_CONSUMER_KEY'
-accessToken = rameritrade::auth_new_accessToken(refreshToken,consumerKey)
-# By default balances are returned. Access token does not have to be passed
-ActBal = rameritrade::act_data_list()  
+consumerKey = 'TD_CONSUMER_KEY'
+accessToken = rameritrade::td_auth_accessToken(consumerKey, refreshToken)
 
-str(ActBal)
-# List of 2
-# $ :List of 1
-# ..$ securitiesAccount:List of 8
-# .. ..$ type                   : chr "CASH"
-# .. ..$ accountId              : chr ""
-# .. ..$ roundTrips             : int 0
-# .. ..$ isDayTrader            : logi FALSE
-# .. ..$ isClosingOnlyRestricted: logi FALSE
-# .. ..$ initialBalances        :List of 18
-# .. .. ..$ accruedInterest           : num 0
+actDF = td_accountData()
+str(actDF)
+# List of 3
+# $ balances : tibble [2 × 40] (S3: tbl_df/tbl/data.frame)
+# ..$ accountId                       : chr [1:2] "1234" "1234"
+# ..$ type                            : chr [1:2] "CASH" "MARGIN"
+# ..$ roundTrips                      : int [1:2] 0 0
+# ..$ isDayTrader                     : logi [1:2] FALSE TRUE
+# ..$ isClosingOnlyRestricted         : logi [1:2] FALSE FALSE
+# ..$ accruedInterest                 : num [1:2] 0 0
+# ..$ cashBalance                     : num [1:2] 0 9.76
+# ..$ cashReceipts                    : num [1:2] 0 0
+# ..$ longOptionMarketValue           : num [1:2] 0 0
+# ..$ liquidationValue                : num [1:2] 33009 35505
 
-# Get current account positions as a data frame
-ActPos = rameritrade::act_data_df('positions')
-
-str(ActPos)
-# 'data.frame': 6 obs. of  19 variables:
-# $ accountId                     : chr  "" ...
-# $ type                          : chr  "CASH" "CASH" "CASH" "CASH" ...
-# $ roundTrips                    : int  0 0 0 0 0 0
-# $ isDayTrader                   : logi  FALSE FALSE FALSE FALSE TRUE TRUE
-# $ isClosingOnlyRestricted       : logi  FALSE FALSE FALSE FALSE FALSE FALSE
-# $ shortQuantity                 : num  0 0 0 0 0 0
-# $ averagePrice                  : num  0 19.59 14.28 6.94 45.71 ...
+actList = td_accountData('list')
+str(actList)
+# List of 3
+# $ balances :List of 2
+# ..$ :List of 1
+# .. ..$ securitiesAccount:List of 8
+# .. .. ..$ type                   : chr "CASH"
+# .. .. ..$ accountId              : chr "1234"
+# .. .. ..$ roundTrips             : int 0
+# .. .. ..$ isDayTrader            : logi FALSE
+# .. .. ..$ isClosingOnlyRestricted: logi FALSE
 ```
 
 ## Get Pricing Data
 
-Use the `price_` functions to get quotes or historical pricing. Quotes
+Use the `price` functions to get quotes or historical pricing. Quotes
 will be real-time if the account has access to real-time quotes.
 
 ``` r
 library(rameritrade)
 
 refreshToken = readRDS('/secure/location/')
-consumerKey = 'APP_CONSUMER_KEY'
-accessToken = rameritrade::auth_new_accessToken(refreshToken, consumerKey)
+consumerKey = 'TD_CONSUMER_KEY'
+accessToken = rameritrade::td_auth_accessToken(refreshToken, consumerKey)
 
 ### Quote data
-SP500Qt = rameritrade::price_quote_df(c('SPY', 'IVV', 'VOO'))
+SP500Qt = rameritrade::td_priceQuote(c('SPY', 'IVV', 'VOO'))
 str(SP500Qt)
 
 # 'data.frame': 3 obs. of  48 variables:
@@ -257,7 +256,7 @@ str(SP500Qt)
 
 
 # Historical Data
-SP500H = rameritrade::price_hisotry_mult(c(c('SPY','IVV','VOO')))
+SP500H = rameritrade::td_priceHistory(c(c('SPY','IVV','VOO')))
 head(SP500H)
 # A tibble: 6 x 8
 # ticker date       date_time            open  high   low close   volume
@@ -272,7 +271,7 @@ head(SP500H)
 
 # Time series data
 # History is only available back to a certain time depending on frequency
-rameritrade::price_history_single('AAPL', startDate = '2020-09-01', freq='5min')
+rameritrade::td_priceHistory('AAPL', startDate = '2020-09-01', freq='5min')
 # # A tibble: 2,424 x 8
 # ticker date       date_time            open  high   low close volume
 # <chr>  <date>     <dttm>              <dbl> <dbl> <dbl> <dbl>  <int>
@@ -291,7 +290,7 @@ recommended to submit trades outside market hours first to test the
 trade entries. You can confirm proper entry on the TD website before
 canceling. See the [order sample
 guide](https://developer.tdameritrade.com/content/place-order-samples)
-for more examples. Please note, `order_place` only allows for single
+for more examples. Please note, `td_placeOrder` only allows for single
 order entry and will not support some of the complex examples in the
 guide.
 
@@ -300,71 +299,166 @@ library(rameritrade)
 
 # Set Access Token using a valid Refresh Token
 refreshToken = readRDS('/secure/location/')
-consumerKey = 'APP_CONSUMER_KEY'
-accessToken = rameritrade::auth_new_accessToken(refreshToken, consumerKey)
+consumerKey = 'TD_CONSUMER_KEY'
+accessToken = rameritrade::td_auth_accessToken(refreshToken, consumerKey)
 accountNumber = 1234567890
 
 # Market Order
-Ord0 = rameritrade::order_place(accountNumber,
-                                ticker = 'PSLV',
-                                quantity = 1,
-                                instruction = 'BUY')
-rameritrade::order_cancel(Ord0$orderId, accountNumber)
+Ord0 = rameritrade::td_placeOrder(accountNumber,
+                                  ticker = 'PSLV',
+                                  quantity = 1,
+                                  instruction = 'BUY')
+rameritrade::td_cancelOrder(Ord0$orderId, accountNumber)
 # [1] "Order Cancelled"
 
 
 
 # Good till cancelled stop limit INCORRECT ENTRY
-Ordr1 = rameritrade::order_place(accountNumber = accountNumber,
-                                 ticker = 'SCHB',
-                                 quantity = 1,
-                                 instruction = 'buy',
-                                 duration = 'good_till_cancel',
-                                 orderType = 'stop_limit',
-                                 limitPrice = 50,
-                                 stopPrice = 49)
+Ordr1 = rameritrade::td_placeOrder(accountNumber = accountNumber,
+                                  ticker = 'SCHB',
+                                  quantity = 1,
+                                  instruction = 'buy',
+                                  duration = 'good_till_cancel',
+                                  orderType = 'stop_limit',
+                                  limitPrice = 50,
+                                  stopPrice = 49)
 # Error: 400 - The stop price must be above the current ask for buy stop orders 
 #        and below the bid for sell stop orders.
 
 
 
 # Good till Cancelled Stop Limit Order correct entry
-Ordr1 = rameritrade::order_place(accountNumber = accountNumber,
-                                 ticker = 'SCHB',
-                                 quantity = 1,
-                                 instruction = 'buy',
-                                 duration = 'good_till_cancel',
-                                 orderType = 'stop_limit',
-                                 limitPrice = 86,
-                                 stopPrice = 85)
-rameritrade::order_cancel(Ordr1$orderId, accountNumber)
+Ordr1 = rameritrade::td_placeOrder(accountNumber = accountNumber,
+                                   ticker = 'SCHB',
+                                   quantity = 1,
+                                   instruction = 'buy',
+                                   duration = 'good_till_cancel',
+                                   orderType = 'stop_limit',
+                                   limitPrice = 86,
+                                   stopPrice = 85)
+rameritrade::td_cancelOrder(Ordr1$orderId, accountNumber)
 # [1] "Order Cancelled"
 
 
 
 # Trailing Stop Order
-Ordr2 = rameritrade::order_place(accountNumber = accountNumber,
-                                 ticker = 'SPY',
-                                 quantity = 1,
-                                 instruction = 'sell',
-                                 orderType = 'trailing_stop',
-                                 stopPriceBasis = 'BID',
-                                 stopPriceType = 'percent',
-                                 stopPriceOffset = 10)
-rameritrade::order_cancel(Ordr2$orderId,accountNumber)
+Ordr2 = rameritrade::td_placeOrder(accountNumber = accountNumber,
+                                   ticker = 'SPY',
+                                   quantity = 1,
+                                   instruction = 'sell',
+                                   orderType = 'trailing_stop',
+                                   stopPriceBasis = 'BID',
+                                   stopPriceType = 'percent',
+                                   stopPriceOffset = 10)
+rameritrade::td_cancelOrder(Ordr2$orderId,accountNumber)
 # [1] "Order Cancelled"
 
 # Option Order
-Ord3 = rameritrade::order_place(accountNumber = accountNumber,
-                                ticker = 'SLV_091820P24.5',
-                                quantity = 1,
-                                instruction = 'BUY_TO_OPEN',
-                                duration = 'Day',
-                                orderType = 'LIMIT',
-                                limitPrice = .02,
-                                assetType = 'OPTION')
-rameritrade::order_cancel(Ord3$orderId, accountNumber)
+Ord3 = rameritrade::td_placeOrder(accountNumber = accountNumber,
+                                  ticker = 'SLV_091820P24.5',
+                                  quantity = 1,
+                                  instruction = 'BUY_TO_OPEN',
+                                  duration = 'Day',
+                                  orderType = 'LIMIT',
+                                  limitPrice = .02,
+                                  assetType = 'OPTION')
+rameritrade::td_cancelOrder(Ord3$orderId, accountNumber)
 # [1] "Order Cancelled"
+```
+
+## Option Chains
+
+You can pull entire option chains for individual securities.
+
+``` r
+
+library(rameritrade)
+consumerKey = 'TD_CONSUMER_KEY'
+
+refreshToken1 = readRDS('/secure/location/')
+accessToken = rameritrade::td_auth_accessToken(refreshToken, consumerKey)
+
+# Pull all SPY chains for 6 months with 12 strikes above and below current market
+SPY = td_optionChain('SPY',
+                     strikes = 12,
+                     endDate = Sys.Date() + 180)
+
+# This returns a list of two data frames
+str(SPY$underlying)
+# tibble [1 × 23] (S3: tbl_df/tbl/data.frame)
+# $ symbol           : chr "SPY"
+# $ description      : chr "SPDR S&P 500"
+# $ change           : num 2.52
+# $ percentChange    : num 0.76
+# $ close            : num 332
+# $ quoteTime        : num 1.6e+12
+# $ tradeTime        : num 1.6e+12
+# $ bid              : num 334
+# $ ask              : num 334
+# $ last             : num 335
+# $ mark             : num 334
+# $ markChange       : num 1.53
+# $ markPercentChange: num 0.46
+# $ bidSize          : int 300
+# $ askSize          : int 100
+# $ highPrice        : num 338
+# $ lowPrice         : num 333
+# $ openPrice        : num 333
+# $ totalVolume      : int 101506148
+# $ exchangeName     : chr "PAC"
+# $ fiftyTwoWeekHigh : num 359
+# $ fiftyTwoWeekLow  : num 218
+# $ delayed          : logi TRUE
+
+str(SPY$fullChain)
+# $ putCall               : chr [1:552] "PUT" "PUT" "PUT" "PUT" ...
+# $ symbol                : chr [1:552] "SPY_093020P329" "SPY_093020P330" "SPY_093020P331" "SPY_093020P332" ...
+# $ description           : chr [1:552] "SPY Sep 30 2020 329 Put (Quarterly)" "SPY Sep 30 2020 330 Put (Quarterly)" "SPY Sep 30 2020 331 Put (Quarterly)" "SPY Sep 30 2020 332 Put (Quarterly)" ...
+# $ exchangeName          : chr [1:552] "OPR" "OPR" "OPR" "OPR" ...
+# $ bid                   : num [1:552] 0 0 0.01 0.01 0.04 0.3 1.15 2.02 3.14 4.1 ...
+# $ ask                   : num [1:552] 0.01 0.01 0.02 0.02 0.05 0.38 1.25 2.33 3.24 4.61 ...
+# $ last                  : num [1:552] 0.01 0.02 0.01 0.02 0.05 0.32 1.22 2.35 3.02 4.3 ...
+# $ mark                  : num [1:552] 0.01 0.01 0.02 0.02 0.05 0.34 1.2 2.17 3.19 4.36 ...
+# $ bidSize               : int [1:552] 0 0 6739 1457 390 40 10 10 10 15 ...
+# $ askSize               : int [1:552] 4927 3498 6062 3177 10 15 10 141 10 150 ...
+# $ bidAskSize            : chr [1:552] "0X4927" "0X3498" "6739X6062" "1457X3177" ...
+# $ lastSize              : int [1:552] 0 0 0 0 0 0 0 0 0 0 ...
+# $ highPrice             : num [1:552] 0.33 0.49 0.67 1 1.4 1.93 2.58 3.2 4.1 5 ...
+# $ lowPrice              : num [1:552] 0.01 0.01 0.01 0.01 0.01 0.02 0.07 0.21 0.36 0.66 ...
+# $ openPrice             : num [1:552] 0 0 0 0 0 0 0 0 0 0 ...
+# $ closePrice            : num [1:552] 0.61 0.81 1.08 1.4 1.8 2.28 2.85 3.51 4.25 5.06 ...
+# $ totalVolume           : int [1:552] 29439 60708 55127 95477 127601 162990 158762 130057 61796 36514 ...
+# $ tradeDate             : logi [1:552] NA NA NA NA NA NA ...
+# $ tradeTimeInLong       : num [1:552] 1.6e+12 1.6e+12 1.6e+12 1.6e+12 1.6e+12 ...
+# $ quoteTimeInLong       : num [1:552] 1.6e+12 1.6e+12 1.6e+12 1.6e+12 1.6e+12 ...
+# $ netChange             : num [1:552] -0.6 -0.8 -1.07 -1.38 -1.75 -1.96 -1.63 -1.16 -1.23 -0.76 ...
+# $ volatility            : num [1:552] 11.52 9.39 8.48 5.92 NaN ...
+# $ delta                 : num [1:552] -0.008 -0.009 -0.027 -0.036 NaN NaN -0.889 -0.952 -0.949 -0.88 ...
+# $ gamma                 : num [1:552] 0.01 0.015 0.041 0.077 NaN NaN 0.202 0.077 0.055 0.057 ...
+# $ theta                 : num [1:552] -0.021 -0.02 -0.046 -0.042 NaN NaN -0.102 -0.078 -0.113 -0.362 ...
+# $ vega                  : num [1:552] 0.004 0.004 0.011 0.014 0.045 0.07 0.033 0.017 0.018 0.035 ...
+# $ rho                   : num [1:552] 0 0 0 0 NaN NaN -0.008 -0.009 -0.009 -0.008 ...
+# $ openInterest          : int [1:552] 19356 25285 12418 10482 12659 7611 12022 3251 2734 2637 ...
+# $ timeValue             : num [1:552] 0.01 0.02 0.01 0.02 0.05 0.32 1.11 1.24 0.91 1.19 ...
+# $ theoreticalOptionValue: num [1:552] 0.005 0.005 0.015 0.015 NaN ...
+# $ theoreticalVolatility : num [1:552] 29 29 29 29 29 29 29 29 29 29 ...
+# $ optionDeliverablesList: logi [1:552] NA NA NA NA NA NA ...
+# $ strikePrice           : num [1:552] 329 330 331 332 333 334 335 336 337 338 ...
+# $ expirationDate        : num [1:552] 1.6e+12 1.6e+12 1.6e+12 1.6e+12 1.6e+12 ...
+# $ daysToExpiration      : int [1:552] 0 0 0 0 0 0 0 0 0 0 ...
+# $ expirationType        : chr [1:552] "Q" "Q" "Q" "Q" ...
+# $ lastTradingDay        : num [1:552] 1.6e+12 1.6e+12 1.6e+12 1.6e+12 1.6e+12 ...
+# $ multiplier            : num [1:552] 100 100 100 100 100 100 100 100 100 100 ...
+# $ settlementType        : chr [1:552] " " " " " " " " ...
+# $ deliverableNote       : chr [1:552] "" "" "" "" ...
+# $ isIndexOption         : logi [1:552] NA NA NA NA NA NA ...
+# $ percentChange         : num [1:552] -98.4 -97.5 -99.1 -98.6 -97.2 ...
+# $ markChange            : num [1:552] -0.61 -0.81 -1.07 -1.38 -1.75 -1.94 -1.65 -1.34 -1.06 -0.7 ...
+# $ markPercentChange     : num [1:552] -99.2 -99.4 -98.6 -98.9 -97.5 ...
+# $ nonStandard           : logi [1:552] FALSE FALSE FALSE FALSE FALSE FALSE ...
+# $ inTheMoney            : logi [1:552] FALSE FALSE FALSE FALSE FALSE FALSE ...
+# $ mini                  : logi [1:552] FALSE FALSE FALSE FALSE FALSE FALSE ...
+# $ expireDate            : Date[1:552], format: "2020-09-30" "2020-09-30" "2020-09-30" "2020-09-30" ...
 ```
 
 ## Working with multiple accounts
@@ -379,13 +473,13 @@ library(rameritrade)
 consumerKey = 'APP_CONSUMER_KEY'
 
 refreshToken1 = readRDS('/secure/location/1')
-accessToken1 = rameritrade::auth_new_accessToken(refreshToken1, consumerKey)
+accessToken1 = rameritrade::td_auth_accessToken(refreshToken1, consumerKey)
 
 refreshToken2 = readRDS('/secure/location/2')
-accessToken2 = rameritrade::auth_new_accessToken(refreshToken2, consumerKey)
+accessToken2 = rameritrade::td_auth_accessToken(refreshToken2, consumerKey)
 
-ActBal1 = rameritrade::act_data_list(accessToken = accessToken1)
+ActBal1 = rameritrade::td_accountData(accessToken = accessToken1)
 
-ActBal2 = rameritrade::act_data_list(accessToken = accessToken2)
+ActBal2 = rameritrade::td_accountData(accessToken = accessToken2)
 
 ```
