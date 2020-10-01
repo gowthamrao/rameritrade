@@ -120,7 +120,7 @@ td_transactSearch = function(accountNumber, startDate = Sys.Date()-30,
   jsonTransact <- httr::content(searchTransact, as = "text",encoding = 'UTF-8')
   jsonTransact <- jsonlite::fromJSON(jsonTransact)
   
-  jsonTransact
+  dplyr::as_tibble(jsonTransact)
 }
 
 
