@@ -23,3 +23,5 @@ to be run successfully.
 ## Other Comments
 Package was resubmitted from v 0.1.2 with some major changes.
 Consolidated functions and implemented a new naming convention.
+Apologies for the multiple submissions, but this is a much 
+cleaner and user friendly implementation.

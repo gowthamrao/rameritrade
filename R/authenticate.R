@@ -102,7 +102,7 @@ td_auth_loginURL = function(consumerKey, callbackURL) {
 #' @seealso \code{\link{td_auth_loginURL}} to generate a login url which leads
 #'   to an authorization code, \code{\link{td_auth_refreshToken}} to generate a
 #'   Refresh Token using an existing Refresh Token or an authorization code with
-#'   a callback URL when loggin in manually,  \code{\link{td_auth_accessToken}}
+#'   a callback URL when logging in manually,  \code{\link{td_auth_accessToken}}
 #'   to generate a new Access Token
 #'
 #' @return Refresh Token that is valid for 90 days
