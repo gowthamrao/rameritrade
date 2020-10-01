@@ -1,6 +1,6 @@
 Package: rameritrade
 Title: TD Ameritrade API Interface for R
-Version: 0.1.2
+Version: 0.1.3
 Author: Tony Trevisan [aut, cre]
 Authors@R:
     person(given = "Tony",

@@ -1,5 +1,10 @@
 # Release Notes and News
 
+# rameritrade 0.1.3 - 10/1/2020
+
+Before CRAN release, modified naming convention for functions 
+and consolidated multiple functions into single functions such 
+as account data, authentication, and pricing.
 
 # rameritrade 0.1.2 - 9/29/2020
 

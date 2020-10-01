@@ -21,6 +21,5 @@ from CRAN because they require account authentication
 to be run successfully. 
 
 ## Other Comments
-Package was resubmitted from v 0.1.1 with minor changes.
-Primarily modified the URL in the README to include ``, 
-hiding the URL.
+Package was resubmitted from v 0.1.2 with some major changes.
+Consolidated functions and implemented a new naming convention.
