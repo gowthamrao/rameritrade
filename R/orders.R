@@ -6,7 +6,7 @@
 #' @param orderId A valid TD Ameritrade Order ID
 #' @param accountNumber The TD brokerage account number associated with the
 #'   Access Token
-#' @inheritParams act_data_list
+#' @inheritParams td_accountData
 #'
 #' @return list of order details
 #' @export
@@ -18,14 +18,14 @@
 #' refreshToken = readRDS('/secure/location/')
 #'
 #' # generate a new access token
-#' accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
+#' accessToken = td_auth_accessToken(refreshToken, 'consumerKey')
 #'
 #' # Get order details for a single order
 #' # Passing Access Token is optional once it's been set
-#' order_detail(orderId = 123456789, accountNumber = 987654321)
+#' td_orderDetail(orderId = 123456789, accountNumber = 987654321)
 #'
 #' }
-order_detail = function(orderId, accountNumber, accessToken=NULL) {
+td_orderDetail = function(orderId, accountNumber, accessToken=NULL) {
   
   # Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
@@ -46,7 +46,7 @@ order_detail = function(orderId, accountNumber, accessToken=NULL) {
 #' 
 #' Pass an Order ID and Account number to cancel an existing open order
 #'
-#' @inheritParams order_detail
+#' @inheritParams td_orderDetail
 #'
 #' @return order API URL. Message confirming cancellation
 #' @export
@@ -54,10 +54,10 @@ order_detail = function(orderId, accountNumber, accessToken=NULL) {
 #' @examples
 #'  \dontrun{
 #' 
-#' order_cancel(orderId = 123456789, accountNumber = 987654321)
+#' td_cancelOrder(orderId = 123456789, accountNumber = 987654321)
 #' 
 #' }
-order_cancel =  function(orderId,accountNumber,accessToken=NULL){
+td_cancelOrder =  function(orderId,accountNumber,accessToken=NULL){
   
   # Get access token from options if one is not passed
   accessToken = ram_accessToken(accessToken)
@@ -86,7 +86,7 @@ order_cancel =  function(orderId,accountNumber,accessToken=NULL){
 #' \item all entered orders with details 
 #' \item a data frame of all executed orders with the executions }
 #'
-#' @inheritParams order_detail
+#' @inheritParams td_orderDetail
 #' @param startDate Orders from a certain date with. Format yyyy-mm-dd. TD
 #'   indicates there is a 60 day max, but this limit may not always apply
 #' @param endDate Filter orders that occurred before a certain date. Format
@@ -104,12 +104,12 @@ order_cancel =  function(orderId,accountNumber,accessToken=NULL){
 #' \dontrun{
 #'
 #' # Get all orders run over the last 50 days (up to 500)
-#' order_search(accountNumber = 987654321, 
+#' td_orderSearch(accountNumber = 987654321, 
 #'              startDate = Sys.Date()-days(50),
 #'              maxResult = 500, orderStatus = 'FILLED')
 #'
 #' }
-order_search = function(accountNumber, startDate = Sys.Date()-30, endDate = Sys.Date(),
+td_orderSearch = function(accountNumber, startDate = Sys.Date()-30, endDate = Sys.Date(),
                         maxResults = 50, orderStatus = '', accessToken = NULL){
   
   # Bind variables to quiet warning
@@ -179,7 +179,7 @@ order_search = function(accountNumber, startDate = Sys.Date()-30, endDate = Sys.
 #' Place trades through the TD Ameritrade API using a range of parameters
 #'
 #' A valid account and access token must be passed. An access token will be
-#' passed by default when \code{\link{auth_new_accessToken}} is executed
+#' passed by default when \code{\link{td_auth_accessToken}} is executed
 #' successfully and the token has not expired, which occurs after 30 minutes.
 #' Only equities and options can be traded at this time. This function is built
 #' to allow a single trade submission. More complex trades can be executed
@@ -208,8 +208,8 @@ order_search = function(accountNumber, startDate = Sys.Date()-30, endDate = Sys.
 #'   ENTRIES BEFORE SUBMITTING.
 #'
 #'
-#' @inheritParams order_detail
-#' @param ticker a valid Equity/ETF or option. If needed, use symbol_detail to
+#' @inheritParams td_orderDetail
+#' @param ticker a valid Equity/ETF or option. If needed, use td_symbolDetail to
 #'   confirm. This should be a ticker/symbol, not a CUSIP
 #' @param quantity the number of shares to be bought or sold. Must be an
 #'   integer.
@@ -245,20 +245,20 @@ order_search = function(accountNumber, startDate = Sys.Date()-30, endDate = Sys.
 #' refreshToken = readRDS('/secure/location/')
 #'
 #' # generate a new access token
-#' accessToken = auth_new_accessToken(refreshToken, 'consumerKey')
+#' accessToken = td_auth_accessToken(refreshToken, 'consumerKey')
 #'
 #' # Set Account Number
 #' accountNumber = 1234567890
 #'
 #' # Standard market buy order
 #' # Every order must have at least these 4 paramters
-#' order_place(accountNumber = accountNumber,
+#' td_placeOrder(accountNumber = accountNumber,
 #'             ticker = 'AAPL',
 #'             quantity = 1,
 #'             instruction = 'buy')
 #'
 #' # Stop limit order - good until canceled
-#' order_place(accountNumber = accountNumber,
+#' td_placeOrder(accountNumber = accountNumber,
 #'             ticker = 'AAPL',
 #'             quantity = 1,
 #'             instruction = 'sell',
@@ -268,7 +268,7 @@ order_search = function(accountNumber, startDate = Sys.Date()-30, endDate = Sys.
 #'             stopPrice = 100)
 #'
 #' # Trailing Stop Order
-#' order_place(accountNumber = accountNumber,
+#' td_placeOrder(accountNumber = accountNumber,
 #'             ticker='AAPL',
 #'             quantity = 1,
 #'             instruction='sell',
@@ -278,7 +278,7 @@ order_search = function(accountNumber, startDate = Sys.Date()-30, endDate = Sys.
 #'             stopPriceOffset = 10)
 #'
 #' # Option Order with a limit price
-#' order_place(accountNumber = accountNumber,
+#' td_placeOrder(accountNumber = accountNumber,
 #'             ticker = 'SLV_091820P24.5',
 #'             quantity = 1,
 #'             instruction = 'BUY_TO_OPEN',
@@ -290,7 +290,7 @@ order_search = function(accountNumber, startDate = Sys.Date()-30, endDate = Sys.
 #' }
 #'
 #' 
-order_place = function(accountNumber, ticker, quantity, instruction,
+td_placeOrder = function(accountNumber, ticker, quantity, instruction,
                        orderType = 'MARKET', limitPrice = NULL, stopPrice = NULL,
                        assetType = c('EQUITY','OPTION'), session='NORMAL', duration='DAY',
                        stopPriceBasis = NULL, stopPriceType = NULL, stopPriceOffset = NULL,
