@@ -1,5 +1,10 @@
 # Release Notes and News
 
+# rameritrade 0.1.410/7/2020
+
+Fixed td_accountData orders and added '' marks
+around 'TD Ameritrade' API in description and name.
+
 # rameritrade 0.1.3 - 10/1/2020
 
 Before CRAN approval, modified naming convention for functions 
