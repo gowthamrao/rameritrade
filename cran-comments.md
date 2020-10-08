@@ -21,7 +21,6 @@ from CRAN because they require account authentication
 to be run successfully. 
 
 ## Other Comments
-Package was resubmitted from v 0.1.2 with some major changes.
-Consolidated functions and implemented a new naming convention.
-Apologies for the multiple submissions, but this is a much 
-cleaner and user friendly implementation.
+Package was resubmitted from v 0.1.3 with minor changes.
+Fixed a bug with td_accountData and added quote marks
+around 'TD Ameritrade' API per request from CRAN.
