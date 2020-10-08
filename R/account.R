@@ -125,7 +125,7 @@ ram_actDataDF = function(dataType=c('balances','positions','orders'),accessToken
       # Run a loop for each order within the account
       UnqOrdrs = actData[[acts]]$securitiesAccount$orderStrategies
       for (ords in 1:length(UnqOrdrs)) {
-        if (length(UnqOrdrs) == 0) return()
+        if (length(UnqOrdrs) == 0) break
         # Get the high level order details and drop details for a clean data frame
         OrdrDet = UnqOrdrs[[ords]]
         OrdrDet$orderLegCollection = NULL
