@@ -29,12 +29,12 @@ redirected, potentially to "This site can't be reached". This indicates a
 successful log in. The URL of this page contains the Authorization Code.
 Paste the entire URL, not just the Authorization Code, into
 td_auth_refreshToken. The authorization code will be an extremely long alpha
-numeric string starting with https.
+numeric string starting with 'https'.
 
 The output of td_auth_refreshToken will be a Refresh Token which will be used
 to gain access to the TD Brokerage account(s) going forward. The Refresh
 Token will be valid for 90 days. Be sure to save the Refresh Token to a safe
-location or the manual login process will be required again. The user can use
+location or the manual log in process will be required again. The user can use
 td_auth_refreshToken to reset the token before expiration.
 
 The Refresh Token output should be saved in a very safe location, but also

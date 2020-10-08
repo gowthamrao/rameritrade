@@ -20,8 +20,8 @@ test_that("Function response type matches expectation", {
   expect_error(td_auth_refreshToken(consumerKey, callbackURL,'https://myTDapp/?code=Auhtorizationcode'))
   expect_error(td_auth_accessToken(consumerKey, 'reftoken'))
   expect_error(td_auth_accessToken(consumerKey, refreshToken$refresh_token))
-  expect_error(td_auth_refreshToken(consumerKey,'reftoken'))
-  expect_error(td_auth_refreshToken(refreshToken$refresh_token,consumerKey))
+  expect_error(td_auth_refreshToken(consumerKey,callbackURL,'reftoken'))
+  expect_error(td_auth_refreshToken(consumerKey, callbackURL,refreshToken$refresh_token))
   
   ### Confirm response
   AccToken = td_auth_accessToken(consumerKey, refreshToken)
