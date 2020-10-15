@@ -1,25 +1,27 @@
 # Release Notes and News
 
-# rameritrade 0.1.410/7/2020
+### rameritrade 0.1.4 10/7/2020
+
+Released with commit d7ee4af
 
 Fixed `td_accountData` orders and added '' marks
 around 'TD Ameritrade' API in description and name.
 
-# rameritrade 0.1.3 - 10/1/2020
+### rameritrade 0.1.3 - 10/1/2020
 
 Before CRAN approval, modified naming convention for functions 
 and consolidated multiple functions into single functions such 
 as account data, authentication, and pricing.
 
-# rameritrade 0.1.2 - 9/29/2020
+### rameritrade 0.1.2 - 9/29/2020
 
 Added `` around example URL in ReadMe
 
-# rameritrade 0.1.1 - 9/26/2020
+### rameritrade 0.1.1 - 9/26/2020
 
 Removed git files from build
 
-# rameritrade 0.1.0 - 9/26/2020
+### rameritrade 0.1.0 - 9/26/2020
 
 Initial release includes basic functionality and API calls. Authentication,
 Placing Orders, Canceling Orders, and pulling account details are all included
