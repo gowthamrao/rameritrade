@@ -5,9 +5,9 @@
 
 <!-- badges: start -->
 
-![Dev Version](https://img.shields.io/badge/github-0.1.4-blue.svg)
 ![CRAN
 Version](https://www.r-pkg.org/badges/version/rameritrade?color=green)
+![Dev Version](https://img.shields.io/badge/github-0.1.4-blue.svg)
 <!-- badges: end -->
 
 R package for the TD Ameritrade API, facilitating authentication,
@@ -75,12 +75,13 @@ THROUGH THE TD WEBSITE
 You can install rameritrade using:
 
 ``` r
-# Install development version
-# install.packages("devtools")
-devtools::install_github("tonytrevisan/rameritrade")
 
 # Available on CRAN
 install.packages("rameritrade")
+
+# Install development version - currently the same as CRAN
+# install.packages("devtools")
+devtools::install_github("tonytrevisan/rameritrade")
 ```
 
 ## Authentication
