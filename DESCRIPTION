@@ -8,7 +8,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "anthonytrevisan@gmail.com")
 Maintainer: Tony Trevisan <anthonytrevisan@gmail.com>
-URL: https://tonytrevisan.github.io/rameritrade/, https://developer.tdameritrade.com/
+URL: https://tonytrevisan.github.io/rameritrade/, https://github.com/tonytrevisan/rameritrade, https://developer.tdameritrade.com/
 BugReports: https://github.com/tonytrevisan/rameritrade/issues
 Description: Use R to interface with the 'TD Ameritrade' API, including authentication, trading,
     price requests, account information, and option chains. A user will need a TD brokerage 

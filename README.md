@@ -8,12 +8,16 @@
 ![CRAN
 Version](https://www.r-pkg.org/badges/version/rameritrade?color=green)
 ![Dev Version](https://img.shields.io/badge/github-0.1.4-blue.svg)
+![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/rameritrade)
 <!-- badges: end -->
 
 R package for the TD Ameritrade API, facilitating authentication,
 trading, price requests, account balances, positions, order history,
 option chains, and more. A user will need a TD Brokerage account and TD
-Ameritrade developer app.
+Ameritrade developer app. Read the [Trade on
+TD](https://tonytrevisan.github.io/posts/2020-10-17-trade-on-td-ameritrade-with-r/)
+post for full example of logging in and executing a trade, or see the
+instructions below.
 
 ## Introduction
 
